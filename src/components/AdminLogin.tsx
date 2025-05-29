@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Checkbox } from '@/components/ui/checkbox';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const AdminLogin = () => {
   const [email, setEmail] = useState('');
@@ -17,85 +15,187 @@ const AdminLogin = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
+    <div className="min-vh-100 d-flex align-items-center justify-content-center p-4" 
+         style={{ 
+           background: 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)' 
+         }}>
+      <div className="w-100" style={{ maxWidth: '400px' }}>
         {/* Logo Section */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center mb-4">
-            <div className="relative">
+        <div className="text-center mb-4">
+          <div className="d-inline-flex align-items-center justify-content-center mb-3">
+            <div className="position-relative">
               {/* Book base */}
-              <div className="w-16 h-12 bg-green-200 rounded-sm relative">
-                <div className="absolute inset-1 bg-white rounded-sm"></div>
-                <div className="absolute left-2 top-2 right-2 space-y-1">
-                  <div className="h-0.5 bg-green-300 rounded"></div>
-                  <div className="h-0.5 bg-green-300 rounded"></div>
-                  <div className="h-0.5 bg-green-300 rounded"></div>
+              <div className="rounded position-relative" 
+                   style={{ 
+                     width: '64px', 
+                     height: '48px', 
+                     backgroundColor: '#bbf7d0' 
+                   }}>
+                <div className="position-absolute rounded" 
+                     style={{ 
+                       top: '4px', 
+                       left: '4px', 
+                       right: '4px', 
+                       bottom: '4px', 
+                       backgroundColor: 'white' 
+                     }}></div>
+                <div className="position-absolute d-flex flex-column" 
+                     style={{ 
+                       left: '8px', 
+                       top: '8px', 
+                       right: '8px', 
+                       gap: '4px' 
+                     }}>
+                  <div className="rounded" style={{ height: '2px', backgroundColor: '#86efac' }}></div>
+                  <div className="rounded" style={{ height: '2px', backgroundColor: '#86efac' }}></div>
+                  <div className="rounded" style={{ height: '2px', backgroundColor: '#86efac' }}></div>
                 </div>
               </div>
               
               {/* Leaves */}
-              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                <div className="relative">
+              <div className="position-absolute" 
+                   style={{ 
+                     top: '-16px', 
+                     left: '50%', 
+                     transform: 'translateX(-50%)' 
+                   }}>
+                <div className="position-relative">
                   {/* Center stem */}
-                  <div className="w-0.5 h-6 bg-green-600 mx-auto"></div>
+                  <div className="mx-auto" 
+                       style={{ 
+                         width: '2px', 
+                         height: '24px', 
+                         backgroundColor: '#059669' 
+                       }}></div>
                   
                   {/* Leaves arranged in a fan pattern */}
-                  <div className="absolute top-0 left-1/2 transform -translate-x-1/2">
+                  <div className="position-absolute" 
+                       style={{ 
+                         top: '0', 
+                         left: '50%', 
+                         transform: 'translateX(-50%)' 
+                       }}>
                     {/* Top leaf */}
-                    <div className="w-3 h-6 bg-green-500 rounded-full transform -rotate-12 absolute -left-1 -top-1"></div>
+                    <div className="position-absolute rounded-pill" 
+                         style={{ 
+                           width: '12px', 
+                           height: '24px', 
+                           backgroundColor: '#10b981', 
+                           transform: 'rotate(-12deg)', 
+                           left: '-4px', 
+                           top: '-4px' 
+                         }}></div>
                     {/* Left leaves */}
-                    <div className="w-3 h-6 bg-green-500 rounded-full transform -rotate-45 absolute -left-2 top-1"></div>
-                    <div className="w-3 h-6 bg-green-500 rounded-full transform -rotate-75 absolute -left-2 top-3"></div>
+                    <div className="position-absolute rounded-pill" 
+                         style={{ 
+                           width: '12px', 
+                           height: '24px', 
+                           backgroundColor: '#10b981', 
+                           transform: 'rotate(-45deg)', 
+                           left: '-8px', 
+                           top: '4px' 
+                         }}></div>
+                    <div className="position-absolute rounded-pill" 
+                         style={{ 
+                           width: '12px', 
+                           height: '24px', 
+                           backgroundColor: '#10b981', 
+                           transform: 'rotate(-75deg)', 
+                           left: '-8px', 
+                           top: '12px' 
+                         }}></div>
                     {/* Right leaves */}
-                    <div className="w-3 h-6 bg-green-500 rounded-full transform rotate-12 absolute left-1 -top-1"></div>
-                    <div className="w-3 h-6 bg-green-500 rounded-full transform rotate-45 absolute left-2 top-1"></div>
-                    <div className="w-3 h-6 bg-green-500 rounded-full transform rotate-75 absolute left-2 top-3"></div>
+                    <div className="position-absolute rounded-pill" 
+                         style={{ 
+                           width: '12px', 
+                           height: '24px', 
+                           backgroundColor: '#10b981', 
+                           transform: 'rotate(12deg)', 
+                           left: '4px', 
+                           top: '-4px' 
+                         }}></div>
+                    <div className="position-absolute rounded-pill" 
+                         style={{ 
+                           width: '12px', 
+                           height: '24px', 
+                           backgroundColor: '#10b981', 
+                           transform: 'rotate(45deg)', 
+                           left: '8px', 
+                           top: '4px' 
+                         }}></div>
+                    <div className="position-absolute rounded-pill" 
+                         style={{ 
+                           width: '12px', 
+                           height: '24px', 
+                           backgroundColor: '#10b981', 
+                           transform: 'rotate(75deg)', 
+                           left: '8px', 
+                           top: '12px' 
+                         }}></div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          <h2 className="text-green-600 text-lg font-semibold">Có & Lá</h2>
+          <h2 className="text-success fs-5 fw-semibold">Có & Lá</h2>
         </div>
 
         {/* Login Form */}
-        <div className="bg-white/70 backdrop-blur-sm rounded-lg p-6 shadow-lg">
-          <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="bg-white rounded p-4 shadow" 
+             style={{ backgroundColor: 'rgba(255, 255, 255, 0.7)' }}>
+          <form onSubmit={handleSubmit}>
             {/* Email Input */}
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+            <div className="mb-3">
+              <label htmlFor="email" className="form-label text-secondary fw-medium">
                 Email Address
               </label>
-              <Input
+              <input
                 id="email"
                 type="email"
+                className="form-control border-success"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="johndoe@email.com"
-                className="w-full border-green-200 focus:border-green-500 focus:ring-green-500"
                 required
+                style={{ 
+                  borderColor: '#bbf7d0',
+                  borderWidth: '2px'
+                }}
               />
             </div>
 
             {/* Password Input */}
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+            <div className="mb-3">
+              <label htmlFor="password" className="form-label text-secondary fw-medium">
                 Password
               </label>
-              <div className="relative">
-                <Input
+              <div className="position-relative">
+                <input
                   id="password"
                   type={showPassword ? 'text' : 'password'}
+                  className="form-control border-success pe-5"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••••••"
-                  className="w-full border-green-200 focus:border-green-500 focus:ring-green-500 pr-10"
                   required
+                  style={{ 
+                    borderColor: '#bbf7d0',
+                    borderWidth: '2px'
+                  }}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  className="btn position-absolute"
+                  style={{ 
+                    right: '8px', 
+                    top: '50%', 
+                    transform: 'translateY(-50%)',
+                    border: 'none',
+                    background: 'transparent',
+                    color: '#6c757d',
+                    padding: '0'
+                  }}
                 >
                   {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
@@ -103,36 +203,40 @@ const AdminLogin = () => {
             </div>
 
             {/* Keep me signed in */}
-            <div className="flex items-center space-x-2">
-              <Checkbox
+            <div className="form-check mb-3">
+              <input
+                className="form-check-input"
+                type="checkbox"
                 id="keep-signed-in"
                 checked={keepSignedIn}
-                onCheckedChange={(checked) => setKeepSignedIn(checked as boolean)}
-                className="border-green-300 data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600"
+                onChange={(e) => setKeepSignedIn(e.target.checked)}
+                style={{ borderColor: '#86efac' }}
               />
-              <label 
-                htmlFor="keep-signed-in" 
-                className="text-sm text-gray-600 cursor-pointer"
-              >
+              <label className="form-check-label text-secondary" htmlFor="keep-signed-in">
                 Keep me signed in
               </label>
             </div>
 
             {/* Login Button */}
-            <Button
+            <button
               type="submit"
-              className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-md transition-colors duration-200"
+              className="btn btn-success w-100 py-2"
+              style={{ 
+                backgroundColor: '#059669',
+                borderColor: '#059669'
+              }}
             >
               Login
-            </Button>
+            </button>
           </form>
         </div>
 
         {/* Footer */}
-        <div className="text-center mt-6">
+        <div className="text-center mt-3">
           <a 
             href="#" 
-            className="text-sm text-green-600 hover:text-green-700 transition-colors duration-200"
+            className="text-success text-decoration-none"
+            style={{ fontSize: '0.875rem' }}
           >
             Forgot your password?
           </a>
