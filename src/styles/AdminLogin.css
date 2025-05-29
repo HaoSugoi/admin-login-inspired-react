@@ -1,0 +1,178 @@
+
+.admin-login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+}
+
+.admin-login-wrapper {
+  width: 100%;
+  max-width: 400px;
+}
+
+.logo-container {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.logo-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.book-base {
+  border-radius: 0.375rem;
+  position: relative;
+  width: 64px;
+  height: 48px;
+  background-color: #bbf7d0;
+}
+
+.book-inner {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  right: 4px;
+  bottom: 4px;
+  background-color: white;
+  border-radius: 0.375rem;
+}
+
+.book-lines {
+  position: absolute;
+  left: 8px;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.book-line {
+  border-radius: 0.125rem;
+  height: 2px;
+  background-color: #86efac;
+}
+
+.leaves-container {
+  position: absolute;
+  top: -16px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.center-stem {
+  margin: 0 auto;
+  width: 2px;
+  height: 24px;
+  background-color: #059669;
+}
+
+.leaves-group {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.leaf {
+  position: absolute;
+  width: 12px;
+  height: 24px;
+  background-color: #10b981;
+  border-radius: 50%;
+}
+
+.leaf-top {
+  transform: rotate(-12deg);
+  left: -4px;
+  top: -4px;
+}
+
+.leaf-left-1 {
+  transform: rotate(-45deg);
+  left: -8px;
+  top: 4px;
+}
+
+.leaf-left-2 {
+  transform: rotate(-75deg);
+  left: -8px;
+  top: 12px;
+}
+
+.leaf-right-1 {
+  transform: rotate(12deg);
+  left: 4px;
+  top: -4px;
+}
+
+.leaf-right-2 {
+  transform: rotate(45deg);
+  left: 8px;
+  top: 4px;
+}
+
+.leaf-right-3 {
+  transform: rotate(75deg);
+  left: 8px;
+  top: 12px;
+}
+
+.brand-title {
+  color: #059669;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.login-form-container {
+  background-color: rgba(255, 255, 255, 0.7);
+  border-radius: 0.375rem;
+  padding: 1.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.form-input {
+  border-color: #bbf7d0 !important;
+  border-width: 2px;
+}
+
+.password-container {
+  position: relative;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: transparent;
+  color: #6c757d;
+  padding: 0;
+}
+
+.checkbox-custom {
+  border-color: #86efac;
+}
+
+.login-button {
+  background-color: #059669 !important;
+  border-color: #059669 !important;
+}
+
+.forgot-password-link {
+  color: #059669;
+  text-decoration: none;
+  font-size: 0.875rem;
+}
+
+.footer-container {
+  text-align: center;
+  margin-top: 1rem;
+}
