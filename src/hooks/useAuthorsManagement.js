@@ -6,7 +6,7 @@ export const useAuthorsManagement = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   
   // Mock data for authors management
-  const [authors] = useState([
+  const [authors, setAuthors] = useState([
     {
       id: 1,
       name: "Nguyễn Nhật Ánh",
@@ -48,7 +48,24 @@ export const useAuthorsManagement = () => {
 
   const handleLogout = () => {
     console.log('Logging out...');
-    // Add logout logic here
+  };
+
+  // Author management functions
+  const handleAddAuthor = (newAuthor) => {
+    setAuthors([...authors, newAuthor]);
+    console.log('Added author:', newAuthor);
+  };
+
+  const handleUpdateAuthor = (authorId, updatedData) => {
+    setAuthors(authors.map(author => 
+      author.id === authorId ? { ...author, ...updatedData } : author
+    ));
+    console.log('Updated author:', authorId, updatedData);
+  };
+
+  const handleDeleteAuthor = (authorId) => {
+    setAuthors(authors.filter(author => author.id !== authorId));
+    console.log('Deleted author with id:', authorId);
   };
 
   return {
@@ -58,6 +75,9 @@ export const useAuthorsManagement = () => {
     toggleSidebar,
     authors,
     recentBooks,
-    handleLogout
+    handleLogout,
+    handleAddAuthor,
+    handleUpdateAuthor,
+    handleDeleteAuthor
   };
 };

@@ -22,8 +22,20 @@ const BooksManagementContent = (props) => {
         </div>
 
         <div className="row">
-          <BooksListSection books={props.books} />
-          <CategoriesSection categories={props.categories} />
+          <BooksListSection 
+            books={props.books} 
+            categories={props.categories}
+            onAddBook={props.handleAddBook}
+            onUpdateBook={props.handleUpdateBook}
+            onDeleteBook={props.handleDeleteBook}
+            onToggleBookVisibility={props.handleToggleBookVisibility}
+          />
+          <CategoriesSection 
+            categories={props.categories}
+            onAddCategory={props.handleAddCategory}
+            onUpdateCategory={props.handleUpdateCategory}
+            onDeleteCategory={props.handleDeleteCategory}
+          />
         </div>
       </div>
     </div>

@@ -1,13 +1,35 @@
 
-import React from 'react';
+import React, { useState } from 'react';
+import AddBookDialog from '../dialogs/AddBookDialog';
+import EditBookDialog from '../dialogs/EditBookDialog';
+import { Edit, Trash2, EyeOff } from 'lucide-react';
 
-const BooksListSection = ({ books }) => {
+const BooksListSection = ({ books, categories, onAddBook, onUpdateBook, onDeleteBook, onToggleBookVisibility }) => {
+  const [editingBook, setEditingBook] = useState(null);
+  const [showEditDialog, setShowEditDialog] = useState(false);
+
+  const handleEditBook = (book) => {
+    setEditingBook(book);
+    setShowEditDialog(true);
+  };
+
+  const handleDeleteBook = (bookId) => {
+    if (window.confirm('Bạn có chắc chắn muốn xóa sách này?')) {
+      onDeleteBook(bookId);
+    }
+  };
+
+  const handleToggleVisibility = (book) => {
+    const newStatus = book.status === 'hidden' ? 'available' : 'hidden';
+    onToggleBookVisibility(book.id, newStatus);
+  };
+
   return (
     <div className="col-lg-8 mb-4">
       <div className="section-card">
-        <div className="section-title">
+        <div className="section-title d-flex justify-content-between align-items-center">
           <span>Danh Sách Sách</span>
-          <a href="#" className="view-all-link">Thêm Sách Mới ›</a>
+          <AddBookDialog onAddBook={onAddBook} categories={categories} />
         </div>
         
         <div className="table-responsive">
@@ -32,13 +54,38 @@ const BooksListSection = ({ books }) => {
                   <td>{book.category}</td>
                   <td>{book.available}/{book.quantity}</td>
                   <td>
-                    <span className={book.status === 'available' ? 'text-success' : 'status-pending'}>
-                      {book.status === 'available' ? 'Có sẵn' : 'Hết sách'}
+                    <span className={
+                      book.status === 'available' ? 'text-success' : 
+                      book.status === 'hidden' ? 'text-warning' : 'text-danger'
+                    }>
+                      {book.status === 'available' ? 'Có sẵn' : 
+                       book.status === 'hidden' ? 'Đã ẩn' : 'Hết sách'}
                     </span>
                   </td>
                   <td>
-                    <button className="btn btn-sm btn-outline-primary me-1">Sửa</button>
-                    <button className="btn btn-sm btn-outline-danger">Xóa</button>
+                    <div className="d-flex gap-1">
+                      <button 
+                        className="btn btn-sm btn-outline-primary"
+                        onClick={() => handleEditBook(book)}
+                        title="Sửa"
+                      >
+                        <Edit size={14} />
+                      </button>
+                      <button 
+                        className="btn btn-sm btn-outline-warning"
+                        onClick={() => handleToggleVisibility(book)}
+                        title={book.status === 'hidden' ? 'Hiện sách' : 'Ẩn sách'}
+                      >
+                        <EyeOff size={14} />
+                      </button>
+                      <button 
+                        className="btn btn-sm btn-outline-danger"
+                        onClick={() => handleDeleteBook(book.id)}
+                        title="Xóa"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -46,6 +93,19 @@ const BooksListSection = ({ books }) => {
           </table>
         </div>
       </div>
+
+      {editingBook && (
+        <EditBookDialog
+          book={editingBook}
+          open={showEditDialog}
+          onClose={() => {
+            setShowEditDialog(false);
+            setEditingBook(null);
+          }}
+          onUpdateBook={onUpdateBook}
+          categories={categories}
+        />
+      )}
     </div>
   );
 };

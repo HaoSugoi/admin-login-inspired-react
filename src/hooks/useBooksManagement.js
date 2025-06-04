@@ -6,7 +6,7 @@ export const useBooksManagement = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   
   // Mock data for books management
-  const [books] = useState([
+  const [books, setBooks] = useState([
     {
       id: 1,
       title: "Những Ngày Thơ Bé",
@@ -17,7 +17,10 @@ export const useBooksManagement = () => {
       publishYear: 2020,
       quantity: 50,
       available: 35,
-      status: "available"
+      status: "available",
+      type: "both",
+      price: 150000,
+      rentPrice: 5000
     },
     {
       id: 2,
@@ -29,7 +32,10 @@ export const useBooksManagement = () => {
       publishYear: 2018,
       quantity: 30,
       available: 20,
-      status: "available"
+      status: "available",
+      type: "both",
+      price: 120000,
+      rentPrice: 4000
     },
     {
       id: 3,
@@ -41,11 +47,14 @@ export const useBooksManagement = () => {
       publishYear: 2019,
       quantity: 25,
       available: 15,
-      status: "available"
+      status: "available",
+      type: "both",
+      price: 130000,
+      rentPrice: 4500
     }
   ]);
 
-  const [categories] = useState([
+  const [categories, setCategories] = useState([
     { id: 1, name: "Tiểu thuyết", count: 45 },
     { id: 2, name: "Khoa học", count: 30 },
     { id: 3, name: "Lịch sử", count: 25 },
@@ -58,7 +67,49 @@ export const useBooksManagement = () => {
 
   const handleLogout = () => {
     console.log('Logging out...');
-    // Add logout logic here
+  };
+
+  // Book management functions
+  const handleAddBook = (newBook) => {
+    setBooks([...books, newBook]);
+    console.log('Added book:', newBook);
+  };
+
+  const handleUpdateBook = (updatedBook) => {
+    setBooks(books.map(book => 
+      book.id === updatedBook.id ? updatedBook : book
+    ));
+    console.log('Updated book:', updatedBook);
+  };
+
+  const handleDeleteBook = (bookId) => {
+    setBooks(books.filter(book => book.id !== bookId));
+    console.log('Deleted book with id:', bookId);
+  };
+
+  const handleToggleBookVisibility = (bookId, newStatus) => {
+    setBooks(books.map(book => 
+      book.id === bookId ? { ...book, status: newStatus } : book
+    ));
+    console.log('Toggled book visibility:', bookId, newStatus);
+  };
+
+  // Category management functions
+  const handleAddCategory = (newCategory) => {
+    setCategories([...categories, newCategory]);
+    console.log('Added category:', newCategory);
+  };
+
+  const handleUpdateCategory = (categoryId, updatedData) => {
+    setCategories(categories.map(category => 
+      category.id === categoryId ? { ...category, ...updatedData } : category
+    ));
+    console.log('Updated category:', categoryId, updatedData);
+  };
+
+  const handleDeleteCategory = (categoryId) => {
+    setCategories(categories.filter(category => category.id !== categoryId));
+    console.log('Deleted category with id:', categoryId);
   };
 
   return {
@@ -68,6 +119,13 @@ export const useBooksManagement = () => {
     toggleSidebar,
     books,
     categories,
-    handleLogout
+    handleLogout,
+    handleAddBook,
+    handleUpdateBook,
+    handleDeleteBook,
+    handleToggleBookVisibility,
+    handleAddCategory,
+    handleUpdateCategory,
+    handleDeleteCategory
   };
 };

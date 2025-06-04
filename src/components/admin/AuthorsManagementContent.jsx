@@ -22,7 +22,12 @@ const AuthorsManagementContent = (props) => {
         </div>
 
         <div className="row">
-          <AuthorsListSection authors={props.authors} />
+          <AuthorsListSection 
+            authors={props.authors}
+            onAddAuthor={props.handleAddAuthor}
+            onUpdateAuthor={props.handleUpdateAuthor}
+            onDeleteAuthor={props.handleDeleteAuthor}
+          />
           <AuthorBooksSection recentBooks={props.recentBooks} />
         </div>
       </div>
