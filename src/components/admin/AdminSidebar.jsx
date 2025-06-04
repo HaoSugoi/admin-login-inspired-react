@@ -1,6 +1,7 @@
 
 import React from 'react';
-import { Bell, Search, LogOut, Book, ShoppingCart, Users, FileText, BarChart3, Settings, Home } from 'lucide-react';
+import { Bell, Search, LogOut, Book, ShoppingCart, Users, FileText, BarChart3, Settings, Home, User } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const AdminSidebar = ({ 
   activeSection, 
@@ -8,17 +9,25 @@ const AdminSidebar = ({
   sidebarCollapsed, 
   handleLogout 
 }) => {
+  const navigate = useNavigate();
+
   const menuItems = [
-    { id: 'dashboard', icon: Home, label: 'Trang Chủ' },
-    { id: 'users', icon: Users, label: 'Quản Lý Người Dùng' },
-    { id: 'books', icon: Book, label: 'Quản Lý Sách' },
-    { id: 'rental', icon: FileText, label: 'Quản Lý Sách Thuê' },
-    { id: 'orders', icon: ShoppingCart, label: 'Quản Lý Đơn Hàng' },
-    { id: 'shipping', icon: FileText, label: 'Quản Lý Vận chuyển' },
-    { id: 'reports', icon: BarChart3, label: 'Quản Lý Danh Mục' },
-    { id: 'stats', icon: FileText, label: 'Báo Cáo Thống Kê' },
-    { id: 'roles', icon: Settings, label: 'ROLE' }
+    { id: 'dashboard', icon: Home, label: 'Trang Chủ', path: '/admin' },
+    { id: 'users', icon: Users, label: 'Quản Lý Người Dùng', path: '/admin/users' },
+    { id: 'books', icon: Book, label: 'Quản Lý Sách', path: '/admin/books' },
+    { id: 'rental', icon: FileText, label: 'Quản Lý Sách Thuê', path: '/admin/rental' },
+    { id: 'authors', icon: User, label: 'Quản Lý Tác Giả', path: '/admin/authors' },
+    { id: 'orders', icon: ShoppingCart, label: 'Quản Lý Đơn Hàng', path: '/admin/orders' },
+    { id: 'shipping', icon: FileText, label: 'Quản Lý Vận chuyển', path: '/admin/shipping' },
+    { id: 'reports', icon: BarChart3, label: 'Quản Lý Danh Mục', path: '/admin/reports' },
+    { id: 'stats', icon: FileText, label: 'Báo Cáo Thống Kê', path: '/admin/stats' },
+    { id: 'roles', icon: Settings, label: 'ROLE', path: '/admin/roles' }
   ];
+
+  const handleNavigation = (item) => {
+    setActiveSection(item.id);
+    navigate(item.path);
+  };
 
   return (
     <div className={`col-md-3 col-lg-2 sidebar ${sidebarCollapsed ? 'collapsed' : ''}`}>
@@ -36,7 +45,7 @@ const AdminSidebar = ({
           <div key={item.id} className="nav-item">
             <button
               className={`nav-link ${activeSection === item.id ? 'active' : ''}`}
-              onClick={() => setActiveSection(item.id)}
+              onClick={() => handleNavigation(item)}
             >
               <item.icon size={18} />
               {item.label}
