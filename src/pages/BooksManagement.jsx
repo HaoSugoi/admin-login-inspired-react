@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { useBooksManagement } from '../hooks/useBooksManagement';
+import { useBooksManagement } from '../hooks/useBooksManagement.jsx';
 import AdminSidebar from '../components/admin/AdminSidebar';
 import BooksManagementContent from '../components/admin/BooksManagementContent';
 import '../styles/AdminIndex.css';
