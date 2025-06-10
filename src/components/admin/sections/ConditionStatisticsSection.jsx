@@ -31,7 +31,7 @@ const ConditionStatisticsSection = ({ conditionStats }) => {
           <div className="col-md-3 mb-3">
             <div className="text-center p-3 border rounded">
               <h4 className="text-danger">{conditionStats.poor}</h4>
-              <p className="mb-0">Tình Trạng Kém (<50%)</p>
+              <p className="mb-0">Tình Trạng Kém (&lt;50%)</p>
             </div>
           </div>
         </div>
