@@ -4,6 +4,8 @@ import AdminTopbar from './AdminTopbar';
 import RentalListSection from './sections/RentalListSection';
 import RentalStatisticsSection from './sections/RentalStatisticsSection';
 import OverdueSection from './sections/OverdueSection';
+import BookConditionSection from './sections/BookConditionSection';
+import ConditionStatisticsSection from './sections/ConditionStatisticsSection';
 
 const RentalManagementContent = (props) => {
   return (
@@ -24,6 +26,19 @@ const RentalManagementContent = (props) => {
         <div className="row">
           <RentalListSection rentals={props.rentals} />
           <OverdueSection rentals={props.rentals} />
+        </div>
+
+        <div className="row">
+          <ConditionStatisticsSection conditionStats={props.conditionStats} />
+        </div>
+
+        <div className="row">
+          <BookConditionSection 
+            bookConditions={props.bookConditions}
+            onAddCondition={props.addBookCondition}
+            onUpdateCondition={props.updateBookCondition}
+            onDeleteCondition={props.deleteBookCondition}
+          />
         </div>
       </div>
     </div>
