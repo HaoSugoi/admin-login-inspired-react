@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { useAdminIndex } from '../hooks/useAdminIndex';
+import { useAdminIndex } from '../hooks/useAdminIndex.jsx';
 import AdminSidebar from '../components/admin/AdminSidebar';
 import AdminTopbar from '../components/admin/AdminTopbar';
 import AdminDashboardContent from '../components/admin/AdminDashboardContent';
