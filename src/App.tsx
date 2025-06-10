@@ -15,6 +15,7 @@ import ShippingManagement from "./pages/ShippingManagement";
 import ReportsManagement from "./pages/ReportsManagement";
 import StatsManagement from "./pages/StatsManagement";
 import RolesManagement from "./pages/RolesManagement";
+import PromotionsManagement from "./pages/PromotionsManagement";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -33,6 +34,7 @@ const App = () => (
           <Route path="/admin/rental" element={<RentalManagement />} />
           <Route path="/admin/authors" element={<AuthorsManagement />} />
           <Route path="/admin/orders" element={<OrdersManagement />} />
+          <Route path="/admin/promotions" element={<PromotionsManagement />} />
           <Route path="/admin/shipping" element={<ShippingManagement />} />
           <Route path="/admin/reports" element={<ReportsManagement />} />
           <Route path="/admin/stats" element={<StatsManagement />} />
