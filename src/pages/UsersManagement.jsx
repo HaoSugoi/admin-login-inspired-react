@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { useUsersManagement } from '../hooks/useUsersManagement';
+import { useUsersManagement } from '../hooks/useUsersManagement.jsx';
 import AdminSidebar from '../components/admin/AdminSidebar';
 import UsersManagementContent from '../components/admin/UsersManagementContent';
 import '../styles/AdminIndex.css';
