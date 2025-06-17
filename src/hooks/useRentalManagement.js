@@ -1,53 +1,33 @@
 
 import { useState } from 'react';
+import { useRentalApi } from './useRentalApi';
 
 export const useRentalManagement = () => {
   const [activeSection, setActiveSection] = useState('rental');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   
-  // Mock data for rental management
-  const [rentals] = useState([
-    {
-      id: 1,
-      bookTitle: "Những Ngày Thơ Bé",
-      readerName: "Nguyễn Văn A",
-      readerId: "DG001",
-      rentDate: "01/12/2024",
-      dueDate: "15/12/2024",
-      returnDate: null,
-      status: "Đang thuê",
-      fine: 0
-    },
-    {
-      id: 2,
-      bookTitle: "Tôi Thấy Hoa Vàng Trên Cỏ Xanh",
-      readerName: "Trần Thị B",
-      readerId: "DG002",
-      rentDate: "28/11/2024",
-      dueDate: "12/12/2024",
-      returnDate: null,
-      status: "Quá hạn",
-      fine: 5000
-    },
-    {
-      id: 3,
-      bookTitle: "Cho Tôi Xin Một Vé Đi Tuổi Thơ",
-      readerName: "Lê Văn C",
-      readerId: "DG003",
-      rentDate: "20/11/2024",
-      dueDate: "04/12/2024",
-      returnDate: "03/12/2024",
-      status: "Đã trả",
-      fine: 0
-    }
-  ]);
+  // Sử dụng API hook
+  const {
+    rentals,
+    isLoadingRentals,
+    rentalsError,
+    createRental,
+    updateRental,
+    deleteRental,
+    approveRental,
+    markAsDelivered,
+    markAsReturned,
+    markAsDamaged,
+    refetchRentals
+  } = useRentalApi();
 
-  const [statistics] = useState({
-    totalRentals: 156,
-    activeRentals: 45,
-    overdueRentals: 8,
-    totalFines: 125000
-  });
+  // Tính toán thống kê từ data API
+  const statistics = {
+    totalRentals: rentals.length,
+    activeRentals: rentals.filter(r => r.status === 'Đang thuê' || r.status === 'Đã giao').length,
+    overdueRentals: rentals.filter(r => r.status === 'Quá hạn').length,
+    totalFines: rentals.reduce((sum, r) => sum + (r.fine || 0), 0)
+  };
 
   const toggleSidebar = () => {
     setSidebarCollapsed(!sidebarCollapsed);
@@ -55,7 +35,37 @@ export const useRentalManagement = () => {
 
   const handleLogout = () => {
     console.log('Logging out...');
-    // Add logout logic here
+  };
+
+  // Wrapper functions để xử lý API calls
+  const handleApproveRental = (rentalId) => {
+    approveRental(rentalId);
+  };
+
+  const handleMarkDelivered = (rentalId) => {
+    markAsDelivered(rentalId);
+  };
+
+  const handleMarkReturned = (rentalId) => {
+    markAsReturned(rentalId);
+  };
+
+  const handleMarkDamaged = (rentalId, notes) => {
+    markAsDamaged({ id: rentalId, notes });
+  };
+
+  const handleCreateRental = (rentalData) => {
+    createRental(rentalData);
+  };
+
+  const handleUpdateRental = (rentalId, rentalData) => {
+    updateRental({ id: rentalId, data: rentalData });
+  };
+
+  const handleDeleteRental = (rentalId) => {
+    if (window.confirm('Bạn có chắc chắn muốn xóa đơn thuê này?')) {
+      deleteRental(rentalId);
+    }
   };
 
   return {
@@ -63,8 +73,19 @@ export const useRentalManagement = () => {
     setActiveSection,
     sidebarCollapsed,
     toggleSidebar,
-    rentals,
+    rentals: rentals || [],
     statistics,
-    handleLogout
+    isLoadingRentals,
+    rentalsError,
+    handleLogout,
+    // API functions
+    handleApproveRental,
+    handleMarkDelivered,
+    handleMarkReturned,
+    handleMarkDamaged,
+    handleCreateRental,
+    handleUpdateRental,
+    handleDeleteRental,
+    refetchRentals
   };
 };
