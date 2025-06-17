@@ -56,7 +56,7 @@ const AdminLogin = () => {
               </div>
             </div>
           </div>
-          <h2 className="brand-title">Có & Lá</h2>
+          <h2 className="brand-title">Hexaclove</h2>
         </div>
 
         {/* Login Form */}
