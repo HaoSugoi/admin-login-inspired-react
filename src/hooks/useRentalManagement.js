@@ -21,12 +21,14 @@ export const useRentalManagement = () => {
     refetchRentals
   } = useRentalApi();
 
-  // Tính toán thống kê từ data API
+  // Xử lý dữ liệu từ API và tính toán thống kê
+  const safeRentals = rentals || [];
+  
   const statistics = {
-    totalRentals: rentals.length,
-    activeRentals: rentals.filter(r => r.status === 'Đang thuê' || r.status === 'Đã giao').length,
-    overdueRentals: rentals.filter(r => r.status === 'Quá hạn').length,
-    totalFines: rentals.reduce((sum, r) => sum + (r.fine || 0), 0)
+    totalRentals: safeRentals.length,
+    activeRentals: safeRentals.filter(r => r.status === 'Rented').length,
+    overdueRentals: safeRentals.filter(r => r.status === 'Overdue').length,
+    totalFines: 0 // API chưa có thông tin phạt, tạm thời để 0
   };
 
   const toggleSidebar = () => {
@@ -39,31 +41,38 @@ export const useRentalManagement = () => {
 
   // Wrapper functions để xử lý API calls
   const handleApproveRental = (rentalId) => {
+    console.log('Approving rental:', rentalId);
     approveRental(rentalId);
   };
 
   const handleMarkDelivered = (rentalId) => {
+    console.log('Marking as delivered:', rentalId);
     markAsDelivered(rentalId);
   };
 
   const handleMarkReturned = (rentalId) => {
+    console.log('Marking as returned:', rentalId);
     markAsReturned(rentalId);
   };
 
   const handleMarkDamaged = (rentalId, notes) => {
+    console.log('Marking as damaged:', rentalId, notes);
     markAsDamaged({ id: rentalId, notes });
   };
 
   const handleCreateRental = (rentalData) => {
+    console.log('Creating rental:', rentalData);
     createRental(rentalData);
   };
 
   const handleUpdateRental = (rentalId, rentalData) => {
+    console.log('Updating rental:', rentalId, rentalData);
     updateRental({ id: rentalId, data: rentalData });
   };
 
   const handleDeleteRental = (rentalId) => {
     if (window.confirm('Bạn có chắc chắn muốn xóa đơn thuê này?')) {
+      console.log('Deleting rental:', rentalId);
       deleteRental(rentalId);
     }
   };
@@ -73,7 +82,7 @@ export const useRentalManagement = () => {
     setActiveSection,
     sidebarCollapsed,
     toggleSidebar,
-    rentals: rentals || [],
+    rentals: safeRentals,
     statistics,
     isLoadingRentals,
     rentalsError,
