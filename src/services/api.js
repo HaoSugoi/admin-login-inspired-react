@@ -1,8 +1,8 @@
 
 import axios from 'axios';
 
-// Cấu hình base URL cho API
-const API_BASE_URL = 'https://localhost:7003/api';
+// Sử dụng proxy thay vì direct URL để tránh CORS
+const API_BASE_URL = '/api';
 
 // Tạo instance axios với cấu hình mặc định
 const apiClient = axios.create({
