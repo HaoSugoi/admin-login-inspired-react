@@ -43,8 +43,8 @@ const RentalListSection = ({ rentals }) => {
                     </span>
                   </td>
                   <td>
-                    <span className={rental.IsHidden ? 'text-warning' : 'text-success'}>
-                      {rental.IsHidden ? 'Ẩn' : 'Hiển thị'}
+                    <span className={rental.IsHidden ? 'text-success':'text-warning'}>
+                      {rental.IsHidden ? 'Hiển thị' : 'Ẩn'}
                     </span>
                   </td>
                   <td>
