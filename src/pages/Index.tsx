@@ -1,5 +1,5 @@
 
-import AdminLogin from '@/components/AdminLogin';
+import AdminLogin from '../components/AdminLogin.jsx';
 
 const Index = () => {
   return <AdminLogin />;
