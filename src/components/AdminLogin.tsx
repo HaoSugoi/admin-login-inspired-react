@@ -20,9 +20,9 @@ const AdminLogin = () => {
     try {
       await login({ email, password });
       toast.success('Đăng nhập thành công!');
-      navigate('/admin'); // Chuyển hướng đến trang admin
-    } catch (error: any) {
-      const errorMessage = error?.message || 'Đăng nhập thất bại';
+      navigate('/admin');
+    } catch (error) {
+      const errorMessage = (error as Error)?.message || 'Đăng nhập thất bại';
       toast.error(errorMessage);
       console.error('Login failed:', error);
     }
