@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
+import { toast } from 'sonner';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const AdminLogin = () => {
@@ -7,11 +10,22 @@ const AdminLogin = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [keepSignedIn, setKeepSignedIn] = useState(false);
+  
+  const navigate = useNavigate();
+  const { login, isLoggingIn, loginError } = useAuth();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Login attempt:', { email, password, keepSignedIn });
-    // Handle login logic here
+    
+    try {
+      await login({ email, password });
+      toast.success('Đăng nhập thành công!');
+      navigate('/admin'); // Chuyển hướng đến trang admin
+    } catch (error: any) {
+      const errorMessage = error?.message || 'Đăng nhập thất bại';
+      toast.error(errorMessage);
+      console.error('Login failed:', error);
+    }
   };
 
   return (
@@ -157,6 +171,7 @@ const AdminLogin = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="johndoe@email.com"
                 required
+                disabled={isLoggingIn}
                 style={{ 
                   borderColor: '#bbf7d0',
                   borderWidth: '2px'
@@ -178,6 +193,7 @@ const AdminLogin = () => {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••••••"
                   required
+                  disabled={isLoggingIn}
                   style={{ 
                     borderColor: '#bbf7d0',
                     borderWidth: '2px'
@@ -187,6 +203,7 @@ const AdminLogin = () => {
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="btn position-absolute"
+                  disabled={isLoggingIn}
                   style={{ 
                     right: '8px', 
                     top: '50%', 
@@ -210,6 +227,7 @@ const AdminLogin = () => {
                 id="keep-signed-in"
                 checked={keepSignedIn}
                 onChange={(e) => setKeepSignedIn(e.target.checked)}
+                disabled={isLoggingIn}
                 style={{ borderColor: '#86efac' }}
               />
               <label className="form-check-label text-secondary" htmlFor="keep-signed-in">
@@ -217,16 +235,31 @@ const AdminLogin = () => {
               </label>
             </div>
 
+            {/* Error message */}
+            {loginError && (
+              <div className="alert alert-danger mb-3" role="alert">
+                {loginError.message || 'Đăng nhập thất bại'}
+              </div>
+            )}
+
             {/* Login Button */}
             <button
               type="submit"
               className="btn btn-success w-100 py-2"
+              disabled={isLoggingIn}
               style={{ 
                 backgroundColor: '#059669',
                 borderColor: '#059669'
               }}
             >
-              Login
+              {isLoggingIn ? (
+                <>
+                  <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                  Đang đăng nhập...
+                </>
+              ) : (
+                'Login'
+              )}
             </button>
           </form>
         </div>
