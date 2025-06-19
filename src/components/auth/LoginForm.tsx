@@ -17,10 +17,30 @@ const LoginForm = () => {
     e.preventDefault();
     
     try {
-      await login({ email, password });
-      toast.success('Đăng nhập thành công!');
-      navigate('/admin');
+      // Gọi login và chờ kết quả
+      const result = await login({ email, password });
+      
+      // Chỉ chuyển trang khi đăng nhập thành công (API trả về 200 và có token)
+      if (result?.isSuccess) {
+        toast.success('Đăng nhập thành công!');
+        
+        // TODO: Xử lý phân quyền role ở đây
+        // - Kiểm tra role của user từ token payload
+        // - Chuyển hướng dựa trên role:
+        //   + Admin: /admin
+        //   + Manager: /manager  
+        //   + User: /dashboard
+        // - Hiện tại mặc định chuyển về /admin
+        // - Có thể lấy role từ: tokenUtils.getTokenPayload(token).role
+        
+        navigate('/admin');
+      } else {
+        // Trường hợp API trả về nhưng không thành công
+        const errorMessage = result?.message || 'Đăng nhập thất bại';
+        toast.error(errorMessage);
+      }
     } catch (error) {
+      // Xử lý các lỗi từ API (400, 401, 500, ...)
       const errorMessage = (error as Error)?.message || 'Đăng nhập thất bại';
       toast.error(errorMessage);
       console.error('Login failed:', error);

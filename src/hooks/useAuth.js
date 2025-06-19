@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { authService } from '../services/authService';
@@ -108,9 +107,18 @@ export const useAuth = () => {
     }
   });
 
-  // Xử lý đăng nhập
+  // Xử lý đăng nhập - trả về Promise để component có thể chờ kết quả
   const login = (credentials) => {
-    return loginMutation.mutate(credentials);
+    return new Promise((resolve, reject) => {
+      loginMutation.mutate(credentials, {
+        onSuccess: (data) => {
+          resolve(data);
+        },
+        onError: (error) => {
+          reject(error);
+        }
+      });
+    });
   };
 
   // Xử lý làm mới token
