@@ -11,6 +11,8 @@ export const authService = {
       });
       
       console.log('Login response:', response.data);
+      console.log('Response headers:', response.headers);
+      console.log('Response cookies:', document.cookie);
       
       // Kiểm tra status code và xử lý response
       if (response.status === 200) {

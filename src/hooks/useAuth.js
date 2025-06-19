@@ -38,7 +38,15 @@ export const useAuth = () => {
     mutationFn: authService.login,
     onSuccess: (data) => {
       if (data.isSuccess) {
+        // Lưu access token vào localStorage
         tokenUtils.setAccessToken(data.token);
+        
+        // Nếu API trả về refreshToken, lưu vào cookie
+        if (data.refreshToken) {
+          // Lưu refresh token vào cookie với thời hạn 7 ngày
+          document.cookie = `refreshToken=${data.refreshToken}; max-age=${7 * 24 * 60 * 60}; path=/; secure; samesite=strict`;
+        }
+        
         setIsAuthenticated(true);
         
         const userInfo = tokenUtils.getTokenPayload(data.token);
@@ -63,7 +71,14 @@ export const useAuth = () => {
       authService.refreshToken(accessToken, refreshToken),
     onSuccess: (data) => {
       if (data.isSuccess) {
+        // Lưu access token mới
         tokenUtils.setAccessToken(data.token);
+        
+        // Nếu có refresh token mới, cập nhật cookie
+        if (data.refreshToken) {
+          document.cookie = `refreshToken=${data.refreshToken}; max-age=${7 * 24 * 60 * 60}; path=/; secure; samesite=strict`;
+        }
+        
         setIsAuthenticated(true);
         
         const userInfo = tokenUtils.getTokenPayload(data.token);
