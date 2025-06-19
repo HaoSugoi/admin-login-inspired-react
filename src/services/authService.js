@@ -1,3 +1,4 @@
+
 import apiClient from './api';
 
 // Types cho authentication
@@ -10,24 +11,38 @@ export const authService = {
         password: credentials.password
       });
       
-      console.log('Login response:', response.data);
-      console.log('Response headers:', response.headers);
-      console.log('Response cookies:', document.cookie);
+      console.log('Full login response:', response);
+      console.log('Response status:', response.status);
+      console.log('Response data:', response.data);
+      console.log('Response data type:', typeof response.data);
+      console.log('Response data keys:', Object.keys(response.data || {}));
       
       // Kiểm tra status code và xử lý response
       if (response.status === 200) {
         const data = response.data;
         
-        // Kiểm tra có token trong response không
-        if (data.token) {
+        // Log để debug cấu trúc data
+        console.log('Checking for token in response...');
+        console.log('data.token:', data.token);
+        console.log('data.accessToken:', data.accessToken);
+        console.log('data.access_token:', data.access_token);
+        console.log('data.Token:', data.Token);
+        
+        // Thử nhiều cách đặt tên token khác nhau
+        const token = data.token || data.accessToken || data.access_token || data.Token;
+        const refreshToken = data.refreshToken || data.refresh_token || data.RefreshToken;
+        
+        if (token) {
           return {
             isSuccess: true,
-            token: data.token,
+            token: token,
+            refreshToken: refreshToken,
             message: data.message || 'Đăng nhập thành công',
             user: data.user || null
           };
         } else {
-          // Trường hợp 200 nhưng không có token
+          // Log toàn bộ data để debug
+          console.error('No token found in response. Full data:', JSON.stringify(data, null, 2));
           throw new Error(data.message || 'Đăng nhập thất bại - không nhận được token');
         }
       } else {
@@ -42,6 +57,9 @@ export const authService = {
       if (error.response) {
         const status = error.response.status;
         const errorData = error.response.data;
+        
+        console.log('Error response status:', status);
+        console.log('Error response data:', errorData);
         
         switch (status) {
           case 400:
