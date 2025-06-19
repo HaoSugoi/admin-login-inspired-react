@@ -14,9 +14,9 @@ export const cookieUtils = {
     document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
   },
 
-  // Kiểm tra có refresh token không
+  // Kiểm tra có  token không
   hasRefreshToken: () => {
-    return !!cookieUtils.getCookie('refreshToken');
+    return !!cookieUtils.getCookie('Token');
   }
 };
 

@@ -46,7 +46,7 @@ apiClient.interceptors.response.use(
       originalRequest._retry = true;
       
       const refreshToken = cookieUtils.getCookie('refreshToken');
-      const accessToken = tokenUtils.getAccessToken();
+      const accessToken = tokenUtils.getAccessToken('Token');
       
       if (refreshToken && accessToken) {
         try {
