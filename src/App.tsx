@@ -10,8 +10,8 @@ import BooksManagement from "./pages/BooksManagement";
 import RentalManagement from "./pages/RentalManagement";
 import AuthorsManagement from "./pages/AuthorsManagement";
 import OrdersManagement from "./pages/OrdersManagement";
-import UsersManagement from "./pages/UsersManagement";
-import ShippingManagement from "./pages/ShippingManagement";
+import CustomersManagement from "./pages/CustomersManagement";
+import EmployeesManagement from "./pages/EmployeesManagement";
 import ReportsManagement from "./pages/ReportsManagement";
 import StatsManagement from "./pages/StatsManagement";
 import RolesManagement from "./pages/RolesManagement";
@@ -29,13 +29,13 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/admin" element={<AdminDashboard />} />
-          <Route path="/admin/users" element={<UsersManagement />} />
+          <Route path="/admin/customers" element={<CustomersManagement />} />
+          <Route path="/admin/employees" element={<EmployeesManagement />} />
           <Route path="/admin/books" element={<BooksManagement />} />
           <Route path="/admin/rental" element={<RentalManagement />} />
           <Route path="/admin/authors" element={<AuthorsManagement />} />
           <Route path="/admin/orders" element={<OrdersManagement />} />
           <Route path="/admin/promotions" element={<PromotionsManagement />} />
-          <Route path="/admin/shipping" element={<ShippingManagement />} />
           <Route path="/admin/reports" element={<ReportsManagement />} />
           <Route path="/admin/stats" element={<StatsManagement />} />
           <Route path="/admin/roles" element={<RolesManagement />} />

@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Bell, Search, LogOut, Book, ShoppingCart, Users, FileText, BarChart3, Settings, Home, User, Percent } from 'lucide-react';
+import { Bell, Search, LogOut, Book, ShoppingCart, Users, FileText, BarChart3, Settings, Home, User, Percent, UserCheck } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const AdminSidebar = ({ 
@@ -13,13 +13,13 @@ const AdminSidebar = ({
 
   const menuItems = [
     { id: 'dashboard', icon: Home, label: 'Trang Chủ', path: '/admin' },
-    { id: 'users', icon: Users, label: 'Quản Lý Người Dùng', path: '/admin/users' },
+    { id: 'customers', icon: Users, label: 'Quản Lý Khách Hàng', path: '/admin/customers' },
+    { id: 'employees', icon: UserCheck, label: 'Quản Lý Nhân Viên', path: '/admin/employees' },
     { id: 'books', icon: Book, label: 'Quản Lý Sách', path: '/admin/books' },
     { id: 'rental', icon: FileText, label: 'Quản Lý Sách Thuê', path: '/admin/rental' },
     { id: 'authors', icon: User, label: 'Quản Lý Tác Giả', path: '/admin/authors' },
     { id: 'orders', icon: ShoppingCart, label: 'Quản Lý Đơn Hàng', path: '/admin/orders' },
     { id: 'promotions', icon: Percent, label: 'Quản Lý Khuyến Mãi', path: '/admin/promotions' },
-    { id: 'shipping', icon: FileText, label: 'Quản Lý Vận chuyển', path: '/admin/shipping' },
     { id: 'reports', icon: BarChart3, label: 'Quản Lý Danh Mục', path: '/admin/reports' },
     { id: 'stats', icon: FileText, label: 'Báo Cáo Thống Kê', path: '/admin/stats' },
     { id: 'roles', icon: Settings, label: 'ROLE', path: '/admin/roles' }
