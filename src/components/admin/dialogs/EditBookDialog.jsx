@@ -9,12 +9,9 @@ import {
 import { Button } from "../../ui/button";
 import { Input } from "../../ui/input";
 import { Label } from "../../ui/label";
-import { Checkbox } from "../../ui/checkbox";
-import { Calendar } from "../../ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
-import { CalendarIcon } from 'lucide-react';
-import { format } from 'date-fns';
-import { cn } from '../../../lib/utils';
+import BookBasicInfoForm from './book-forms/BookBasicInfoForm';
+import BookTypeAndPriceForm from './book-forms/BookTypeAndPriceForm';
+import BookDatePickerForm from './book-forms/BookDatePickerForm';
 
 const EditBookDialog = ({ book, open, onClose, onUpdateBook, categories }) => {
   const [publishDate, setPublishDate] = useState();
@@ -107,84 +104,16 @@ const EditBookDialog = ({ book, open, onClose, onUpdateBook, categories }) => {
           <DialogTitle className="text-center">Cập Nhật Thông Tin Sách</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4 max-h-96 overflow-y-auto">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="title">Tên Sách</Label>
-              <Input
-                id="title"
-                name="title"
-                value={formData.title}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-            <div>
-              <Label htmlFor="author">Tác Giả</Label>
-              <Input
-                id="author"
-                name="author"
-                value={formData.author}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-          </div>
+          <BookBasicInfoForm 
+            formData={formData}
+            handleInputChange={handleInputChange}
+            categories={categories}
+          />
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="category">Thể Loại</Label>
-              <select
-                id="category"
-                name="category"
-                value={formData.category}
-                onChange={handleInputChange}
-                className="form-select w-full"
-                required
-              >
-                <option value="">Chọn thể loại</option>
-                {categories.map(cat => (
-                  <option key={cat.id} value={cat.name}>{cat.name}</option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <Label htmlFor="publisher">Nhà Xuất Bản</Label>
-              <Input
-                id="publisher"
-                name="publisher"
-                value={formData.publisher}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-          </div>
-
-          <div>
-            <Label>Năm Xuất Bản</Label>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className={cn(
-                    "w-full justify-start text-left font-normal",
-                    !publishDate && "text-muted-foreground"
-                  )}
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {publishDate ? format(publishDate, "yyyy") : <span>Chọn năm xuất bản</span>}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0">
-                <Calendar
-                  mode="single"
-                  selected={publishDate}
-                  onSelect={setPublishDate}
-                  initialFocus
-                  className="pointer-events-auto"
-                />
-              </PopoverContent>
-            </Popover>
-          </div>
+          <BookDatePickerForm 
+            publishDate={publishDate}
+            setPublishDate={setPublishDate}
+          />
 
           <div>
             <Label htmlFor="description">Mô Tả Sách</Label>
@@ -227,54 +156,11 @@ const EditBookDialog = ({ book, open, onClose, onUpdateBook, categories }) => {
             </div>
           </div>
 
-          <div>
-            <Label>Loại Sách</Label>
-            <div className="flex space-x-4 mt-2">
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="sale-edit"
-                  checked={formData.type.sale}
-                  onCheckedChange={(checked) => handleTypeChange('sale', checked)}
-                />
-                <Label htmlFor="sale-edit">Bán</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="rent-edit"
-                  checked={formData.type.rent}
-                  onCheckedChange={(checked) => handleTypeChange('rent', checked)}
-                />
-                <Label htmlFor="rent-edit">Thuê</Label>
-              </div>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            {formData.type.sale && (
-              <div>
-                <Label htmlFor="price">Giá Bán</Label>
-                <Input
-                  id="price"
-                  name="price"
-                  type="number"
-                  value={formData.price}
-                  onChange={handleInputChange}
-                />
-              </div>
-            )}
-            {formData.type.rent && (
-              <div>
-                <Label htmlFor="rentPrice">Giá Thuê/Ngày</Label>
-                <Input
-                  id="rentPrice"
-                  name="rentPrice"
-                  type="number"
-                  value={formData.rentPrice}
-                  onChange={handleInputChange}
-                />
-              </div>
-            )}
-          </div>
+          <BookTypeAndPriceForm 
+            formData={formData}
+            handleTypeChange={handleTypeChange}
+            handleInputChange={handleInputChange}
+          />
 
           <div className="flex justify-end space-x-2 pt-4">
             <Button type="button" variant="outline" onClick={onClose}>
