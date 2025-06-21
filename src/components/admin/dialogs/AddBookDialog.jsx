@@ -10,48 +10,73 @@ import {
 import { Button } from "../../ui/button";
 import { Input } from "../../ui/input";
 import { Label } from "../../ui/label";
-import { Plus } from 'lucide-react';
+import { Checkbox } from "../../ui/checkbox";
+import { Calendar } from "../../ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
+import { CalendarIcon, Plus } from 'lucide-react';
+import { format } from 'date-fns';
+import { cn } from '../../../lib/utils';
 
 const AddBookDialog = ({ onAddBook, categories }) => {
   const [open, setOpen] = useState(false);
+  const [publishDate, setPublishDate] = useState();
   const [formData, setFormData] = useState({
     title: '',
     author: '',
-    isbn: '',
     category: '',
     publisher: '',
     publishYear: '',
     quantity: '',
     price: '',
     rentPrice: '',
-    type: 'sale' // sale or rent
+    description: '',
+    type: {
+      sale: false,
+      rent: false
+    }
   });
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    
+    // Xác định type dựa trên checkbox
+    let type = 'sale';
+    if (formData.type.sale && formData.type.rent) {
+      type = 'both';
+    } else if (formData.type.rent) {
+      type = 'rent';
+    }
+
     const newBook = {
       ...formData,
       id: Date.now(),
+      // ISBN tự động tạo (backend sẽ xử lý)
+      isbn: `978-${Date.now().toString().slice(-10)}`,
       quantity: parseInt(formData.quantity),
       available: parseInt(formData.quantity),
-      publishYear: parseInt(formData.publishYear),
-      price: parseFloat(formData.price),
-      rentPrice: parseFloat(formData.rentPrice),
+      publishYear: publishDate ? publishDate.getFullYear() : new Date().getFullYear(),
+      price: parseFloat(formData.price) || 0,
+      rentPrice: parseFloat(formData.rentPrice) || 0,
+      type: type,
       status: 'available'
     };
+    
     onAddBook(newBook);
+    
+    // Reset form
     setFormData({
       title: '',
       author: '',
-      isbn: '',
       category: '',
       publisher: '',
       publishYear: '',
       quantity: '',
       price: '',
       rentPrice: '',
-      type: 'sale'
+      description: '',
+      type: { sale: false, rent: false }
     });
+    setPublishDate(undefined);
     setOpen(false);
   };
 
@@ -59,6 +84,16 @@ const AddBookDialog = ({ onAddBook, categories }) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
+    });
+  };
+
+  const handleTypeChange = (typeKey, checked) => {
+    setFormData({
+      ...formData,
+      type: {
+        ...formData.type,
+        [typeKey]: checked
+      }
     });
   };
 
@@ -70,80 +105,105 @@ const AddBookDialog = ({ onAddBook, categories }) => {
           Thêm Sách Mới
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-lg mx-auto">
         <DialogHeader>
-          <DialogTitle>Thêm Sách Mới</DialogTitle>
+          <DialogTitle className="text-center">Thêm Sách Mới</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4 max-h-96 overflow-y-auto">
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="title">Tên Sách *</Label>
+              <Input
+                id="title"
+                name="title"
+                value={formData.title}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+            <div>
+              <Label htmlFor="author">Tác Giả *</Label>
+              <Input
+                id="author"
+                name="author"
+                value={formData.author}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="category">Thể Loại *</Label>
+              <select
+                id="category"
+                name="category"
+                value={formData.category}
+                onChange={handleInputChange}
+                className="form-select w-full"
+                required
+              >
+                <option value="">Chọn thể loại</option>
+                {categories.map(cat => (
+                  <option key={cat.id} value={cat.name}>{cat.name}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <Label htmlFor="publisher">Nhà Xuất Bản *</Label>
+              <Input
+                id="publisher"
+                name="publisher"
+                value={formData.publisher}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+          </div>
+
           <div>
-            <Label htmlFor="title">Tên Sách</Label>
-            <Input
-              id="title"
-              name="title"
-              value={formData.title}
+            <Label>Năm Xuất Bản *</Label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className={cn(
+                    "w-full justify-start text-left font-normal",
+                    !publishDate && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {publishDate ? format(publishDate, "yyyy") : <span>Chọn năm xuất bản</span>}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0">
+                <Calendar
+                  mode="single"
+                  selected={publishDate}
+                  onSelect={setPublishDate}
+                  initialFocus
+                  className="pointer-events-auto"
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
+
+          <div>
+            <Label htmlFor="description">Mô Tả Sách</Label>
+            <textarea
+              id="description"
+              name="description"
+              rows="3"
+              value={formData.description}
               onChange={handleInputChange}
-              required
+              className="form-control w-full"
+              placeholder="Nhập mô tả về nội dung sách..."
             />
           </div>
+
           <div>
-            <Label htmlFor="author">Tác Giả</Label>
-            <Input
-              id="author"
-              name="author"
-              value={formData.author}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
-          <div>
-            <Label htmlFor="isbn">ISBN</Label>
-            <Input
-              id="isbn"
-              name="isbn"
-              value={formData.isbn}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
-          <div>
-            <Label htmlFor="category">Thể Loại</Label>
-            <select
-              id="category"
-              name="category"
-              value={formData.category}
-              onChange={handleInputChange}
-              className="form-select"
-              required
-            >
-              <option value="">Chọn thể loại</option>
-              {categories.map(cat => (
-                <option key={cat.id} value={cat.name}>{cat.name}</option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <Label htmlFor="publisher">Nhà Xuất Bản</Label>
-            <Input
-              id="publisher"
-              name="publisher"
-              value={formData.publisher}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
-          <div>
-            <Label htmlFor="publishYear">Năm Xuất Bản</Label>
-            <Input
-              id="publishYear"
-              name="publishYear"
-              type="number"
-              value={formData.publishYear}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
-          <div>
-            <Label htmlFor="quantity">Số Lượng</Label>
+            <Label htmlFor="quantity">Số Lượng *</Label>
             <Input
               id="quantity"
               name="quantity"
@@ -153,45 +213,59 @@ const AddBookDialog = ({ onAddBook, categories }) => {
               required
             />
           </div>
+
           <div>
-            <Label htmlFor="type">Loại</Label>
-            <select
-              id="type"
-              name="type"
-              value={formData.type}
-              onChange={handleInputChange}
-              className="form-select"
-            >
-              <option value="sale">Bán</option>
-              <option value="rent">Thuê</option>
-              <option value="both">Cả hai</option>
-            </select>
+            <Label>Loại Sách *</Label>
+            <div className="flex space-x-4 mt-2">
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="sale"
+                  checked={formData.type.sale}
+                  onCheckedChange={(checked) => handleTypeChange('sale', checked)}
+                />
+                <Label htmlFor="sale">Bán</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="rent"
+                  checked={formData.type.rent}
+                  onCheckedChange={(checked) => handleTypeChange('rent', checked)}
+                />
+                <Label htmlFor="rent">Thuê</Label>
+              </div>
+            </div>
           </div>
-          {(formData.type === 'sale' || formData.type === 'both') && (
-            <div>
-              <Label htmlFor="price">Giá Bán</Label>
-              <Input
-                id="price"
-                name="price"
-                type="number"
-                value={formData.price}
-                onChange={handleInputChange}
-              />
-            </div>
-          )}
-          {(formData.type === 'rent' || formData.type === 'both') && (
-            <div>
-              <Label htmlFor="rentPrice">Giá Thuê/Ngày</Label>
-              <Input
-                id="rentPrice"
-                name="rentPrice"
-                type="number"
-                value={formData.rentPrice}
-                onChange={handleInputChange}
-              />
-            </div>
-          )}
-          <div className="flex justify-end space-x-2">
+
+          <div className="grid grid-cols-2 gap-4">
+            {formData.type.sale && (
+              <div>
+                <Label htmlFor="price">Giá Bán</Label>
+                <Input
+                  id="price"
+                  name="price"
+                  type="number"
+                  value={formData.price}
+                  onChange={handleInputChange}
+                  placeholder="0"
+                />
+              </div>
+            )}
+            {formData.type.rent && (
+              <div>
+                <Label htmlFor="rentPrice">Giá Thuê/Ngày</Label>
+                <Input
+                  id="rentPrice"
+                  name="rentPrice"
+                  type="number"
+                  value={formData.rentPrice}
+                  onChange={handleInputChange}
+                  placeholder="0"
+                />
+              </div>
+            )}
+          </div>
+
+          <div className="flex justify-end space-x-2 pt-4">
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
               Hủy
             </Button>

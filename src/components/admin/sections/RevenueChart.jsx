@@ -4,8 +4,14 @@ import React from 'react';
 const RevenueChart = ({ chartData }) => {
   const maxValue = Math.max(...chartData.map(item => item.value));
 
+  const getBarColor = (value) => {
+    const multiplier = Math.floor(value / 10);
+    const hue = (multiplier * 36) % 360; // Thay đổi màu sắc theo bội số của 10
+    return `hsl(${hue}, 70%, 50%)`;
+  };
+
   return (
-    <div className="col-lg-6 mb-4">
+    <div className="col-12 mb-4">
       <div className="section-card">
         <div className="section-title">
           <span>Báo Cáo Doanh Thu</span>
@@ -25,6 +31,7 @@ const RevenueChart = ({ chartData }) => {
             {chartData.map((item, index) => (
               <div key={index} className="chart-bar" style={{
                 height: `${(item.value / maxValue) * 150}px`,
+                background: `linear-gradient(135deg, ${getBarColor(item.value)}aa 0%, ${getBarColor(item.value)} 100%)`,
                 flex: 1
               }}>
                 <div className="chart-value">${item.value}k</div>
