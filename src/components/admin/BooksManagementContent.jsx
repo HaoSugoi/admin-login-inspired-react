@@ -29,6 +29,7 @@ const BooksManagementContent = (props) => {
             onUpdateBook={props.handleUpdateBook}
             onDeleteBook={props.handleDeleteBook}
             onToggleBookVisibility={props.handleToggleBookVisibility}
+            promotions={props.promotions || []}
           />
           <CategoriesSection 
             categories={props.categories}

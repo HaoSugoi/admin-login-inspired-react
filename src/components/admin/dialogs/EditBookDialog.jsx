@@ -7,13 +7,12 @@ import {
   DialogTitle,
 } from "../../ui/dialog";
 import { Button } from "../../ui/button";
-import { Input } from "../../ui/input";
 import { Label } from "../../ui/label";
 import BookBasicInfoForm from './book-forms/BookBasicInfoForm';
 import BookTypeAndPriceForm from './book-forms/BookTypeAndPriceForm';
 import BookDatePickerForm from './book-forms/BookDatePickerForm';
 
-const EditBookDialog = ({ book, open, onClose, onUpdateBook, categories }) => {
+const EditBookDialog = ({ book, open, onClose, onUpdateBook, categories, promotions = [] }) => {
   const [publishDate, setPublishDate] = useState();
   const [formData, setFormData] = useState({
     title: '',
@@ -24,6 +23,7 @@ const EditBookDialog = ({ book, open, onClose, onUpdateBook, categories }) => {
     price: '',
     rentPrice: '',
     description: '',
+    appliedPromotion: '',
     type: {
       sale: false,
       rent: false
@@ -42,6 +42,7 @@ const EditBookDialog = ({ book, open, onClose, onUpdateBook, categories }) => {
         price: book.price || '',
         rentPrice: book.rentPrice || '',
         description: book.description || '',
+        appliedPromotion: book.appliedPromotion || '',
         type: {
           sale: book.type === 'sale' || book.type === 'both',
           rent: book.type === 'rent' || book.type === 'both'
@@ -99,11 +100,11 @@ const EditBookDialog = ({ book, open, onClose, onUpdateBook, categories }) => {
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-lg mx-auto">
+      <DialogContent className="max-w-lg mx-auto min-h-[700px]">
         <DialogHeader>
           <DialogTitle className="text-center">Cập Nhật Thông Tin Sách</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4 max-h-96 overflow-y-auto">
+        <form onSubmit={handleSubmit} className="space-y-6 max-h-96 overflow-y-auto">
           <BookBasicInfoForm 
             formData={formData}
             handleInputChange={handleInputChange}
@@ -131,12 +132,13 @@ const EditBookDialog = ({ book, open, onClose, onUpdateBook, categories }) => {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <Label htmlFor="quantity">Số Lượng</Label>
-              <Input
+              <input
                 id="quantity"
                 name="quantity"
                 type="number"
                 value={formData.quantity}
                 onChange={handleInputChange}
+                className="form-control w-full"
                 required
               />
             </div>
@@ -156,13 +158,31 @@ const EditBookDialog = ({ book, open, onClose, onUpdateBook, categories }) => {
             </div>
           </div>
 
+          <div>
+            <Label htmlFor="appliedPromotion">Áp Dụng Khuyến Mãi</Label>
+            <select
+              id="appliedPromotion"
+              name="appliedPromotion"
+              value={formData.appliedPromotion}
+              onChange={handleInputChange}
+              className="form-select w-full"
+            >
+              <option value="">Không áp dụng khuyến mãi</option>
+              {promotions.map((promotion) => (
+                <option key={promotion.id} value={promotion.id}>
+                  {promotion.name} - {promotion.type === 'percentage' ? `${promotion.value}%` : `${promotion.value.toLocaleString()}đ`}
+                </option>
+              ))}
+            </select>
+          </div>
+
           <BookTypeAndPriceForm 
             formData={formData}
             handleTypeChange={handleTypeChange}
             handleInputChange={handleInputChange}
           />
 
-          <div className="flex justify-end space-x-2 pt-4">
+          <div className="flex justify-end space-x-2 pt-6">
             <Button type="button" variant="outline" onClick={onClose}>
               Hủy
             </Button>

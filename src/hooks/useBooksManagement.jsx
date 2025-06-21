@@ -20,7 +20,8 @@ export const useBooksManagement = () => {
       status: "available",
       type: "both",
       price: 150000,
-      rentPrice: 5000
+      rentPrice: 5000,
+      appliedPromotion: ''
     },
     {
       id: 2,
@@ -35,22 +36,8 @@ export const useBooksManagement = () => {
       status: "available",
       type: "both",
       price: 120000,
-      rentPrice: 4000
-    },
-    {
-      id: 3,
-      title: "Cho Tôi Xin Một Vé Đi Tuổi Thơ",
-      author: "Nguyễn Nhật Ánh",
-      isbn: "978-604-2-12345-3", 
-      category: "Tiểu thuyết",
-      publisher: "NXB Trẻ",
-      publishYear: 2019,
-      quantity: 25,
-      available: 15,
-      status: "available",
-      type: "both",
-      price: 130000,
-      rentPrice: 4500
+      rentPrice: 4000,
+      appliedPromotion: ''
     }
   ]);
 
@@ -59,6 +46,26 @@ export const useBooksManagement = () => {
     { id: 2, name: "Khoa học", count: 30 },
     { id: 3, name: "Lịch sử", count: 25 },
     { id: 4, name: "Thiếu nhi", count: 40 }
+  ]);
+
+  // Mock promotions data
+  const [promotions] = useState([
+    {
+      id: 1,
+      code: "SALE20",
+      name: "Giảm giá 20%",
+      type: "percentage",
+      value: 20,
+      status: "active"
+    },
+    {
+      id: 2,
+      code: "NOVEL50",
+      name: "Giảm 50k cho tiểu thuyết",
+      type: "fixed",
+      value: 50000,
+      status: "active"
+    }
   ]);
 
   const toggleSidebar = () => {
@@ -119,6 +126,7 @@ export const useBooksManagement = () => {
     toggleSidebar,
     books,
     categories,
+    promotions,
     handleLogout,
     handleAddBook,
     handleUpdateBook,

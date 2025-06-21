@@ -2,9 +2,9 @@
 import React, { useState } from 'react';
 import AddBookDialog from '../dialogs/AddBookDialog';
 import EditBookDialog from '../dialogs/EditBookDialog';
-import { Edit, Trash2, EyeOff } from 'lucide-react';
+import { Edit, Trash2, Eye, EyeOff } from 'lucide-react';
 
-const BooksListSection = ({ books, categories, onAddBook, onUpdateBook, onDeleteBook, onToggleBookVisibility }) => {
+const BooksListSection = ({ books, categories, onAddBook, onUpdateBook, onDeleteBook, onToggleBookVisibility, promotions = [] }) => {
   const [editingBook, setEditingBook] = useState(null);
   const [showEditDialog, setShowEditDialog] = useState(false);
 
@@ -20,8 +20,35 @@ const BooksListSection = ({ books, categories, onAddBook, onUpdateBook, onDelete
   };
 
   const handleToggleVisibility = (book) => {
-    const newStatus = book.status === 'hidden' ? 'available' : 'hidden';
+    const newStatus = book.status === 'available' ? 'hidden' : 'available';
     onToggleBookVisibility(book.id, newStatus);
+  };
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'available': return 'text-success';
+      case 'hidden': return 'text-warning';
+      case 'out_of_stock': return 'text-danger';
+      default: return 'text-secondary';
+    }
+  };
+
+  const getStatusText = (status) => {
+    switch (status) {
+      case 'available': return 'Có sẵn';
+      case 'hidden': return 'Đã ẩn';
+      case 'out_of_stock': return 'Hết hàng';
+      default: return 'Không xác định';
+    }
+  };
+
+  const getTypeText = (type) => {
+    switch (type) {
+      case 'sale': return 'Bán';
+      case 'rent': return 'Thuê';
+      case 'both': return 'Bán & Thuê';
+      default: return 'Không xác định';
+    }
   };
 
   return (
@@ -29,18 +56,20 @@ const BooksListSection = ({ books, categories, onAddBook, onUpdateBook, onDelete
       <div className="section-card">
         <div className="section-title d-flex justify-content-between align-items-center">
           <span>Danh Sách Sách</span>
-          <AddBookDialog onAddBook={onAddBook} categories={categories} />
+          <AddBookDialog onAddBook={onAddBook} categories={categories} promotions={promotions} />
         </div>
         
         <div className="table-responsive">
           <table className="table order-table">
             <thead>
               <tr>
-                <th>Mã Sách</th>
-                <th>Tên Sách</th>
+                <th>Tiêu Đề</th>
                 <th>Tác Giả</th>
                 <th>Thể Loại</th>
+                <th>Năm XB</th>
                 <th>Số Lượng</th>
+                <th>Loại</th>
+                <th>Giá</th>
                 <th>Trạng Thái</th>
                 <th>Thao Tác</th>
               </tr>
@@ -48,18 +77,36 @@ const BooksListSection = ({ books, categories, onAddBook, onUpdateBook, onDelete
             <tbody>
               {books.map((book) => (
                 <tr key={book.id}>
-                  <td>#{book.id.toString().padStart(3, '0')}</td>
-                  <td>{book.title}</td>
-                  <td>{book.author}</td>
-                  <td>{book.category}</td>
-                  <td>{book.available}/{book.quantity}</td>
                   <td>
-                    <span className={
-                      book.status === 'available' ? 'text-success' : 
-                      book.status === 'hidden' ? 'text-warning' : 'text-danger'
-                    }>
-                      {book.status === 'available' ? 'Có sẵn' : 
-                       book.status === 'hidden' ? 'Đã ẩn' : 'Hết sách'}
+                    <div className="d-flex flex-column">
+                      <span className="fw-bold">{book.title}</span>
+                      <small className="text-muted">ISBN: {book.isbn}</small>
+                    </div>
+                  </td>
+                  <td>{book.author}</td>
+                  <td>
+                    <span className="badge bg-info text-dark">{book.category}</span>
+                  </td>
+                  <td>{book.publishYear}</td>
+                  <td>
+                    <span className="badge bg-secondary">
+                      {book.available}/{book.quantity}
+                    </span>
+                  </td>
+                  <td>
+                    <span className={`badge ${book.type === 'both' ? 'bg-primary' : book.type === 'rent' ? 'bg-warning' : 'bg-success'}`}>
+                      {getTypeText(book.type)}
+                    </span>
+                  </td>
+                  <td>
+                    <div className="d-flex flex-column">
+                      {book.type !== 'rent' && <small>Bán: {book.price?.toLocaleString()}đ</small>}
+                      {book.type !== 'sale' && <small>Thuê: {book.rentPrice?.toLocaleString()}đ/ngày</small>}
+                    </div>
+                  </td>
+                  <td>
+                    <span className={getStatusColor(book.status)}>
+                      {getStatusText(book.status)}
                     </span>
                   </td>
                   <td>
@@ -74,9 +121,9 @@ const BooksListSection = ({ books, categories, onAddBook, onUpdateBook, onDelete
                       <button 
                         className="btn btn-sm btn-outline-warning"
                         onClick={() => handleToggleVisibility(book)}
-                        title={book.status === 'hidden' ? 'Hiện sách' : 'Ẩn sách'}
+                        title={book.status === 'available' ? 'Ẩn sách' : 'Hiển thị sách'}
                       >
-                        <EyeOff size={14} />
+                        {book.status === 'available' ? <EyeOff size={14} /> : <Eye size={14} />}
                       </button>
                       <button 
                         className="btn btn-sm btn-outline-danger"
@@ -104,6 +151,7 @@ const BooksListSection = ({ books, categories, onAddBook, onUpdateBook, onDelete
           }}
           onUpdateBook={onUpdateBook}
           categories={categories}
+          promotions={promotions}
         />
       )}
     </div>

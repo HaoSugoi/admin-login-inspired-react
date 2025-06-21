@@ -8,14 +8,13 @@ import {
   DialogTrigger,
 } from "../../ui/dialog";
 import { Button } from "../../ui/button";
-import { Input } from "../../ui/input";
 import { Label } from "../../ui/label";
 import { Plus } from 'lucide-react';
 import BookBasicInfoForm from './book-forms/BookBasicInfoForm';
 import BookTypeAndPriceForm from './book-forms/BookTypeAndPriceForm';
 import BookDatePickerForm from './book-forms/BookDatePickerForm';
 
-const AddBookDialog = ({ onAddBook, categories }) => {
+const AddBookDialog = ({ onAddBook, categories, promotions = [] }) => {
   const [open, setOpen] = useState(false);
   const [publishDate, setPublishDate] = useState();
   const [formData, setFormData] = useState({
@@ -28,6 +27,7 @@ const AddBookDialog = ({ onAddBook, categories }) => {
     price: '',
     rentPrice: '',
     description: '',
+    appliedPromotion: '',
     type: {
       sale: false,
       rent: false
@@ -69,6 +69,7 @@ const AddBookDialog = ({ onAddBook, categories }) => {
       price: '',
       rentPrice: '',
       description: '',
+      appliedPromotion: '',
       type: { sale: false, rent: false }
     });
     setPublishDate(undefined);
@@ -100,11 +101,11 @@ const AddBookDialog = ({ onAddBook, categories }) => {
           Thêm Sách Mới
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-lg mx-auto">
+      <DialogContent className="max-w-lg mx-auto min-h-[700px]">
         <DialogHeader>
           <DialogTitle className="text-center">Thêm Sách Mới</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4 max-h-96 overflow-y-auto">
+        <form onSubmit={handleSubmit} className="space-y-6 max-h-96 overflow-y-auto">
           <BookBasicInfoForm 
             formData={formData}
             handleInputChange={handleInputChange}
@@ -131,14 +132,33 @@ const AddBookDialog = ({ onAddBook, categories }) => {
 
           <div>
             <Label htmlFor="quantity">Số Lượng *</Label>
-            <Input
+            <input
               id="quantity"
               name="quantity"
               type="number"
               value={formData.quantity}
               onChange={handleInputChange}
+              className="form-control w-full"
               required
             />
+          </div>
+
+          <div>
+            <Label htmlFor="appliedPromotion">Áp Dụng Khuyến Mãi</Label>
+            <select
+              id="appliedPromotion"
+              name="appliedPromotion"
+              value={formData.appliedPromotion}
+              onChange={handleInputChange}
+              className="form-select w-full"
+            >
+              <option value="">Không áp dụng khuyến mãi</option>
+              {promotions.map((promotion) => (
+                <option key={promotion.id} value={promotion.id}>
+                  {promotion.name} - {promotion.type === 'percentage' ? `${promotion.value}%` : `${promotion.value.toLocaleString()}đ`}
+                </option>
+              ))}
+            </select>
           </div>
 
           <BookTypeAndPriceForm 
@@ -147,7 +167,7 @@ const AddBookDialog = ({ onAddBook, categories }) => {
             handleInputChange={handleInputChange}
           />
 
-          <div className="flex justify-end space-x-2 pt-4">
+          <div className="flex justify-end space-x-2 pt-6">
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
               Hủy
             </Button>
