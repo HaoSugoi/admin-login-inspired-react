@@ -81,7 +81,7 @@ const AddAuthorDialog = ({ onAddAuthor }) => {
               placeholder="Mô tả về tác giả"
             />
           </div>
-          <div>
+          {/* <div>
             <Label htmlFor="birthYear">Năm Sinh</Label>
             <Input
               id="birthYear"
@@ -101,9 +101,7 @@ const AddAuthorDialog = ({ onAddAuthor }) => {
               onChange={handleInputChange}
               placeholder="Quốc tịch"
             />
-
-
-          </div>
+          </div> */}
 
           
           <div className="flex justify-end space-x-2 pt-6"> {/* pt-6 giống Employee */}

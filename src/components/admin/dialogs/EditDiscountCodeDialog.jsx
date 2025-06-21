@@ -19,7 +19,7 @@ const EditDiscountCodeDialog = ({ discountCode, open, onClose, onUpdateDiscountC
   const [endDate, setEndDate] = useState();
   const [formData, setFormData] = useState({
     code: '',
-    name: '',
+    
     type: 'percentage',
     value: '',
     usageLimit: 1,
@@ -31,7 +31,6 @@ const EditDiscountCodeDialog = ({ discountCode, open, onClose, onUpdateDiscountC
     if (discountCode) {
       setFormData({
         code: discountCode.code || '',
-        name: discountCode.name || '',
         type: discountCode.type || 'percentage',
         value: discountCode.value || '',
         usageLimit: discountCode.usageLimit || 1,
@@ -92,17 +91,6 @@ const EditDiscountCodeDialog = ({ discountCode, open, onClose, onUpdateDiscountC
               value={formData.code}
               onChange={handleInputChange}
               placeholder="VD: WELCOME10"
-              required
-            />
-          </div>
-          <div>
-            <Label htmlFor="name">Tên Mã *</Label>
-            <Input
-              id="name"
-              name="name"
-              value={formData.name}
-              onChange={handleInputChange}
-              placeholder="VD: Mã chào mừng thành viên mới"
               required
             />
           </div>

@@ -16,12 +16,12 @@ const AdminSidebar = ({ activeSection, setActiveSection, sidebarCollapsed, toggl
     { id: 'rentals', icon: FileText, label: 'Quản Lý Thuê Sách', path: '/admin/rentals' },
     { id: 'promotions', icon: Gift, label: 'Quản Lý Khuyến Mãi', path: '/admin/promotions' },
     { id: 'discount-codes', icon: Percent, label: 'Quản Lý Mã Giảm Giá', path: '/admin/discount-codes' },
-    { id: 'shipping', icon: Truck, label: 'Quản Lý Vận Chuyển', path: '/admin/shipping' },
-    { id: 'users', icon: Users, label: 'Quản Lý Người Dùng', path: '/admin/users' },
-    { id: 'roles', icon: Shield, label: 'Quản Lý Quyền', path: '/admin/roles' },
+    { id: 'shipping', icon: Truck, label: 'Quản Lý Vận Chuyển', path: '/admin/shipping' }, /*remove*/
+    { id: 'users', icon: Users, label: 'Quản Lý Người Dùng', path: '/admin/users' }, /*remove*/
+    { id: 'roles', icon: Shield, label: 'Quản Lý Quyền', path: '/admin/roles' },/*remove*/
     { id: 'reports', icon: BarChart3, label: 'Quản Lý Danh Mục', path: '/admin/reports' },
     { id: 'stats', icon: BarChart3, label: 'Thống Kê', path: '/admin/stats' },
-    { id: 'settings', icon: Settings, label: 'Cài Đặt', path: '/admin/settings' }
+    { id: 'settings', icon: Settings, label: 'Cài Đặt', path: '/admin/settings' }/*remove*/
   ];
 
   const handleMenuClick = (item) => {
