@@ -47,7 +47,6 @@ const AddAuthorDialog = ({ onAddAuthor }) => {
       [e.target.name]: e.target.value
     });
   };
-
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -56,11 +55,11 @@ const AddAuthorDialog = ({ onAddAuthor }) => {
           Thêm Tác Giả
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-lg min-h-[600px]">
         <DialogHeader>
           <DialogTitle>Thêm Tác Giả Mới</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-6"> {/* space-y-6 để đồng bộ */}
           <div>
             <Label htmlFor="name">Tên Tác Giả</Label>
             <Input
@@ -102,8 +101,12 @@ const AddAuthorDialog = ({ onAddAuthor }) => {
               onChange={handleInputChange}
               placeholder="Quốc tịch"
             />
+
+
           </div>
-          <div className="flex justify-end space-x-2">
+
+          
+          <div className="flex justify-end space-x-2 pt-6"> {/* pt-6 giống Employee */}
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
               Hủy
             </Button>

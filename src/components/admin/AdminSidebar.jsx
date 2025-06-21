@@ -19,7 +19,7 @@ const AdminSidebar = ({ activeSection, setActiveSection, sidebarCollapsed, toggl
     { id: 'shipping', icon: Truck, label: 'Quản Lý Vận Chuyển', path: '/admin/shipping' },
     { id: 'users', icon: Users, label: 'Quản Lý Người Dùng', path: '/admin/users' },
     { id: 'roles', icon: Shield, label: 'Quản Lý Quyền', path: '/admin/roles' },
-    { id: 'reports', icon: BarChart3, label: 'Báo Cáo', path: '/admin/reports' },
+    { id: 'reports', icon: BarChart3, label: 'Quản Lý Danh Mục', path: '/admin/reports' },
     { id: 'stats', icon: BarChart3, label: 'Thống Kê', path: '/admin/stats' },
     { id: 'settings', icon: Settings, label: 'Cài Đặt', path: '/admin/settings' }
   ];

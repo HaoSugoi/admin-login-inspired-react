@@ -15,13 +15,13 @@ const RevenueChart = ({ chartData }) => {
   };
 
   return (
-    <div className="col-8 mb-4"> {/* Thu nhỏ từ col-12 xuống col-8 (30% nhỏ hơn) */}
+    <div className="col-12 mb-10"> {/* Thu nhỏ từ col-12 xuống col-8 (30% nhỏ hơn) */}
       <div className="section-card">
         <div className="section-title">
           <span>Báo Cáo Doanh Thu</span>
           <select className="form-select form-select-sm w-auto">
+            <option>Theo Ngày</option>
             <option>Theo Tháng</option>
-            <option>Theo Quý</option>
             <option>Theo Năm</option>
           </select>
         </div>

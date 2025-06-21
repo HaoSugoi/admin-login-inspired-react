@@ -61,11 +61,11 @@ const EditEmployeeDialog = ({ employee, open, onClose, onUpdateEmployee }) => {
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-lg mx-auto min-h-[600px]">
+      <DialogContent className="max-w-lg mx-auto ">
         <DialogHeader>
           <DialogTitle className="text-center">Cập Nhật Thông Tin Nhân Viên</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} >
           <EmployeeBasicInfoForm 
             formData={formData}
             handleInputChange={handleInputChange}
