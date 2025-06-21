@@ -5,13 +5,17 @@ const RevenueChart = ({ chartData }) => {
   const maxValue = Math.max(...chartData.map(item => item.value));
 
   const getBarColor = (value) => {
-    const multiplier = Math.floor(value / 10);
-    const hue = (multiplier * 36) % 360; // Thay đổi màu sắc theo bội số của 10
-    return `hsl(${hue}, 70%, 50%)`;
+    // Chuyển đổi từ k sang triệu (value * 1000 / 1000000 = value / 1000)
+    const millions = value * 1000 / 1000000; // value là theo k, chuyển thành triệu
+    
+    if (millions < 1) return '#22c55e'; // Xanh lá - dưới 1 triệu
+    if (millions < 2) return '#eab308'; // Vàng - 1-2 triệu
+    if (millions < 3) return '#3b82f6'; // Xanh lam - 2-3 triệu
+    return '#ef4444'; // Đỏ - trên 3 triệu
   };
 
   return (
-    <div className="col-12 mb-4">
+    <div className="col-8 mb-4"> {/* Thu nhỏ từ col-12 xuống col-8 (30% nhỏ hơn) */}
       <div className="section-card">
         <div className="section-title">
           <span>Báo Cáo Doanh Thu</span>
@@ -34,7 +38,7 @@ const RevenueChart = ({ chartData }) => {
                 background: `linear-gradient(135deg, ${getBarColor(item.value)}aa 0%, ${getBarColor(item.value)} 100%)`,
                 flex: 1
               }}>
-                <div className="chart-value">${item.value}k</div>
+                <div className="chart-value">{item.value}k VND</div>
                 <div className="chart-label">{item.month}</div>
               </div>
             ))}

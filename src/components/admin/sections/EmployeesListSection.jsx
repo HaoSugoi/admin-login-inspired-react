@@ -1,9 +1,18 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import AddEmployeeDialog from '../dialogs/AddEmployeeDialog';
+import EditEmployeeDialog from '../dialogs/EditEmployeeDialog';
 import { Edit, Trash2 } from 'lucide-react';
 
 const EmployeesListSection = ({ employees, onAdd, onUpdate, onDelete }) => {
+  const [editingEmployee, setEditingEmployee] = useState(null);
+  const [showEditDialog, setShowEditDialog] = useState(false);
+
+  const handleEditEmployee = (employee) => {
+    setEditingEmployee(employee);
+    setShowEditDialog(true);
+  };
+
   const handleDeleteEmployee = (employeeId) => {
     if (window.confirm('Bạn có chắc chắn muốn xóa nhân viên này?')) {
       onDelete(employeeId);
@@ -25,7 +34,6 @@ const EmployeesListSection = ({ employees, onAdd, onUpdate, onDelete }) => {
                 <th>Mã NV</th>
                 <th>Họ Tên</th>
                 <th>Email</th>
-                <th>Chức Vụ</th>
                 <th>Phòng Ban</th>
                 <th>Trạng Thái</th>
                 <th>Ngày Vào Làm</th>
@@ -38,7 +46,6 @@ const EmployeesListSection = ({ employees, onAdd, onUpdate, onDelete }) => {
                   <td>#{employee.id.toString().padStart(3, '0')}</td>
                   <td>{employee.name}</td>
                   <td>{employee.email}</td>
-                  <td>{employee.position}</td>
                   <td>{employee.department}</td>
                   <td>
                     <span className={
@@ -53,7 +60,7 @@ const EmployeesListSection = ({ employees, onAdd, onUpdate, onDelete }) => {
                     <div className="d-flex gap-1">
                       <button 
                         className="btn btn-sm btn-outline-primary"
-                        onClick={() => console.log('Edit employee:', employee.id)}
+                        onClick={() => handleEditEmployee(employee)}
                         title="Sửa"
                       >
                         <Edit size={14} />
@@ -73,6 +80,18 @@ const EmployeesListSection = ({ employees, onAdd, onUpdate, onDelete }) => {
           </table>
         </div>
       </div>
+
+      {editingEmployee && (
+        <EditEmployeeDialog
+          employee={editingEmployee}
+          open={showEditDialog}
+          onClose={() => {
+            setShowEditDialog(false);
+            setEditingEmployee(null);
+          }}
+          onUpdateEmployee={onUpdate}
+        />
+      )}
     </div>
   );
 };

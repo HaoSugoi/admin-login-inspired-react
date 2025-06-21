@@ -1,9 +1,18 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import AddCustomerDialog from '../dialogs/AddCustomerDialog';
+import EditCustomerDialog from '../dialogs/EditCustomerDialog';
 import { Edit, Trash2 } from 'lucide-react';
 
 const CustomersListSection = ({ customers, onAdd, onUpdate, onDelete }) => {
+  const [editingCustomer, setEditingCustomer] = useState(null);
+  const [showEditDialog, setShowEditDialog] = useState(false);
+
+  const handleEditCustomer = (customer) => {
+    setEditingCustomer(customer);
+    setShowEditDialog(true);
+  };
+
   const handleDeleteCustomer = (customerId) => {
     if (window.confirm('Bạn có chắc chắn muốn xóa khách hàng này?')) {
       onDelete(customerId);
@@ -51,7 +60,7 @@ const CustomersListSection = ({ customers, onAdd, onUpdate, onDelete }) => {
                     <div className="d-flex gap-1">
                       <button 
                         className="btn btn-sm btn-outline-primary"
-                        onClick={() => console.log('Edit customer:', customer.id)}
+                        onClick={() => handleEditCustomer(customer)}
                         title="Sửa"
                       >
                         <Edit size={14} />
@@ -71,6 +80,18 @@ const CustomersListSection = ({ customers, onAdd, onUpdate, onDelete }) => {
           </table>
         </div>
       </div>
+
+      {editingCustomer && (
+        <EditCustomerDialog
+          customer={editingCustomer}
+          open={showEditDialog}
+          onClose={() => {
+            setShowEditDialog(false);
+            setEditingCustomer(null);
+          }}
+          onUpdateCustomer={onUpdate}
+        />
+      )}
     </div>
   );
 };
