@@ -52,7 +52,7 @@ const EditCustomerDialog = ({ customer, open, onClose, onUpdateCustomer }) => {
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-lg mx-auto min-h-[500px]"> {/* Tăng chiều cao 40% */}
+      <DialogContent className="max-w-lg mx-auto min-h-[500px]">
         <DialogHeader>
           <DialogTitle className="text-center">Cập Nhật Thông Tin Khách Hàng</DialogTitle>
         </DialogHeader>

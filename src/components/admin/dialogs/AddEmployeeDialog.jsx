@@ -62,11 +62,11 @@ const AddEmployeeDialog = ({ onAddEmployee }) => {
           Thêm Nhân Viên
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-lg mx-auto min-h-[600px]">
+      <DialogContent className="max-w-md mx-auto max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-center">Thêm Nhân Viên Mới</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <EmployeeBasicInfoForm 
             formData={formData}
             handleInputChange={handleInputChange}
@@ -109,7 +109,7 @@ const AddEmployeeDialog = ({ onAddEmployee }) => {
             </select>
           </div>
           
-          <div className="flex justify-end space-x-2 pt-6">
+          <div className="flex justify-end space-x-2 pt-4">
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
               Hủy
             </Button>

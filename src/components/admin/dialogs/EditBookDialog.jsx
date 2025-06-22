@@ -100,11 +100,11 @@ const EditBookDialog = ({ book, open, onClose, onUpdateBook, categories, promoti
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-lg mx-auto min-h-[700px]">
+      <DialogContent className="max-w-md mx-auto max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-center">Cập Nhật Thông Tin Sách</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-6 max-h-96 overflow-y-auto">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <BookBasicInfoForm 
             formData={formData}
             handleInputChange={handleInputChange}
@@ -121,7 +121,7 @@ const EditBookDialog = ({ book, open, onClose, onUpdateBook, categories, promoti
             <textarea
               id="description"
               name="description"
-              rows="3"
+              rows="2"
               value={formData.description}
               onChange={handleInputChange}
               className="form-control w-full"
@@ -182,7 +182,7 @@ const EditBookDialog = ({ book, open, onClose, onUpdateBook, categories, promoti
             handleInputChange={handleInputChange}
           />
 
-          <div className="flex justify-end space-x-2 pt-6">
+          <div className="flex justify-end space-x-2 pt-4">
             <Button type="button" variant="outline" onClick={onClose}>
               Hủy
             </Button>

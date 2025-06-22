@@ -57,7 +57,7 @@ const AddCustomerDialog = ({ onAddCustomer }) => {
           Thêm Khách Hàng
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-lg mx-auto">
+      <DialogContent className="max-w-md mx-auto max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-center">Thêm Khách Hàng Mới</DialogTitle>
         </DialogHeader>
@@ -120,7 +120,7 @@ const AddCustomerDialog = ({ onAddCustomer }) => {
               <option value="Đã khóa">Đã khóa</option>
             </select>
           </div>
-          <div className="flex justify-end space-x-2">
+          <div className="flex justify-end space-x-2 pt-4">
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
               Hủy
             </Button>

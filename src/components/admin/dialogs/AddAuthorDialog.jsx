@@ -55,11 +55,11 @@ const AddAuthorDialog = ({ onAddAuthor }) => {
           Thêm Tác Giả
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-lg min-h-[600px]">
+      <DialogContent className="max-w-md mx-auto max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Thêm Tác Giả Mới</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-6"> {/* space-y-6 để đồng bộ */}
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <Label htmlFor="name">Tên Tác Giả</Label>
             <Input
@@ -81,30 +81,8 @@ const AddAuthorDialog = ({ onAddAuthor }) => {
               placeholder="Mô tả về tác giả"
             />
           </div>
-          {/* <div>
-            <Label htmlFor="birthYear">Năm Sinh</Label>
-            <Input
-              id="birthYear"
-              name="birthYear"
-              type="number"
-              value={formData.birthYear}
-              onChange={handleInputChange}
-              placeholder="Năm sinh"
-            />
-          </div>
-          <div>
-            <Label htmlFor="nationality">Quốc Tịch</Label>
-            <Input
-              id="nationality"
-              name="nationality"
-              value={formData.nationality}
-              onChange={handleInputChange}
-              placeholder="Quốc tịch"
-            />
-          </div> */}
-
           
-          <div className="flex justify-end space-x-2 pt-6"> {/* pt-6 giống Employee */}
+          <div className="flex justify-end space-x-2 pt-4">
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
               Hủy
             </Button>

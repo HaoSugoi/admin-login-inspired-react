@@ -101,11 +101,11 @@ const AddBookDialog = ({ onAddBook, categories, promotions = [] }) => {
           Thêm Sách Mới
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-lg mx-auto min-h-[700px]">
+      <DialogContent className="max-w-md mx-auto max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-center">Thêm Sách Mới</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-6 max-h-96 overflow-y-auto">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <BookBasicInfoForm 
             formData={formData}
             handleInputChange={handleInputChange}
@@ -122,7 +122,7 @@ const AddBookDialog = ({ onAddBook, categories, promotions = [] }) => {
             <textarea
               id="description"
               name="description"
-              rows="3"
+              rows="2"
               value={formData.description}
               onChange={handleInputChange}
               className="form-control w-full"
@@ -167,7 +167,7 @@ const AddBookDialog = ({ onAddBook, categories, promotions = [] }) => {
             handleInputChange={handleInputChange}
           />
 
-          <div className="flex justify-end space-x-2 pt-6">
+          <div className="flex justify-end space-x-2 pt-4">
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
               Hủy
             </Button>

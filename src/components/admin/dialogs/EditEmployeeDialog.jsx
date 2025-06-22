@@ -61,11 +61,11 @@ const EditEmployeeDialog = ({ employee, open, onClose, onUpdateEmployee }) => {
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-lg mx-auto ">
+      <DialogContent className="max-w-md mx-auto max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-center">Cập Nhật Thông Tin Nhân Viên</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} >
+        <form onSubmit={handleSubmit} className="space-y-4">
           <EmployeeBasicInfoForm 
             formData={formData}
             handleInputChange={handleInputChange}
@@ -91,7 +91,7 @@ const EditEmployeeDialog = ({ employee, open, onClose, onUpdateEmployee }) => {
             </select>
           </div>
           
-          <div className="flex justify-end space-x-2 pt-6">
+          <div className="flex justify-end space-x-2 pt-4">
             <Button type="button" variant="outline" onClick={onClose}>
               Hủy
             </Button>
