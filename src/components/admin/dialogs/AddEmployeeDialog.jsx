@@ -62,7 +62,7 @@ const AddEmployeeDialog = ({ onAddEmployee }) => {
           Thêm Nhân Viên
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-md mx-auto max-h-[80vh] overflow-y-auto">
+      <DialogContent className="max-w-[1200px] mx-auto max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-center">Thêm Nhân Viên Mới</DialogTitle>
         </DialogHeader>

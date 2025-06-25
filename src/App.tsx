@@ -14,9 +14,6 @@ import OrdersManagement from './pages/OrdersManagement';
 import RentalManagement from './pages/RentalManagement';
 import PromotionsManagement from './pages/PromotionsManagement';
 import DiscountCodesManagement from './pages/DiscountCodesManagement';
-import ShippingManagement from './pages/ShippingManagement';
-import UsersManagement from './pages/UsersManagement';
-import RolesManagement from './pages/RolesManagement';
 import ReportsManagement from './pages/ReportsManagement';
 import StatsManagement from './pages/StatsManagement';
 import NotFound from './pages/NotFound';
@@ -45,10 +42,7 @@ function App() {
             <Route path="/admin/orders" element={<ProtectedRoute><OrdersManagement /></ProtectedRoute>} />
             <Route path="/admin/promotions" element={<ProtectedRoute><PromotionsManagement /></ProtectedRoute>} />
             <Route path="/admin/discount-codes" element={<ProtectedRoute><DiscountCodesManagement /></ProtectedRoute>} />
-            {/* <Route path="/admin/shipping" element={<ProtectedRoute><ShippingManagement /></ProtectedRoute>} /> */}
-            {/* <Route path="/admin/users" element={<ProtectedRoute><UsersManagement /></ProtectedRoute>} /> */}
-            {/* <Route path="/admin/roles" element={<ProtectedRoute><RolesManagement /></ProtectedRoute>} /> */}
-            {/* <Route path="/admin/stats" element={<ProtectedRoute><StatsManagement /></ProtectedRoute>} /> */}
+            <Route path="/admin/stats" element={<ProtectedRoute><StatsManagement /></ProtectedRoute>} />
             {/* Route NotFound để cuối */}
             <Route path="*" element={<NotFound />} />
           </Routes>
