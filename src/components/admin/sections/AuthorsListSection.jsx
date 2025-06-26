@@ -81,15 +81,6 @@ const AuthorsListSection = ({ authors, onAddAuthor, onUpdateAuthor, onDeleteAuth
                           onChange={(e) => handleInputChange('biography', e.target.value)}
                         />
                       </div>
-                      <div className="mb-3">
-                        <label className="form-label">Quốc tịch:</label>
-                        <input
-                          type="text"
-                          className="form-control form-control-sm"
-                          value={editData.nationality}
-                          onChange={(e) => handleInputChange('nationality', e.target.value)}
-                        />
-                      </div>
                       <div className="d-flex gap-2">
                         <button 
                           className="btn btn-sm btn-success"

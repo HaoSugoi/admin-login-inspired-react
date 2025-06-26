@@ -1,36 +1,40 @@
 
 import React, { useState } from 'react';
+import AddEmployeeDialog from '../dialogs/AddEmployeeDialog';
+import EditEmployeeDialog from '../dialogs/EditEmployeeDialog';
+import { Edit, Trash2 } from 'lucide-react';
 
 const EmployeesListSection = ({ employees, onAdd, onUpdate, onDelete }) => {
-  const [showAddForm, setShowAddForm] = useState(false);
+  const [editingEmployee, setEditingEmployee] = useState(null);
+  const [showEditDialog, setShowEditDialog] = useState(false);
 
-  const handleStatusChange = (employeeId, newStatus) => {
-    onUpdate(employeeId, { status: newStatus });
+  const handleEditEmployee = (employee) => {
+    setEditingEmployee(employee);
+    setShowEditDialog(true);
+  };
+
+  const handleDeleteEmployee = (employeeId) => {
+    if (window.confirm('Bạn có chắc chắn muốn xóa nhân viên này?')) {
+      onDelete(employeeId);
+    }
   };
 
   return (
     <div className="col-12 mb-4">
       <div className="section-card">
-        <div className="section-title">
+        <div className="section-title d-flex justify-content-between align-items-center">
           <span>Danh Sách Nhân Viên</span>
-          <button 
-            className="btn btn-success btn-sm"
-            onClick={() => setShowAddForm(true)}
-          >
-            Thêm Nhân Viên
-          </button>
+          <AddEmployeeDialog onAddEmployee={onAdd} />
         </div>
         
         <div className="table-responsive">
           <table className="table order-table">
             <thead>
               <tr>
-                <th>Tên</th>
+                <th>Mã NV</th>
+                <th>Họ Tên</th>
                 <th>Email</th>
-                <th>Số Điện Thoại</th>
-                <th>Chức Vụ</th>
                 <th>Phòng Ban</th>
-                <th>Lương</th>
                 <th>Trạng Thái</th>
                 <th>Ngày Vào Làm</th>
                 <th>Thao Tác</th>
@@ -39,42 +43,36 @@ const EmployeesListSection = ({ employees, onAdd, onUpdate, onDelete }) => {
             <tbody>
               {employees.map((employee) => (
                 <tr key={employee.id}>
-                  <td>
-                    <div className="d-flex align-items-center">
-                      <img 
-                        src={employee.avatar} 
-                        alt={employee.name}
-                        className="rounded-circle me-2"
-                        style={{ width: '32px', height: '32px' }}
-                      />
-                      {employee.name}
-                    </div>
-                  </td>
+                  <td>#{employee.id.toString().padStart(3, '0')}</td>
+                  <td>{employee.name}</td>
                   <td>{employee.email}</td>
-                  <td>{employee.phone}</td>
-                  <td><span className="badge bg-info">{employee.position}</span></td>
-                  <td><span className="badge bg-secondary">{employee.department}</span></td>
-                  <td>{Number(employee.salary).toLocaleString('vi-VN')} VND</td>
+                  <td>{employee.department}</td>
                   <td>
-                    <select 
-                      className="form-select form-select-sm"
-                      value={employee.status}
-                      onChange={(e) => handleStatusChange(employee.id, e.target.value)}
-                    >
-                      <option value="Hoạt động">Hoạt động</option>
-                      <option value="Tạm nghỉ">Tạm nghỉ</option>
-                      <option value="Nghỉ việc">Nghỉ việc</option>
-                    </select>
+                    <span className={
+                      employee.status === 'Hoạt động' ? 'text-success' : 
+                      employee.status === 'Tạm nghỉ' ? 'text-warning' : 'text-danger'
+                    }>
+                      {employee.status}
+                    </span>
                   </td>
                   <td>{employee.joinDate}</td>
                   <td>
-                    <button className="btn btn-sm btn-outline-primary me-2">Sửa</button>
-                    <button 
-                      className="btn btn-sm btn-outline-danger"
-                      onClick={() => onDelete(employee.id)}
-                    >
-                      Xóa
-                    </button>
+                    <div className="d-flex gap-1">
+                      <button 
+                        className="btn btn-sm btn-outline-primary"
+                        onClick={() => handleEditEmployee(employee)}
+                        title="Sửa"
+                      >
+                        <Edit size={14} />
+                      </button>
+                      <button 
+                        className="btn btn-sm btn-outline-danger"
+                        onClick={() => handleDeleteEmployee(employee.id)}
+                        title="Xóa"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -82,6 +80,18 @@ const EmployeesListSection = ({ employees, onAdd, onUpdate, onDelete }) => {
           </table>
         </div>
       </div>
+
+      {editingEmployee && (
+        <EditEmployeeDialog
+          employee={editingEmployee}
+          open={showEditDialog}
+          onClose={() => {
+            setShowEditDialog(false);
+            setEditingEmployee(null);
+          }}
+          onUpdateEmployee={onUpdate}
+        />
+      )}
     </div>
   );
 };

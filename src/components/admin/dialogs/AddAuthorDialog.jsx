@@ -34,9 +34,6 @@ const AddAuthorDialog = ({ onAddAuthor }) => {
     setFormData({
       name: '',
       biography: '',
-      birthYear: '',
-      nationality: '',
-      avatar: '/placeholder.svg'
     });
     setOpen(false);
   };
@@ -47,7 +44,6 @@ const AddAuthorDialog = ({ onAddAuthor }) => {
       [e.target.name]: e.target.value
     });
   };
-
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -56,7 +52,7 @@ const AddAuthorDialog = ({ onAddAuthor }) => {
           Thêm Tác Giả
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-md mx-auto max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Thêm Tác Giả Mới</DialogTitle>
         </DialogHeader>
@@ -82,28 +78,8 @@ const AddAuthorDialog = ({ onAddAuthor }) => {
               placeholder="Mô tả về tác giả"
             />
           </div>
-          <div>
-            <Label htmlFor="birthYear">Năm Sinh</Label>
-            <Input
-              id="birthYear"
-              name="birthYear"
-              type="number"
-              value={formData.birthYear}
-              onChange={handleInputChange}
-              placeholder="Năm sinh"
-            />
-          </div>
-          <div>
-            <Label htmlFor="nationality">Quốc Tịch</Label>
-            <Input
-              id="nationality"
-              name="nationality"
-              value={formData.nationality}
-              onChange={handleInputChange}
-              placeholder="Quốc tịch"
-            />
-          </div>
-          <div className="flex justify-end space-x-2">
+          
+          <div className="flex justify-end space-x-2 pt-4">
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
               Hủy
             </Button>

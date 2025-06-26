@@ -23,7 +23,7 @@ const ReportsManagementContent = (props) => {
         <div className="row">
           <CategoryManagementSection 
             categories={props.categories}
-            onAdd={props.addCategory}
+            onAddCategory={props.addCategory}
             onUpdate={props.updateCategory}
             onDelete={props.deleteCategory}
           />

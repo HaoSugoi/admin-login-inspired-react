@@ -8,50 +8,71 @@ import {
   DialogTrigger,
 } from "../../ui/dialog";
 import { Button } from "../../ui/button";
-import { Input } from "../../ui/input";
 import { Label } from "../../ui/label";
 import { Plus } from 'lucide-react';
+import BookBasicInfoForm from './book-forms/BookBasicInfoForm';
+import BookTypeAndPriceForm from './book-forms/BookTypeAndPriceForm';
+import BookDatePickerForm from './book-forms/BookDatePickerForm';
 
-const AddBookDialog = ({ onAddBook, categories }) => {
+const AddBookDialog = ({ onAddBook, categories, promotions = [] }) => {
   const [open, setOpen] = useState(false);
+  const [publishDate, setPublishDate] = useState();
   const [formData, setFormData] = useState({
     title: '',
     author: '',
-    isbn: '',
     category: '',
     publisher: '',
     publishYear: '',
     quantity: '',
     price: '',
     rentPrice: '',
-    type: 'sale' // sale or rent
+    description: '',
+    appliedPromotion: '',
+    type: {
+      sale: false,
+      rent: false
+    }
   });
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    
+    let type = 'sale';
+    if (formData.type.sale && formData.type.rent) {
+      type = 'both';
+    } else if (formData.type.rent) {
+      type = 'rent';
+    }
+
     const newBook = {
       ...formData,
       id: Date.now(),
+      isbn: `978-${Date.now().toString().slice(-10)}`,
       quantity: parseInt(formData.quantity),
       available: parseInt(formData.quantity),
-      publishYear: parseInt(formData.publishYear),
-      price: parseFloat(formData.price),
-      rentPrice: parseFloat(formData.rentPrice),
+      publishYear: publishDate ? publishDate.getFullYear() : new Date().getFullYear(),
+      price: parseFloat(formData.price) || 0,
+      rentPrice: parseFloat(formData.rentPrice) || 0,
+      type: type,
       status: 'available'
     };
+    
     onAddBook(newBook);
+    
     setFormData({
       title: '',
       author: '',
-      isbn: '',
       category: '',
       publisher: '',
       publishYear: '',
       quantity: '',
       price: '',
       rentPrice: '',
-      type: 'sale'
+      description: '',
+      appliedPromotion: '',
+      type: { sale: false, rent: false }
     });
+    setPublishDate(undefined);
     setOpen(false);
   };
 
@@ -59,6 +80,16 @@ const AddBookDialog = ({ onAddBook, categories }) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
+    });
+  };
+
+  const handleTypeChange = (typeKey, checked) => {
+    setFormData({
+      ...formData,
+      type: {
+        ...formData.type,
+        [typeKey]: checked
+      }
     });
   };
 
@@ -70,128 +101,73 @@ const AddBookDialog = ({ onAddBook, categories }) => {
           Thêm Sách Mới
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-md mx-auto max-h-[80vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Thêm Sách Mới</DialogTitle>
+          <DialogTitle className="text-center">Thêm Sách Mới</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
+          <BookBasicInfoForm 
+            formData={formData}
+            handleInputChange={handleInputChange}
+            categories={categories}
+          />
+
+          <BookDatePickerForm 
+            publishDate={publishDate}
+            setPublishDate={setPublishDate}
+          />
+
           <div>
-            <Label htmlFor="title">Tên Sách</Label>
-            <Input
-              id="title"
-              name="title"
-              value={formData.title}
+            <Label htmlFor="description">Mô Tả Sách</Label>
+            <textarea
+              id="description"
+              name="description"
+              rows="2"
+              value={formData.description}
               onChange={handleInputChange}
-              required
+              className="form-control w-full"
+              placeholder="Nhập mô tả về nội dung sách..."
             />
           </div>
+
           <div>
-            <Label htmlFor="author">Tác Giả</Label>
-            <Input
-              id="author"
-              name="author"
-              value={formData.author}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
-          <div>
-            <Label htmlFor="isbn">ISBN</Label>
-            <Input
-              id="isbn"
-              name="isbn"
-              value={formData.isbn}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
-          <div>
-            <Label htmlFor="category">Thể Loại</Label>
-            <select
-              id="category"
-              name="category"
-              value={formData.category}
-              onChange={handleInputChange}
-              className="form-select"
-              required
-            >
-              <option value="">Chọn thể loại</option>
-              {categories.map(cat => (
-                <option key={cat.id} value={cat.name}>{cat.name}</option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <Label htmlFor="publisher">Nhà Xuất Bản</Label>
-            <Input
-              id="publisher"
-              name="publisher"
-              value={formData.publisher}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
-          <div>
-            <Label htmlFor="publishYear">Năm Xuất Bản</Label>
-            <Input
-              id="publishYear"
-              name="publishYear"
-              type="number"
-              value={formData.publishYear}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
-          <div>
-            <Label htmlFor="quantity">Số Lượng</Label>
-            <Input
+            <Label htmlFor="quantity">Số Lượng *</Label>
+            <input
               id="quantity"
               name="quantity"
               type="number"
               value={formData.quantity}
               onChange={handleInputChange}
+              className="form-control w-full"
               required
             />
           </div>
+
           <div>
-            <Label htmlFor="type">Loại</Label>
+            <Label htmlFor="appliedPromotion">Áp Dụng Khuyến Mãi</Label>
             <select
-              id="type"
-              name="type"
-              value={formData.type}
+              id="appliedPromotion"
+              name="appliedPromotion"
+              value={formData.appliedPromotion}
               onChange={handleInputChange}
-              className="form-select"
+              className="form-select w-full"
             >
-              <option value="sale">Bán</option>
-              <option value="rent">Thuê</option>
-              <option value="both">Cả hai</option>
+              <option value="">Không áp dụng khuyến mãi</option>
+              {promotions.map((promotion) => (
+                <option key={promotion.id} value={promotion.id}>
+                  {promotion.name} - {promotion.type === 'percentage' ? `${promotion.value}%` : `${promotion.value.toLocaleString()}đ`}
+                </option>
+              ))}
             </select>
           </div>
-          {(formData.type === 'sale' || formData.type === 'both') && (
-            <div>
-              <Label htmlFor="price">Giá Bán</Label>
-              <Input
-                id="price"
-                name="price"
-                type="number"
-                value={formData.price}
-                onChange={handleInputChange}
-              />
-            </div>
-          )}
-          {(formData.type === 'rent' || formData.type === 'both') && (
-            <div>
-              <Label htmlFor="rentPrice">Giá Thuê/Ngày</Label>
-              <Input
-                id="rentPrice"
-                name="rentPrice"
-                type="number"
-                value={formData.rentPrice}
-                onChange={handleInputChange}
-              />
-            </div>
-          )}
-          <div className="flex justify-end space-x-2">
+
+          <BookTypeAndPriceForm 
+            formData={formData}
+            handleTypeChange={handleTypeChange}
+            handleInputChange={handleInputChange}
+          />
+
+          <div className="flex justify-end space-x-2 pt-4">
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
               Hủy
             </Button>

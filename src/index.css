@@ -91,11 +91,15 @@
 }
 
 @layer base {
-  * {
-    @apply border-border;
+  html, body {
+    @apply h-full w-full bg-background text-foreground;
   }
 
-  body {
-    @apply bg-background text-foreground;
+  #root {
+    @apply h-full w-full;
+  }
+
+  * {
+    @apply border-border;
   }
 }

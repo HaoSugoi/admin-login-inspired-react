@@ -12,14 +12,20 @@ const AdminDashboardContent = (props) => {
       <AdminTopbar {...props} />
       
       <div className="content-section">
+        {/* Hàng đầu tiên: Báo cáo Doanh Thu */}
         <div className="row">
-          <BooksSection books={props.books} />
-          <OrdersSection orders={props.orders} />
+          <RevenueChart chartData={props.chartData} />
         </div>
 
+        {/* Hàng thứ hai: Quản lý Đơn Hàng và Hoạt động gần đây */}
         <div className="row">
+          <OrdersSection orders={props.orders} />
           <ActivitySection activities={props.activities} />
-          <RevenueChart chartData={props.chartData} />
+        </div>
+
+        {/* Hàng thứ ba: Quản lý Sách và Quản lý Sách Thuê */}
+        <div className="row">
+          <BooksSection books={props.books} />
         </div>
       </div>
     </div>

@@ -5,7 +5,7 @@ const BooksSection = ({ books }) => {
   return (
     <>
       {/* Books Management */}
-      <div className="col-lg-4 mb-4">
+      <div className="col-lg-6 mb-6">
         <div className="section-card">
           <div className="section-title">
             <span>Quản Lý Sách</span>
@@ -39,7 +39,7 @@ const BooksSection = ({ books }) => {
       </div>
 
       {/* Rental Books */}
-      <div className="col-lg-4 mb-4">
+      <div className="col-lg-6 mb-6">
         <div className="section-card">
           <div className="section-title">
             <span>Quản Lý Sách Thuê</span>
