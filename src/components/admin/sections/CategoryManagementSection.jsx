@@ -1,41 +1,44 @@
-
 import React, { useState } from 'react';
+import AddCategoryDialog from '../dialogs/AddCategoryDialog';
+// import EditCategoryDialog from '../dialogs/EditCategoryDialog'; // Tạo component này tương tự Add
 
-const CategoryManagementSection = ({ categories, onAdd, onUpdate, onDelete }) => {
-  const [showAddForm, setShowAddForm] = useState(false);
+const CategoryManagementSection = ({ categories, onAddCategory, onUpdate, onDelete }) => {
   const [editingCategory, setEditingCategory] = useState(null);
+  
 
   return (
     <div className="col-12 mb-4">
       <div className="section-card">
-        <div className="section-title">
-          <span>Quản Lý Danh Mục</span>
-          <button 
-            className="btn btn-success btn-sm"
-            onClick={() => setShowAddForm(true)}
-          >
-            Thêm Danh Mục
-          </button>
+        <div className="section-title d-flex justify-content-between align-items-center mb-3">
+          <h5 className="m-0">Quản Lý Danh Mục</h5>
+          <AddCategoryDialog onAddCategory={onAddCategory} />
         </div>
         
         <div className="table-responsive">
-          <table className="table order-table">
-            <thead>
+          <table className="table table-hover">
+            <thead className="table-light">
               <tr>
                 <th>Tên Danh Mục</th>
                 <th>Mô Tả</th>
                 <th>Số Sách</th>
-                <th>Thao Tác</th>
+                <th className="text-end">Thao Tác</th>
               </tr>
             </thead>
             <tbody>
               {categories.map((category) => (
                 <tr key={category.id}>
-                  <td>{category.name}</td>
-                  <td>{category.description}</td>
-                  <td><span className="badge bg-info">{category.booksCount}</span></td>
+                  <td className="fw-medium">{category.name}</td>
+                  <td className="text-muted">{category.description || '—'}</td>
                   <td>
-                    <button className="btn btn-sm btn-outline-primary me-2">Sửa</button>
+                    <span className="badge bg-primary">{category.booksCount || 0}</span>
+                  </td>
+                  <td className="text-end">
+                    <button 
+                      className="btn btn-sm btn-outline-primary me-2"
+                      onClick={() => setEditingCategory(category)}
+                    >
+                      Sửa
+                    </button>
                     <button 
                       className="btn btn-sm btn-outline-danger"
                       onClick={() => onDelete(category.id)}
@@ -49,6 +52,15 @@ const CategoryManagementSection = ({ categories, onAdd, onUpdate, onDelete }) =>
           </table>
         </div>
       </div>
+
+      {/* Dialog chỉnh sửa */}
+      {/* {editingCategory && (
+        <EditCategoryDialog
+          category={editingCategory}
+          onClose={() => setEditingCategory(null)}
+          onUpdate={onUpdate}
+        />
+      )} */}
     </div>
   );
 };

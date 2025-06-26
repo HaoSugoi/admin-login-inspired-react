@@ -55,7 +55,7 @@ const BooksListSection = ({ books, categories, onAddBook, onUpdateBook, onDelete
     <div className="col-lg-8 mb-4">
       <div className="section-card">
         <div className="section-title d-flex justify-content-between align-items-center">
-          <span>Danh Sách Sách</span>
+          <span>Danh Sách Sách Bán </span>
           <AddBookDialog onAddBook={onAddBook} categories={categories} promotions={promotions} />
         </div>
         
@@ -80,7 +80,7 @@ const BooksListSection = ({ books, categories, onAddBook, onUpdateBook, onDelete
                   <td>
                     <div className="d-flex flex-column">
                       <span className="fw-bold">{book.title}</span>
-                      <small className="text-muted">ISBN: {book.isbn}</small>
+                      {/* <small className="text-muted">ISBN: {book.isbn}</small> */}
                     </div>
                   </td>
                   <td>{book.author}</td>

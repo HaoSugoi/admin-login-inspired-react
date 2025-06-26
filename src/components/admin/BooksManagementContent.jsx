@@ -7,7 +7,7 @@ import BookStatisticsSection from './sections/BookStatisticsSection';
 
 const BooksManagementContent = (props) => {
   return (
-    <div className="col-md-9 col-lg-10 main-content">
+    <div className="col-md-9 col-lg-10 main-content ">
       <AdminTopbar {...props} />
       
       <div className="content-section">
@@ -31,12 +31,7 @@ const BooksManagementContent = (props) => {
             onToggleBookVisibility={props.handleToggleBookVisibility}
             promotions={props.promotions || []}
           />
-          <CategoriesSection 
-            categories={props.categories}
-            onAddCategory={props.handleAddCategory}
-            onUpdateCategory={props.handleUpdateCategory}
-            onDeleteCategory={props.handleDeleteCategory}
-          />
+          
         </div>
       </div>
     </div>
