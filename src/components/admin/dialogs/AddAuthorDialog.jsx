@@ -34,9 +34,6 @@ const AddAuthorDialog = ({ onAddAuthor }) => {
     setFormData({
       name: '',
       biography: '',
-      birthYear: '',
-      nationality: '',
-      avatar: '/placeholder.svg'
     });
     setOpen(false);
   };
