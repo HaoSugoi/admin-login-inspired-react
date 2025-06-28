@@ -1,14 +1,17 @@
-
 import React from 'react';
 import AdminTopbar from './AdminTopbar';
-import CategoryManagementSection from './sections/CategoryManagementSection';
 import CategoryStatisticsSection from './sections/CategoryStatisticsSection';
+// import CategoryListSection from './sections/CategoryListSection';
+import CategoryManagementSection from './sections/CategoryManagementSection';
+import { useCategoryManagement } from '../../hooks/useCategoryManagement'; // Import hook
 
 const ReportsManagementContent = (props) => {
+  // Sử dụng hook ở component cha
+  const { statistics } = useCategoryManagement();
+
   return (
     <div className="col-md-9 col-lg-10 main-content">
       <AdminTopbar {...props} />
-      
       <div className="content-section">
         <div className="row">
           <div className="col-12 mb-4">
@@ -17,15 +20,13 @@ const ReportsManagementContent = (props) => {
         </div>
 
         <div className="row">
-          <CategoryStatisticsSection statistics={props.statistics} />
+          <CategoryStatisticsSection statistics={statistics} />
         </div>
 
         <div className="row">
-          <CategoryManagementSection 
-            categories={props.categories}
-            onAddCategory={props.addCategory}
-            onUpdate={props.updateCategory}
-            onDelete={props.deleteCategory}
+          
+          <CategoryManagementSection
+          
           />
         </div>
       </div>

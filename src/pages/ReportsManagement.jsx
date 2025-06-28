@@ -1,13 +1,13 @@
 
 import React from 'react';
-import { useReportsManagement } from '../hooks/useReportsManagement';
+import { useCategoryManagement } from '../hooks/useCategoryManagement';
 import AdminSidebar from '../components/admin/AdminSidebar';
 import ReportsManagementContent from '../components/admin/ReportsManagementContent';
 import '../styles/AdminIndex.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const ReportsManagement = () => {
-  const reportsData = useReportsManagement();
+  const reportsData = useCategoryManagement();
 
   return (
     <div className="admin-index-container">
