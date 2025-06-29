@@ -1,23 +1,52 @@
+import React, { useState } from "react";
+import AddAuthorDialog from "../dialogs/AddAuthorDialog";
+import { Edit, Trash2 } from "lucide-react";
+import { useAuthorsManagement } from "../../../hooks/useAuthorsManagement";
 
-import React, { useState } from 'react';
-import AddAuthorDialog from '../dialogs/AddAuthorDialog';
-import { Edit, Trash2 } from 'lucide-react';
-
-const AuthorsListSection = ({ authors, onAddAuthor, onUpdateAuthor, onDeleteAuthor }) => {
+const AuthorsListSection = ({
+  authors,
+  statistics,
+  isLoadingAuthors,
+  onAddAuthor,
+  isCreating,
+  isUpdating,
+  isDeleting,
+}) => {
   const [editingAuthor, setEditingAuthor] = useState(null);
   const [editData, setEditData] = useState({});
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // Hàm lọc tác giả
+  const filterAuthors = (authors, term) => {
+    if (!term) return authors;
+    return authors.filter(author => 
+      author.Name.toLowerCase().includes(term.toLowerCase()) || 
+      (author.Description && author.Description.toLowerCase().includes(term.toLowerCase()))
+    );
+  };
+
+  // Áp dụng bộ lọc
+  const filteredAuthors = filterAuthors(authors, searchTerm);
+  
+  // Tạo biến an toàn để tránh lỗi khi dữ liệu chưa có
+  const safeAuthors = filteredAuthors || [];
 
   const handleEditStart = (author) => {
-    setEditingAuthor(author.id);
+    setEditingAuthor(author.AuthorId);
     setEditData({
-      name: author.name,
-      biography: author.biography,
-      nationality: author.nationality
+      Name: author.Name,
+      Description: author.Description,
     });
   };
 
   const handleEditSave = (authorId) => {
-    onUpdateAuthor(authorId, editData);
+    onUpdateAuthor({
+      id: authorId,
+      data: {
+        Name: editData.Name,
+        Description: editData.Description,
+      },
+    });
     setEditingAuthor(null);
     setEditData({});
   };
@@ -28,7 +57,7 @@ const AuthorsListSection = ({ authors, onAddAuthor, onUpdateAuthor, onDeleteAuth
   };
 
   const handleDeleteAuthor = (authorId) => {
-    if (window.confirm('Bạn có chắc chắn muốn xóa tác giả này?')) {
+    if (window.confirm("Bạn có chắc chắn muốn xóa tác giả này?")) {
       onDeleteAuthor(authorId);
     }
   };
@@ -36,100 +65,164 @@ const AuthorsListSection = ({ authors, onAddAuthor, onUpdateAuthor, onDeleteAuth
   const handleInputChange = (field, value) => {
     setEditData({
       ...editData,
-      [field]: value
+      [field]: value,
     });
   };
 
   return (
     <div className="col-lg-8 mb-4">
       <div className="section-card">
-        <div className="section-title d-flex justify-content-between align-items-center">
-          <span>Danh Sách Tác Giả</span>
-          <AddAuthorDialog onAddAuthor={onAddAuthor} />
+        <div className="d-flex justify-content-between align-items-center mb-3">
+          <div>
+            <h5>Danh Sách Tác Giả</h5>
+            <div className="d-flex gap-2 mt-2">
+              <span className="badge bg-primary">
+                Tổng: {statistics?.totalAuthors || 0}
+              </span>
+              {/* Có thể thêm các thống kê khác nếu có dữ liệu */}
+              {/* <span className="badge bg-success">
+                Có sách: {statistics?.authorsWithBooks || 0}
+              </span> */}
+            </div>
+          </div>
+
+          <div className="d-flex gap-2">
+            <input
+              type="text"
+              placeholder="Tìm kiếm tác giả..."
+              className="form-control"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <AddAuthorDialog
+              onAddAuthor={onAddAuthor}
+              isCreating={isCreating}
+            />
+          </div>
         </div>
-        
-        <div className="authors-grid">
-          {authors.map((author) => (
-            <div key={author.id} className="author-card mb-4 p-3 border rounded">
-              <div className="row">
-                <div className="col-md-3 text-center">
-                  <img 
-                    src={author.avatar} 
-                    alt={author.name}
-                    className="author-avatar rounded-circle mb-2"
-                    style={{ width: '80px', height: '80px', objectFit: 'cover' }}
-                  />
-                </div>
-                <div className="col-md-9">
-                  {editingAuthor === author.id ? (
-                    <div className="edit-form">
-                      <div className="mb-2">
-                        <label className="form-label">Tên tác giả:</label>
-                        <input
-                          type="text"
-                          className="form-control form-control-sm"
-                          value={editData.name}
-                          onChange={(e) => handleInputChange('name', e.target.value)}
-                        />
-                      </div>
-                      <div className="mb-2">
-                        <label className="form-label">Tiểu sử:</label>
-                        <textarea
-                          className="form-control form-control-sm"
-                          rows="2"
-                          value={editData.biography}
-                          onChange={(e) => handleInputChange('biography', e.target.value)}
-                        />
-                      </div>
-                      <div className="d-flex gap-2">
-                        <button 
-                          className="btn btn-sm btn-success"
-                          onClick={() => handleEditSave(author.id)}
-                        >
-                          Lưu
-                        </button>
-                        <button 
-                          className="btn btn-sm btn-secondary"
-                          onClick={handleEditCancel}
-                        >
-                          Hủy
-                        </button>
-                      </div>
+
+        {isLoadingAuthors ? (
+          <div className="text-center py-5">
+            <div className="spinner-border" role="status">
+              <span className="visually-hidden">Loading...</span>
+            </div>
+          </div>
+        ) : safeAuthors.length === 0 ? (
+          <div className="text-center py-5 text-muted">
+            {searchTerm 
+              ? "Không tìm thấy tác giả phù hợp" 
+              : "Chưa có tác giả nào"}
+          </div>
+        ) : (
+          <div className="authors-grid">
+            {safeAuthors.map((author) => (
+              <div
+                key={author.AuthorId}
+                className="author-card mb-4 p-3 border rounded"
+              >
+                <div className="row">
+                  <div className="col-md-3 text-center">
+                    <div
+                      className="avatar-placeholder rounded-circle mb-2 d-flex align-items-center justify-content-center"
+                      style={{
+                        width: "80px",
+                        height: "80px",
+                        backgroundColor: "#e9ecef",
+                        fontSize: "24px",
+                      }}
+                    >
+                      {author.Name?.charAt(0) || "A"}
                     </div>
-                  ) : (
-                    <>
-                      <h5 className="author-name">{author.name}</h5>
-                      <p className="author-bio text-muted">{author.biography}</p>
-                      <div className="author-info">
-                        <small className="text-muted">
-                          Năm sinh: {author.birthYear} | Quốc tịch: {author.nationality}
-                        </small>
-                        <br />
-                        <span className="badge bg-success">{author.booksCount} tác phẩm</span>
+                  </div>
+                  <div className="col-md-9">
+                    {editingAuthor === author.AuthorId ? (
+                      <div className="edit-form">
+                        <div className="mb-2">
+                          <label className="form-label">Tên tác giả:</label>
+                          <input
+                            type="text"
+                            className="form-control form-control-sm"
+                            value={editData.Name || ""}
+                            onChange={(e) =>
+                              handleInputChange("Name", e.target.value)
+                            }
+                            disabled={isUpdating}
+                          />
+                        </div>
+                        <div className="mb-2">
+                          <label className="form-label">Mô tả:</label>
+                          <textarea
+                            className="form-control form-control-sm"
+                            rows="2"
+                            value={editData.Description || ""}
+                            onChange={(e) =>
+                              handleInputChange("Description", e.target.value)
+                            }
+                            disabled={isUpdating}
+                          />
+                        </div>
+                        <div className="d-flex gap-2">
+                          <button
+                            className="btn btn-sm btn-success"
+                            onClick={() => handleEditSave(author.AuthorId)}
+                            disabled={isUpdating}
+                          >
+                            {isUpdating ? (
+                              <span
+                                className="spinner-border spinner-border-sm me-1"
+                                role="status"
+                              ></span>
+                            ) : null}
+                            Lưu
+                          </button>
+                          <button
+                            className="btn btn-sm btn-secondary"
+                            onClick={handleEditCancel}
+                            disabled={isUpdating}
+                          >
+                            Hủy
+                          </button>
+                        </div>
                       </div>
-                      <div className="author-actions mt-2">
-                        <button 
-                          className="btn btn-sm btn-outline-primary me-2"
-                          onClick={() => handleEditStart(author)}
-                        >
-                          <Edit size={14} className="me-1" />
-                          Sửa
-                        </button>
-                        <button 
-                          className="btn btn-sm btn-outline-danger"
-                          onClick={() => handleDeleteAuthor(author.id)}
-                        >
-                          <Trash2 size={14} className="me-1" />
-                          Xóa
-                        </button>
-                      </div>
-                    </>
-                  )}
+                    ) : (
+                      <>
+                        <h5 className="author-name">{author.Name}</h5>
+                        <p className="author-bio text-muted">
+                          {author.Description}
+                        </p>
+                        <div className="author-actions mt-2">
+                          <button
+                            className="btn btn-sm btn-outline-primary me-2"
+                            onClick={() => handleEditStart(author)}
+                            disabled={isUpdating || isDeleting}
+                          >
+                            <Edit size={14} className="me-1" />
+                            Sửa
+                          </button>
+                          <button
+                            className="btn btn-sm btn-outline-danger"
+                            onClick={() => handleDeleteAuthor(author.AuthorId)}
+                            disabled={isUpdating || isDeleting}
+                          >
+                            {isDeleting ? (
+                              <span
+                                className="spinner-border spinner-border-sm me-1"
+                                role="status"
+                              ></span>
+                            ) : (
+                              <Trash2 size={14} className="me-1" />
+                            )}
+                            Xóa
+                          </button>
+                        </div>
+                      </>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

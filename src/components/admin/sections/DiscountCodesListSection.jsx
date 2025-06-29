@@ -1,27 +1,26 @@
-
 import React, { useState } from 'react';
 import AddDiscountCodeDialog from '../dialogs/AddDiscountCodeDialog';
 import EditDiscountCodeDialog from '../dialogs/EditDiscountCodeDialog';
 import { Edit, Trash2, ToggleLeft, ToggleRight } from 'lucide-react';
 
-const DiscountCodesListSection = ({ discountCodes, onAdd, onUpdate, onDelete, onToggleStatus }) => {
+const DiscountCodesListSection = ({ discountCodes, onAdd, onUpdateDiscountCode, onDelete, onToggleStatus }) => {
   const [editingCode, setEditingCode] = useState(null);
   const [showEditDialog, setShowEditDialog] = useState(false);
 
-  const handleEditCode = (code) => {
-    setEditingCode(code);
+  const handleEditCode = (discountCodes) => {
+    setEditingCode(discountCodes);
     setShowEditDialog(true);
   };
 
-  const handleDeleteCode = (codeId) => {
+  const handleDeleteCode = (DiscountCodeId) => {
     if (window.confirm('Bạn có chắc chắn muốn xóa mã giảm giá này?')) {
-      onDelete(codeId);
+      onDelete(DiscountCodeId);
     }
   };
 
-  const handleToggleStatus = (code) => {
-    const newStatus = code.status === 'active' ? 'inactive' : 'active';
-    onToggleStatus(code.id, newStatus);
+  const handleToggleStatus = (discountCodes) => {
+    const newStatus = discountCodes.status === 'active' ? 'inactive' : 'active';
+    onToggleStatus(discountCodes.DiscountCodeId, newStatus);
   };
 
   return (
@@ -38,77 +37,86 @@ const DiscountCodesListSection = ({ discountCodes, onAdd, onUpdate, onDelete, on
               <tr>
                 <th>Mã</th>
                 <th>Tên Mã</th>
-                <th>Loại</th>
+              
                 <th>Giá Trị</th>
                 <th>Sử Dụng</th>
-                <th>Trạng Thái</th>
-                <th>Hạn Sử Dụng</th>
+                <th>Số lượng</th>
+                <th>Điểm đổi</th>
+                <th>Thời gian</th>
                 <th>Thao Tác</th>
               </tr>
             </thead>
             <tbody>
-              {discountCodes.map((code) => (
-                <tr key={code.id}>
-                  <td><code className="bg-light px-2 py-1 rounded">{code.code}</code></td>
-                  <td>{code.name}</td>
-                  <td>
-                    <span className={code.type === 'percentage' ? 'text-info' : 'text-warning'}>
-                      {code.type === 'percentage' ? 'Phần trăm' : 'Số tiền'}
-                    </span>
-                  </td>
-                  <td>
-                    {code.type === 'percentage' ? `${code.value}%` : `${code.value.toLocaleString()}đ`}
-                  </td>
-                  <td>{code.usageCount}/{code.usageLimit}</td>
-                  <td>
-                    <span className={code.status === 'active' ? 'text-success' : 'text-danger'}>
-                      {code.status === 'active' ? 'Hoạt động' : 'Tạm dừng'}
-                    </span>
-                  </td>
-                  <td>{code.endDate}</td>
-                  <td>
-                    <div className="d-flex gap-1">
-                      <button 
-                        className="btn btn-sm btn-outline-primary"
-                        onClick={() => handleEditCode(code)}
-                        title="Sửa"
-                      >
-                        <Edit size={14} />
-                      </button>
-                      <button 
-                        className="btn btn-sm btn-outline-warning"
-                        onClick={() => handleToggleStatus(code)}
-                        title={code.status === 'active' ? 'Tạm dừng' : 'Kích hoạt'}
-                      >
-                        {code.status === 'active' ? <ToggleRight size={14} /> : <ToggleLeft size={14} />}
-                      </button>
-                      <button 
-                        className="btn btn-sm btn-outline-danger"
-                        onClick={() => handleDeleteCode(code.id)}
-                        title="Xóa"
-                      >
-                        <Trash2 size={14} />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+            {discountCodes.map((code) => (
+  <tr key={code.DiscountCodeId}>
+    <td>
+      <code className="bg-light px-2 py-1 rounded">{code.DiscountCodeId}</code>
+    </td>
+    <td>{code.DiscountCodeName}</td>
+   
+    <td>{code.DiscountValue }%</td>
+    <td>{code.RequiredPoints}</td>
+    
+    <td>{code.AvailableQuantity}</td>
+    
+    <td>{code.RequiredPoints}</td>
+    <td>
+          <small>
+              <div>{new Date(code.StartDate).toLocaleDateString()}</div>
+              <div>đến {new Date(code.EndDate).toLocaleDateString()}</div>
+          </small>
+   </td>
+                
+    <td>
+      <div className="d-flex gap-1">
+        <button
+          className="btn btn-sm btn-outline-primary"
+          onClick={() => handleEditCode(code)}
+          title="Sửa"
+        >
+          <Edit size={14} />
+        </button>
+        <button
+          className="btn btn-sm btn-outline-warning"
+          onClick={() => handleToggleStatus(code)}
+          title="Tạm dừng"
+        >
+          <ToggleRight size={14} />
+        </button>
+        <button
+          className="btn btn-sm btn-outline-danger"
+          onClick={() => handleDeleteCode(code.DiscountCodeId)}
+          title="Xóa"
+        >
+<Trash2 size={14} />
+        </button>
+      </div>
+    </td>
+  </tr>
+))}
+
+
             </tbody>
           </table>
         </div>
       </div>
 
       {editingCode && (
-        <EditDiscountCodeDialog
-          discountCode={editingCode}
-          open={showEditDialog}
-          onClose={() => {
-            setShowEditDialog(false);
-            setEditingCode(null);
-          }}
-          onUpdateDiscountCode={onUpdate}
-        />
-      )}
+  <EditDiscountCodeDialog
+  discountCode={editingCode}
+  open={showEditDialog}
+  onClose={() => {
+    setShowEditDialog(false);
+    setEditingCode(null);
+  }}
+  
+  onUpdate={(id, data) => {
+    onUpdateDiscountCode({ id, data }); // truyền đúng function xử lý từ cha
+  }}
+/>
+)}
+
+    
     </div>
   );
 };

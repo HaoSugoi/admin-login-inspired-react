@@ -25,7 +25,7 @@ const DiscountCodesStatisticsSection = ({ statistics }) => {
         </div>
         <div className="col-md-3 mb-3">
           <div className="stats-card bg-info">
-            <div className="stats-value">{statistics.totalSavings.toLocaleString()}đ</div>
+            <div className="stats-value">{statistics.totalSavings}đ</div>
             <div className="stats-label">Tổng Tiết Kiệm</div>
           </div>
         </div>

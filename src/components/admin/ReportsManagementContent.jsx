@@ -1,7 +1,6 @@
 import React from 'react';
 import AdminTopbar from './AdminTopbar';
 import CategoryStatisticsSection from './sections/CategoryStatisticsSection';
-// import CategoryListSection from './sections/CategoryListSection';
 import CategoryManagementSection from './sections/CategoryManagementSection';
 import { useCategoryManagement } from '../../hooks/useCategoryManagement'; // Import hook
 

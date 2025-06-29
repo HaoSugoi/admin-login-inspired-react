@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { useAuthorsManagement } from '../hooks/useAuthorsManagement.jsx';
+import { useAuthorsManagement } from '../hooks/useAuthorsManagement.js';
 import AdminSidebar from '../components/admin/AdminSidebar';
 import AuthorsManagementContent from '../components/admin/AuthorsManagementContent';
 import '../styles/AdminIndex.css';

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import {
   Dialog,
@@ -20,50 +19,46 @@ const AddDiscountCodeDialog = ({ onAddDiscountCode }) => {
   const [open, setOpen] = useState(false);
   const [startDate, setStartDate] = useState();
   const [endDate, setEndDate] = useState();
+
   const [formData, setFormData] = useState({
-    code: '',
     name: '',
-    type: 'percentage',
+    description: '',
     value: '',
     usageLimit: 1,
-    userSpecific: true,
-    description: ''
+    requiredPoints: 0,
   });
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     const newCode = {
-      ...formData,
-      value: parseFloat(formData.value),
-      usageLimit: parseInt(formData.usageLimit),
-      startDate: startDate ? format(startDate, 'dd/MM/yyyy') : '',
-      endDate: endDate ? format(endDate, 'dd/MM/yyyy') : '',
-      userId: null
+      DiscountCodeName: formData.name,
+      Description: formData.description,
+      DiscountValue: parseFloat(formData.value) / 100, // % sang số thực
+      AvailableQuantity: parseInt(formData.usageLimit),
+      RequiredPoints: parseInt(formData.requiredPoints),
+      StartDate: startDate?.toISOString(),
+      EndDate: endDate?.toISOString()
     };
-    
-    onAddDiscountCode(newCode);
-    
+
+    onAddDiscountCode(newCode); // gọi mutation từ props
+
     // Reset form
     setFormData({
-      code: '',
       name: '',
-      type: 'percentage',
+      description: '',
       value: '',
       usageLimit: 1,
-      userSpecific: true,
-      description: ''
+      requiredPoints: 0,
     });
     setStartDate(undefined);
     setEndDate(undefined);
     setOpen(false);
-  };
-
-  const handleInputChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
   };
 
   return (
@@ -74,72 +69,77 @@ const AddDiscountCodeDialog = ({ onAddDiscountCode }) => {
           Thêm Mã Giảm Giá
         </Button>
       </DialogTrigger>
+
       <DialogContent className="max-w-lg mx-auto">
         <DialogHeader>
           <DialogTitle className="text-center">Tạo Mã Giảm Giá Mới</DialogTitle>
         </DialogHeader>
+
         <form onSubmit={handleSubmit} className="space-y-4 max-h-96 overflow-y-auto">
           <div>
-            <Label htmlFor="code">Mã Giảm Giá *</Label>
-            <Input
-              id="code"
-              name="code"
-              value={formData.code}
-              onChange={handleInputChange}
-              placeholder="VD: WELCOME10"
-              required
-            />
-          </div>
-          <div>
-            <Label htmlFor="name">Tên Mã *</Label>
+            <Label htmlFor="name">Tên Mã Giảm Giá *</Label>
             <Input
               id="name"
               name="name"
               value={formData.name}
               onChange={handleInputChange}
-              placeholder="VD: Mã chào mừng thành viên mới"
               required
+              placeholder="VD: GIAM50"
             />
           </div>
-          <div className="grid grid-cols-2 gap-4">
+
+          <div>
+            <Label htmlFor="description">Mô Tả</Label>
+            <textarea
+              id="description"
+              name="description"
+              rows="2"
+              value={formData.description}
+              onChange={handleInputChange}
+              className="form-control w-full"
+              placeholder="Nội dung mô tả cho mã giảm giá"
+            />
+          </div>
+<div className="grid grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="type">Loại Giảm Giá</Label>
-              <select
-                id="type"
-                name="type"
-                value={formData.type}
-                onChange={handleInputChange}
-                className="form-select w-full"
-              >
-                <option value="percentage">Phần trăm (%)</option>
-                <option value="fixed">Số tiền cố định</option>
-              </select>
-            </div>
-            <div>
-              <Label htmlFor="value">Giá Trị *</Label>
+              <Label htmlFor="value">Giá Trị Giảm (%) *</Label>
               <Input
                 id="value"
                 name="value"
                 type="number"
                 value={formData.value}
                 onChange={handleInputChange}
-                placeholder={formData.type === 'percentage' ? '10' : '50000'}
+                placeholder="VD: 20"
+                required
+              />
+            </div>
+            <div>
+              <Label htmlFor="usageLimit">Số Lượng *</Label>
+              <Input
+                id="usageLimit"
+                name="usageLimit"
+                type="number"
+                min="1"
+                value={formData.usageLimit}
+                onChange={handleInputChange}
                 required
               />
             </div>
           </div>
+
           <div>
-            <Label htmlFor="usageLimit">Số Lần Sử Dụng *</Label>
+            <Label htmlFor="requiredPoints">Điểm Cần Đổi *</Label>
             <Input
-              id="usageLimit"
-              name="usageLimit"
+              id="requiredPoints"
+              name="requiredPoints"
               type="number"
-              value={formData.usageLimit}
+              min="0"
+              value={formData.requiredPoints}
               onChange={handleInputChange}
-              min="1"
               required
             />
           </div>
+
           <div className="grid grid-cols-2 gap-4">
             <div>
               <Label>Ngày Bắt Đầu</Label>
@@ -162,11 +162,11 @@ const AddDiscountCodeDialog = ({ onAddDiscountCode }) => {
                     selected={startDate}
                     onSelect={setStartDate}
                     initialFocus
-                    className="pointer-events-auto"
                   />
                 </PopoverContent>
               </Popover>
             </div>
+
             <div>
               <Label>Ngày Kết Thúc</Label>
               <Popover>
@@ -187,25 +187,13 @@ const AddDiscountCodeDialog = ({ onAddDiscountCode }) => {
                     mode="single"
                     selected={endDate}
                     onSelect={setEndDate}
-                    initialFocus
-                    className="pointer-events-auto"
+initialFocus
                   />
                 </PopoverContent>
               </Popover>
             </div>
           </div>
-          <div>
-            <Label htmlFor="description">Mô Tả</Label>
-            <textarea
-              id="description"
-              name="description"
-              rows="3"
-              value={formData.description}
-              onChange={handleInputChange}
-              className="form-control w-full"
-              placeholder="Mô tả về mã giảm giá..."
-            />
-          </div>
+
           <div className="flex justify-end space-x-2 pt-4">
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
               Hủy

@@ -1,36 +1,25 @@
-
 import React, { useState } from 'react';
 import AddPromotionDialog from '../dialogs/AddPromotionDialog';
 import EditPromotionDialog from '../dialogs/EditPromotionDialog';
 
-const PromotionsListSection = ({ 
-  promotions, 
-  categories, 
-  onAdd, 
-  onUpdate, 
-  onDelete, 
-  onToggleStatus 
+const PromotionsListSection = ({
+  promotions,
+  categories,
+  onAdd,
+  onUpdate,
+  onDelete,
+  onToggleStatus
 }) => {
   const [editingPromotion, setEditingPromotion] = useState(null);
 
-  const getStatusBadge = (status) => {
-    switch (status) {
-      case 'active':
-        return <span className="badge bg-success">Đang hoạt động</span>;
-      case 'expired':
-        return <span className="badge bg-warning">Hết hạn</span>;
-      case 'disabled':
-        return <span className="badge bg-secondary">Tạm dừng</span>;
-      default:
-        return <span className="badge bg-secondary">Không xác định</span>;
-    }
-  };
+  const getStatusBadge = (startDate, endDate) => {
+    const now = new Date();
+    const start = new Date(startDate);
+    const end = new Date(endDate);
 
-  const getTypeDisplay = (type, value) => {
-    if (type === 'percentage') {
-      return `${value}%`;
-    }
-    return `${value.toLocaleString()}đ`;
+    if (now < start) return <span className="badge bg-secondary">Chưa bắt đầu</span>;
+    if (now > end) return <span className="badge bg-warning">Hết hạn</span>;
+    return <span className="badge bg-success">Đang hoạt động</span>;
   };
 
   return (
@@ -40,7 +29,7 @@ const PromotionsListSection = ({
           <span>Danh Sách Khuyến Mãi</span>
           <AddPromotionDialog categories={categories} onAdd={onAdd} />
         </div>
-        
+
         <div className="table-responsive">
           <table className="table order-table">
             <thead>
@@ -50,80 +39,49 @@ const PromotionsListSection = ({
                 <th>Giá Trị</th>
                 <th>Thể Loại Áp Dụng</th>
                 <th>Thời Gian</th>
-                <th>Sử Dụng</th>
                 <th>Trạng Thái</th>
                 <th>Thao Tác</th>
               </tr>
             </thead>
             <tbody>
               {promotions.map((promotion) => (
-                <tr key={promotion.id}>
+                <tr key={promotion.PromotionId}>
                   <td>
-                    <strong className="text-primary">{promotion.code}</strong>
+                    <strong className="text-primary">{promotion.PromotionId}</strong>
                   </td>
                   <td>
                     <div>
-                      <strong>{promotion.name}</strong>
-                      {promotion.description && (
-                        <small className="d-block text-muted">{promotion.description}</small>
-                      )}
+                      <strong>{promotion.PromotionName}</strong>
                     </div>
                   </td>
                   <td>
                     <span className="badge bg-info">
-                      {getTypeDisplay(promotion.type, promotion.value)}
+                      {promotion.DiscountPercentage}%
                     </span>
                   </td>
                   <td>
-                    <span className={`badge ${promotion.categoryId ? 'bg-warning' : 'bg-secondary'}`}>
-                      {promotion.categoryName}
+                    <span className="badge bg-secondary">
+                      {/* Nếu có category, hiển thị ở đây */}
+                      Chưa có
                     </span>
                   </td>
                   <td>
                     <small>
-                      <div>{promotion.startDate}</div>
-                      <div>đến {promotion.endDate}</div>
+                      <div>{new Date(promotion.StartDate).toLocaleDateString()}</div>
+                      <div>đến {new Date(promotion.EndDate).toLocaleDateString()}</div>
                     </small>
                   </td>
+                  <td>{getStatusBadge(promotion.StartDate, promotion.EndDate)}</td>
                   <td>
-                    <small>
-                      {promotion.usageCount}/{promotion.usageLimit}
-                      <div className="progress mt-1" style={{height: '4px'}}>
-                        <div 
-                          className="progress-bar" 
-                          style={{
-                            width: `${(promotion.usageCount / promotion.usageLimit) * 100}%`
-                          }}
-                        ></div>
-                      </div>
-                    </small>
-                  </td>
-                  <td>{getStatusBadge(promotion.status)}</td>
-                  <td>
-                    <button 
+                    <button
                       className="btn btn-sm btn-outline-primary me-2"
                       onClick={() => setEditingPromotion(promotion)}
                     >
                       Sửa
                     </button>
-                    {promotion.status === 'active' ? (
-                      <button 
-                        className="btn btn-sm btn-outline-warning me-2"
-                        onClick={() => onToggleStatus(promotion.id, 'disabled')}
-                      >
-                        Tạm dừng
-                      </button>
-                    ) : (
-                      <button 
-                        className="btn btn-sm btn-outline-success me-2"
-                        onClick={() => onToggleStatus(promotion.id, 'active')}
-                      >
-                        Kích hoạt
-                      </button>
-                    )}
-                    <button 
-                      className="btn btn-sm btn-outline-danger"
-                      onClick={() => onDelete(promotion.id)}
+                    <button
+className="btn btn-sm btn-outline-danger"
+                      onClick={() => onDelete(promotion.PromotionId)}
                     >
                       Xóa
                     </button>

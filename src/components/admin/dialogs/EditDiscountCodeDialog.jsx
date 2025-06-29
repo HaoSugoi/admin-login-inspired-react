@@ -8,197 +8,134 @@ import {
 import { Button } from "../../ui/button";
 import { Input } from "../../ui/input";
 import { Label } from "../../ui/label";
-import { Calendar } from "../../ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
-import { CalendarIcon } from 'lucide-react';
-import { format } from 'date-fns';
-import { cn } from '../../../lib/utils';
 
-const EditDiscountCodeDialog = ({ discountCode, open, onClose, onUpdateDiscountCode }) => {
-  const [startDate, setStartDate] = useState();
-  const [endDate, setEndDate] = useState();
+const EditDiscountCodeDialog = ({ discountCode, open, onClose, onUpdate }) => 
+  {
   const [formData, setFormData] = useState({
-    code: '',
-    
-    type: 'percentage',
+    name: '',
     value: '',
-    usageLimit: 1,
-    userSpecific: true,
-    description: ''
+    quantity: '',
+    requiredPoints: '',
+    startDate: '',
+    endDate: ''
   });
 
   useEffect(() => {
     if (discountCode) {
       setFormData({
-        code: discountCode.code || '',
-        type: discountCode.type || 'percentage',
-        value: discountCode.value || '',
-        usageLimit: discountCode.usageLimit || 1,
-        userSpecific: discountCode.userSpecific || true,
-        description: discountCode.description || ''
+        name: discountCode.DiscountCodeName || '',
+        value: (discountCode.DiscountValue * 100).toString() || '',
+        quantity: discountCode.AvailableQuantity?.toString() || '',
+        requiredPoints: discountCode.RequiredPoints?.toString() || '',
+        startDate: discountCode.StartDate?.split('T')[0] || '',
+        endDate: discountCode.EndDate?.split('T')[0] || ''
       });
-      
-      if (discountCode.startDate) {
-        const [day, month, year] = discountCode.startDate.split('/');
-        setStartDate(new Date(year, month - 1, day));
-      }
-      
-      if (discountCode.endDate) {
-        const [day, month, year] = discountCode.endDate.split('/');
-        setEndDate(new Date(year, month - 1, day));
-      }
     }
   }, [discountCode]);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    
-    const updatedCode = {
-      ...discountCode,
-      ...formData,
-      value: parseFloat(formData.value),
-      usageLimit: parseInt(formData.usageLimit),
-      startDate: startDate ? format(startDate, 'dd/MM/yyyy') : discountCode.startDate,
-      endDate: endDate ? format(endDate, 'dd/MM/yyyy') : discountCode.endDate
-    };
-    
-    onUpdateDiscountCode(updatedCode);
-    onClose();
+  const handleChange = (field, value) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleInputChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const updatedCode = {
+      DiscountCodeName: formData.name,
+      DiscountValue: parseFloat(formData.value) ,
+      AvailableQuantity: parseInt(formData.quantity),
+      RequiredPoints: parseInt(formData.requiredPoints),
+      StartDate: new Date(formData.startDate).toISOString(),
+      EndDate: new Date(formData.endDate).toISOString()
+    };
+    console.log("📦 DiscountCode trong Dialog:", discountCode);
+
+    onUpdate(discountCode?.DiscountCodeId, updatedCode);
+  
+
+    onClose();
   };
+  
 
   if (!discountCode) return null;
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-lg mx-auto">
+      <DialogContent className="max-w-lg">
         <DialogHeader>
-          <DialogTitle className="text-center">Cập Nhật Mã Giảm Giá</DialogTitle>
+          <DialogTitle>Cập Nhật Mã Giảm Giá</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4 max-h-96 overflow-y-auto">
-          
+
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <Label htmlFor="code">Mã Giảm Giá *</Label>
+            <Label htmlFor="name">Tên Mã Giảm Giá</Label>
             <Input
-              id="code"
-              name="code"
-              value={formData.code}
-              onChange={handleInputChange}
-              placeholder="VD: WELCOME10"
+              id="name"
+              value={formData.name}
+              onChange={(e) => handleChange('name', e.target.value)}
               required
+              placeholder="VD: GIAM20"
             />
           </div>
+
+          <div>
+            <Label htmlFor="value">Giá Trị Giảm (%)</Label>
+            <Input
+              id="value"
+              type="number"
+              value={formData.value}
+              onChange={(e) => handleChange('value', e.target.value)}
+              required
+              placeholder="VD: 20"
+            />
+          </div>
+
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="type">Loại Giảm Giá</Label>
-              <select
-                id="type"
-                name="type"
-                value={formData.type}
-                onChange={handleInputChange}
-                className="form-select w-full"
-              >
-                <option value="percentage">Phần trăm (%)</option>
-                <option value="fixed">Số tiền cố định</option>
-              </select>
+              <Label htmlFor="quantity">Số lượng còn lại</Label>
+              <Input
+                id="quantity"
+                type="number"
+                value={formData.quantity}
+                onChange={(e) => handleChange('quantity', e.target.value)}
+required
+              />
             </div>
             <div>
-              <Label htmlFor="value">Giá Trị *</Label>
+              <Label htmlFor="requiredPoints">Điểm cần</Label>
               <Input
-                id="value"
-                name="value"
+                id="requiredPoints"
                 type="number"
-                value={formData.value}
-                onChange={handleInputChange}
-                placeholder={formData.type === 'percentage' ? '10' : '50000'}
+                value={formData.requiredPoints}
+                onChange={(e) => handleChange('requiredPoints', e.target.value)}
                 required
               />
             </div>
           </div>
-          <div>
-            <Label htmlFor="usageLimit">Số Lần Sử Dụng *</Label>
-            <Input
-              id="usageLimit"
-              name="usageLimit"
-              type="number"
-              value={formData.usageLimit}
-              onChange={handleInputChange}
-              min="1"
-              required
-            />
-          </div>
+
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label>Ngày Bắt Đầu</Label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className={cn(
-                      "w-full justify-start text-left font-normal",
-                      !startDate && "text-muted-foreground"
-                    )}
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {startDate ? format(startDate, "dd/MM/yyyy") : <span>Chọn ngày</span>}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0">
-                  <Calendar
-                    mode="single"
-                    selected={startDate}
-                    onSelect={setStartDate}
-                    initialFocus
-                    className="pointer-events-auto"
-                  />
-                </PopoverContent>
-              </Popover>
+              <Label htmlFor="startDate">Ngày Bắt Đầu</Label>
+              <Input
+                id="startDate"
+                type="date"
+                value={formData.startDate}
+                onChange={(e) => handleChange('startDate', e.target.value)}
+                required
+              />
             </div>
             <div>
-              <Label>Ngày Kết Thúc</Label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className={cn(
-                      "w-full justify-start text-left font-normal",
-                      !endDate && "text-muted-foreground"
-                    )}
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {endDate ? format(endDate, "dd/MM/yyyy") : <span>Chọn ngày</span>}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0">
-                  <Calendar
-                    mode="single"
-                    selected={endDate}
-                    onSelect={setEndDate}
-                    initialFocus
-                    className="pointer-events-auto"
-                  />
-                </PopoverContent>
-              </Popover>
+              <Label htmlFor="endDate">Ngày Kết Thúc</Label>
+              <Input
+                id="endDate"
+                type="date"
+                value={formData.endDate}
+                onChange={(e) => handleChange('endDate', e.target.value)}
+                required
+              />
             </div>
           </div>
-          <div>
-            <Label htmlFor="description">Mô Tả</Label>
-            <textarea
-              id="description"
-              name="description"
-              rows="3"
-              value={formData.description}
-              onChange={handleInputChange}
-              className="form-control w-full"
-              placeholder="Mô tả về mã giảm giá..."
-            />
-          </div>
+
           <div className="flex justify-end space-x-2 pt-4">
             <Button type="button" variant="outline" onClick={onClose}>
               Hủy
