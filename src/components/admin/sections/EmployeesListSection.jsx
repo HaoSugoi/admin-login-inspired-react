@@ -1,8 +1,7 @@
-
-import React, { useState } from 'react';
-import AddEmployeeDialog from '../dialogs/AddEmployeeDialog';
-import EditEmployeeDialog from '../dialogs/EditEmployeeDialog';
-import { Edit, Trash2 } from 'lucide-react';
+import React, { useState } from "react";
+import AddEmployeeDialog from "../dialogs/AddEmployeeDialog";
+import EditEmployeeDialog from "../dialogs/EditEmployeeDialog";
+import { Edit, Trash2 } from "lucide-react";
 
 const EmployeesListSection = ({ employees, onAdd, onUpdate, onDelete }) => {
   const [editingEmployee, setEditingEmployee] = useState(null);
@@ -13,9 +12,9 @@ const EmployeesListSection = ({ employees, onAdd, onUpdate, onDelete }) => {
     setShowEditDialog(true);
   };
 
-  const handleDeleteEmployee = (employeeId) => {
-    if (window.confirm('Bạn có chắc chắn muốn xóa nhân viên này?')) {
-      onDelete(employeeId);
+  const handleDeleteEmployee = (id) => {
+    if (window.confirm("Bạn có chắc chắn muốn xóa nhân viên này?")) {
+      onDelete(id);
     }
   };
 
@@ -26,48 +25,58 @@ const EmployeesListSection = ({ employees, onAdd, onUpdate, onDelete }) => {
           <span>Danh Sách Nhân Viên</span>
           <AddEmployeeDialog onAddEmployee={onAdd} />
         </div>
-        
+
         <div className="table-responsive">
           <table className="table order-table">
             <thead>
               <tr>
                 <th>Mã NV</th>
                 <th>Họ Tên</th>
+                <th>Img</th>
                 <th>Email</th>
-                <th>Phòng Ban</th>
-                <th>Trạng Thái</th>
-                <th>Ngày Vào Làm</th>
+                <th>Vai trò</th>
+                <th>Địa chỉ</th>
+                <th>Điểm đổi</th>
+                <th>Ngày sinh</th>
                 <th>Thao Tác</th>
               </tr>
             </thead>
             <tbody>
               {employees.map((employee) => (
-                <tr key={employee.id}>
-                  <td>#{employee.id.toString().padStart(3, '0')}</td>
-                  <td>{employee.name}</td>
-                  <td>{employee.email}</td>
-                  <td>{employee.department}</td>
-                  <td>
-                    <span className={
-                      employee.status === 'Hoạt động' ? 'text-success' : 
-                      employee.status === 'Tạm nghỉ' ? 'text-warning' : 'text-danger'
-                    }>
-                      {employee.status}
-                    </span>
+                <tr key={employee.Id}>
+                  <td>#{employee.Id?.slice(0, 6).toUpperCase() || "N/A"}</td>
+                  <td>{employee.UserName}</td>
+                  <td>   
+                    <img
+                      src={
+                        employee.ImageUser
+                          ? `https://localhost:7003${employee.ImageUser}`
+                          : "/default-avatar.png"
+                      }
+                      alt="Ảnh đại diện"
+                      width={20}
+                      height={"auto"}
+                      style={{ borderRadius: "10%", objectFit: "cover" }}
+                      onError={(e) => {}}
+                    />
                   </td>
-                  <td>{employee.joinDate}</td>
+                  <td>{employee.Email}</td>
+                  <td>{employee.Role}</td>
+                  <td>{employee.Address}</td>
+                  <td>{employee.points}</td>
+                  <td>{employee.DateOfBirth}</td>
                   <td>
                     <div className="d-flex gap-1">
-                      <button 
+                      <button
                         className="btn btn-sm btn-outline-primary"
                         onClick={() => handleEditEmployee(employee)}
                         title="Sửa"
                       >
                         <Edit size={14} />
                       </button>
-                      <button 
+                      <button
                         className="btn btn-sm btn-outline-danger"
-                        onClick={() => handleDeleteEmployee(employee.id)}
+                        onClick={() => handleDeleteEmployee(employee.Id)}
                         title="Xóa"
                       >
                         <Trash2 size={14} />

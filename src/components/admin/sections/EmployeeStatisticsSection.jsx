@@ -1,7 +1,13 @@
 
 import React from 'react';
 
-const EmployeeStatisticsSection = ({ statistics }) => {
+const EmployeeStatisticsSection = ({ statistics = {} }) => {
+  const {
+    totalEmployees = 0,
+    activeEmployees = 0,
+    newEmployeesThisMonth = 0,
+    inactiveEmployees = 0,
+  } = statistics;
   return (
     <div className="col-12 mb-4">
       <div className="row">

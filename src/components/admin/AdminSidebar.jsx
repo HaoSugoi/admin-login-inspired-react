@@ -25,7 +25,7 @@ const AdminSidebar = ({ activeSection, setActiveSection, sidebarCollapsed, toggl
   ];
 
   const handleMenuClick = (item) => {
-    setActiveSection(item.id);
+    // setActiveSection(item.id);x
     navigate(item.path);
   };
 
