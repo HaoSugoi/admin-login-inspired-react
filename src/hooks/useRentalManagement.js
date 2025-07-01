@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useRentalApi } from './useRentalApi';
 
 export const useRentalManagement = () => {
-  const [activeSection, setActiveSection] = useState('rental');
+  const [activeSection, setActiveSection] = useState('rentals');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   
   // Sử dụng API hook
@@ -42,38 +42,38 @@ export const useRentalManagement = () => {
   // Wrapper functions để xử lý API calls
   const handleApproveRental = (rentalId) => {
     console.log('Approving rental:', rentalId);
-    approveRental(rentalId);
+    // approveRental(rentalId); // Uncomment when API is ready
   };
 
   const handleMarkDelivered = (rentalId) => {
     console.log('Marking as delivered:', rentalId);
-    markAsDelivered(rentalId);
+    // markAsDelivered(rentalId); // Uncomment when API is ready
   };
 
   const handleMarkReturned = (rentalId) => {
     console.log('Marking as returned:', rentalId);
-    markAsReturned(rentalId);
+    // markAsReturned(rentalId); // Uncomment when API is ready
   };
 
   const handleMarkDamaged = (rentalId, notes) => {
     console.log('Marking as damaged:', rentalId, notes);
-    markAsDamaged({ id: rentalId, notes });
+    // markAsDamaged({ id: rentalId, notes }); // Uncomment when API is ready
   };
 
   const handleCreateRental = (rentalData) => {
     console.log('Creating rental:', rentalData);
-    createRental(rentalData);
+    // createRental(rentalData); // Uncomment when API is ready
   };
 
   const handleUpdateRental = (rentalId, rentalData) => {
     console.log('Updating rental:', rentalId, rentalData);
-    updateRental({ id: rentalId, data: rentalData });
+    // updateRental({ id: rentalId, data: rentalData }); // Uncomment when API is ready
   };
 
   const handleDeleteRental = (rentalId) => {
     if (window.confirm('Bạn có chắc chắn muốn xóa đơn thuê này?')) {
       console.log('Deleting rental:', rentalId);
-      deleteRental(rentalId);
+      // deleteRental(rentalId); // Uncomment when API is ready
     }
   };
 

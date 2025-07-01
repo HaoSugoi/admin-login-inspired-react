@@ -103,7 +103,7 @@ const RentalManagementContent = (props) => {
       <div className="content-section">
         <div className="row">
           <div className="col-12 mb-4">
-            <h4 className="text-success fw-bold">Quản Lý Đơn Thuê Sách</h4>
+            <h4 className="text-success fw-bold">Quản Lý Thuê Sách</h4>
           </div>
         </div>
 
