@@ -25,7 +25,7 @@ const RentalStatisticsSection = ({ statistics }) => {
         </div>
         <div className="col-md-3 mb-3">
           <div className="section-card text-center">
-            <h3 className="text-warning">{statistics.totalFines.toLocaleString('vi-VN')}đ</h3>
+            <h3 className="text-warning">{statistics.totalFines}đ</h3>
             <p className="mb-0">Tổng Tiền Phạt</p>
           </div>
         </div>
