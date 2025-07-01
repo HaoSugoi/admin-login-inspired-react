@@ -1,3 +1,4 @@
+
 // src/hooks/useAuthorsManagement.js
 import { useState } from 'react';
 import { useAuthorApi } from './useAuthorApi';
@@ -24,9 +25,6 @@ export const useAuthorsManagement = () => {
 
   // Xử lý dữ liệu từ API
   const safeAuthors = authors || [];
-
-  // LOẠI BỎ TÍNH TOÁN THỐNG KÊ TRÙNG LẶP
-  // (Đã có trong useAuthorApi)
 
   const toggleSidebar = () => {
     setSidebarCollapsed(!sidebarCollapsed);
