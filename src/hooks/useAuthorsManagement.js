@@ -1,3 +1,4 @@
+
 // src/hooks/useAuthorsManagement.js
 import { useState } from 'react';
 import { useAuthorApi } from './useAuthorApi';
@@ -25,9 +26,6 @@ export const useAuthorsManagement = () => {
   // Xử lý dữ liệu từ API
   const safeAuthors = authors || [];
 
-  // LOẠI BỎ TÍNH TOÁN THỐNG KÊ TRÙNG LẶP
-  // (Đã có trong useAuthorApi)
-
   const toggleSidebar = () => {
     setSidebarCollapsed(!sidebarCollapsed);
   };
@@ -38,6 +36,7 @@ export const useAuthorsManagement = () => {
 
   // Wrapper functions để xử lý API calls
   const handleAddAuthor = (authorData) => {
+    console.log("handleAddAuthor received:", authorData);
     createAuthor({
       Name: authorData.Name,
       Description: authorData.Description
@@ -45,6 +44,7 @@ export const useAuthorsManagement = () => {
   };
 
   const handleUpdateAuthor = (authorId, authorData) => {
+    console.log("handleUpdateAuthor received:", { authorId, authorData });
     updateAuthor({ 
       id: authorId, 
       data: {
@@ -55,6 +55,7 @@ export const useAuthorsManagement = () => {
   };
 
   const handleDeleteAuthor = (authorId) => {
+    console.log("handleDeleteAuthor received:", authorId);
     if (window.confirm('Bạn có chắc chắn muốn xóa tác giả này? Tất cả sách của tác giả sẽ bị ảnh hưởng.')) {
       deleteAuthor(authorId);
     }

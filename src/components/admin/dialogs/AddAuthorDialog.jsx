@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import {
   Dialog,
@@ -15,8 +16,8 @@ import { Textarea } from "../../ui/textarea";
 const AddAuthorDialog = ({ onAddAuthor, isCreating }) => {
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({
-    name: '',
-    description: ''
+    Name: '',
+    Description: ''
   });
   const [error, setError] = useState('');
   const [apiError, setApiError] = useState('');
@@ -25,23 +26,25 @@ const AddAuthorDialog = ({ onAddAuthor, isCreating }) => {
     e.preventDefault();
     
     // Validate input
-    if (!formData.name.trim()) {
+    if (!formData.Name.trim()) {
       setError('Vui lòng nhập tên tác giả');
       return;
     }
 
     try {
-      // Chuẩn bị dữ liệu gửi đi
+      // Chuẩn bị dữ liệu gửi đi với đúng format
       const payload = {
-        name: formData.name.trim(),
-        description: formData.description.trim()
+        Name: formData.Name.trim(),
+        Description: formData.Description.trim()
       };
+      
+      console.log("Payload gửi từ AddAuthorDialog:", payload);
       
       // Gọi hàm callback
       await onAddAuthor(payload);
       
       // Reset form và đóng dialog
-      setFormData({ name: '', description: '' });
+      setFormData({ Name: '', Description: '' });
       setError('');
       setApiError('');
       setOpen(false);
@@ -97,7 +100,7 @@ const AddAuthorDialog = ({ onAddAuthor, isCreating }) => {
             </Label>
             <Input
               id="name"
-              name="name"
+              name="Name"
               value={formData.Name}
               onChange={handleInputChange}
               placeholder="Nhập tên tác giả"
@@ -113,7 +116,7 @@ const AddAuthorDialog = ({ onAddAuthor, isCreating }) => {
             <Label htmlFor="description">Mô Tả</Label>
             <Textarea
               id="description"
-              name="description"
+              name="Description"
               rows="2"
               value={formData.Description}
               onChange={handleInputChange}

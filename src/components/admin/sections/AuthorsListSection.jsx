@@ -1,13 +1,15 @@
+
 import React, { useState } from "react";
 import AddAuthorDialog from "../dialogs/AddAuthorDialog";
 import { Edit, Trash2 } from "lucide-react";
-import { useAuthorsManagement } from "../../../hooks/useAuthorsManagement";
 
 const AuthorsListSection = ({
   authors,
   statistics,
   isLoadingAuthors,
   onAddAuthor,
+  onUpdateAuthor,
+  onDeleteAuthor,
   isCreating,
   isUpdating,
   isDeleting,
@@ -20,7 +22,7 @@ const AuthorsListSection = ({
   const filterAuthors = (authors, term) => {
     if (!term) return authors;
     return authors.filter(author => 
-      author.Name.toLowerCase().includes(term.toLowerCase()) || 
+      author.Name?.toLowerCase().includes(term.toLowerCase()) || 
       (author.Description && author.Description.toLowerCase().includes(term.toLowerCase()))
     );
   };
@@ -40,12 +42,11 @@ const AuthorsListSection = ({
   };
 
   const handleEditSave = (authorId) => {
-    onUpdateAuthor({
-      id: authorId,
-      data: {
-        Name: editData.Name,
-        Description: editData.Description,
-      },
+    console.log("Saving author with ID:", authorId, "Data:", editData);
+    // Sửa lại cách gọi onUpdateAuthor để match với interface trong useAuthorsManagement
+    onUpdateAuthor(authorId, {
+      Name: editData.Name,
+      Description: editData.Description,
     });
     setEditingAuthor(null);
     setEditData({});
@@ -57,9 +58,8 @@ const AuthorsListSection = ({
   };
 
   const handleDeleteAuthor = (authorId) => {
-    if (window.confirm("Bạn có chắc chắn muốn xóa tác giả này?")) {
-      onDeleteAuthor(authorId);
-    }
+    console.log("Deleting author with ID:", authorId);
+    onDeleteAuthor(authorId);
   };
 
   const handleInputChange = (field, value) => {
@@ -79,10 +79,6 @@ const AuthorsListSection = ({
               <span className="badge bg-primary">
                 Tổng: {statistics?.totalAuthors || 0}
               </span>
-              {/* Có thể thêm các thống kê khác nếu có dữ liệu */}
-              {/* <span className="badge bg-success">
-                Có sách: {statistics?.authorsWithBooks || 0}
-              </span> */}
             </div>
           </div>
 
@@ -188,7 +184,7 @@ const AuthorsListSection = ({
                       <>
                         <h5 className="author-name">{author.Name}</h5>
                         <p className="author-bio text-muted">
-                          {author.Description}
+                          {author.Description || "Chưa có mô tả"}
                         </p>
                         <div className="author-actions mt-2">
                           <button
