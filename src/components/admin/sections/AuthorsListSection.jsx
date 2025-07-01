@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import AddAuthorDialog from "../dialogs/AddAuthorDialog";
 import { Edit, Trash2 } from "lucide-react";
@@ -45,8 +44,8 @@ const AuthorsListSection = ({
     console.log("Saving author with ID:", authorId, "Data:", editData);
     // Sửa lại cách gọi onUpdateAuthor để match với interface trong useAuthorsManagement
     onUpdateAuthor(authorId, {
-      Name: editData.Name,
-      Description: editData.Description,
+        Name: editData.Name,
+        Description: editData.Description,
     });
     setEditingAuthor(null);
     setEditData({});
@@ -59,7 +58,7 @@ const AuthorsListSection = ({
 
   const handleDeleteAuthor = (authorId) => {
     console.log("Deleting author with ID:", authorId);
-    onDeleteAuthor(authorId);
+      onDeleteAuthor(authorId);
   };
 
   const handleInputChange = (field, value) => {
@@ -79,6 +78,10 @@ const AuthorsListSection = ({
               <span className="badge bg-primary">
                 Tổng: {statistics?.totalAuthors || 0}
               </span>
+              {/* Có thể thêm các thống kê khác nếu có dữ liệu */}
+              {/* <span className="badge bg-success">
+                Có sách: {statistics?.authorsWithBooks || 0}
+              </span> */}
             </div>
           </div>
 
