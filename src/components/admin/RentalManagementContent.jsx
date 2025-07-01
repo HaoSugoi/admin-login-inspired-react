@@ -1,11 +1,10 @@
+
 import React from 'react';
 import AdminTopbar from './AdminTopbar';
-import RentalListSection from './sections/RentalListSection';
 import RentalStatisticsSection from './sections/RentalStatisticsSection';
+import RentalOrdersListSection from './sections/RentalOrdersListSection';
 import OverdueSection from './sections/OverdueSection';
 import { useRentBooksApi } from '../../hooks/useRentBooksApi';
-
-
 
 const RentalManagementContent = (props) => {
   const {
@@ -18,26 +17,84 @@ const RentalManagementContent = (props) => {
     toggleVisibility,
   } = useRentBooksApi();
 
-  // Handler: Thêm, sửa, xóa, thay đổi trạng thái thuê
-  const handleAdd = (data) => createRentBooks(data);
-  const handleUpdate = (id, data) => updateRentBooks({ id, data });
-  const handleDelete = (id) => deleteRentBooks(id);
-  const handleMarkReturned = (id) => updateRentBooks({ id, data: { status: 'Returned' } });
-  const handleToggleVisibility = (id, isHidden) => {
-    toggleVisibility({id, isHidden: isHidden ? 0 : 1 });
-  };
+  // Mock data cho đơn thuê sách
+  const mockRentals = [
+    {
+      id: 1,
+      rentalNumber: 'TH001',
+      readerName: 'Nguyễn Văn A',
+      readerPhone: '0901234567',
+      readerEmail: 'nguyenvana@email.com',
+      readerAddress: '123 Đường ABC, Quận 1, TP.HCM',
+      rentalDate: '2024-01-15',
+      expectedReturnDate: '2024-01-22',
+      rentalDays: 7,
+      deposit: 150000,
+      status: 'Đã giao',
+      totalAmount: 150000,
+      books: [
+        { bookCode: 'B001', title: 'Những Ngày Thơ Bé', rentalPrice: 5000 }
+      ]
+    },
+    {
+      id: 2,
+      rentalNumber: 'TH002',
+      readerName: 'Trần Thị B',
+      readerPhone: '0907654321',
+      readerEmail: 'tranthib@email.com',
+      readerAddress: '456 Đường DEF, Quận 3, TP.HCM',
+      rentalDate: '2024-01-16',
+      expectedReturnDate: '2024-01-30',
+      rentalDays: 14,
+      deposit: 200000,
+      status: 'Chờ xác nhận',
+      totalAmount: 200000
+    }
+  ];
   
-  
-  // Thống kê nhanh
-  const statistics = {
-    total: rentbookss.length,
-    rented: rentbookss.filter(r => r.status === 'Rented').length,
-    overdue: rentbookss.filter(r => r.status === 'Overdue').length,
-    returned: rentbookss.filter(r => r.status === 'Returned').length,
+  // Handler functions for rental orders
+  const handleAddRental = (data) => {
+    console.log('Adding rental:', data);
+    // createRentBooks(data); // Uncomment when API is ready
   };
 
-  if (isLoadingRentBookss) return <div>Đang tải sách thuê...</div>;
-  if (rentbookssError) return <div>Lỗi khi tải sách thuê: {rentbookssError.message}</div>;
+  const handleUpdateRental = (id, data) => {
+    console.log('Updating rental:', id, data);
+    // updateRentBooks({ id, data }); // Uncomment when API is ready
+  };
+
+  const handleDeleteRental = (id) => {
+    if (window.confirm('Bạn có chắc chắn muốn xóa đơn thuê này?')) {
+      console.log('Deleting rental:', id);
+      // deleteRentBooks(id); // Uncomment when API is ready
+    }
+  };
+
+  const handleApproveRental = (id) => {
+    console.log('Approving rental:', id);
+    // Update status to 'Đã xác nhận'
+  };
+
+  const handleMarkDelivered = (id) => {
+    console.log('Marking as delivered:', id);
+    // Update status to 'Đã giao'
+  };
+
+  const handleMarkReturned = (id) => {
+    console.log('Marking as returned:', id);
+    // Update status to 'Đã trả'
+  };
+  
+  // Statistics for mock data
+  const statistics = {
+    total: mockRentals.length,
+    rented: mockRentals.filter(r => r.status === 'Đã giao').length,
+    overdue: mockRentals.filter(r => r.status === 'Quá hạn').length,
+    returned: mockRentals.filter(r => r.status === 'Đã trả').length,
+  };
+
+  if (isLoadingRentBookss) return <div>Đang tải dữ liệu thuê sách...</div>;
+  if (rentbookssError) return <div>Lỗi khi tải dữ liệu: {rentbookssError.message}</div>;
 
   return (
     <div className="col-md-9 col-lg-10 main-content">
@@ -46,7 +103,7 @@ const RentalManagementContent = (props) => {
       <div className="content-section">
         <div className="row">
           <div className="col-12 mb-4">
-            <h4 className="text-success fw-bold">Quản Lý Sách Thuê</h4>
+            <h4 className="text-success fw-bold">Quản Lý Đơn Thuê Sách</h4>
           </div>
         </div>
 
@@ -55,15 +112,16 @@ const RentalManagementContent = (props) => {
         </div>
 
         <div className="row">
-          <RentalListSection
-            rentals={rentbookss}
-            onAdd={handleAdd}
-            onUpdate={handleUpdate}
-            onDelete={handleDelete}
+          <RentalOrdersListSection
+            rentals={mockRentals}
+            onAdd={handleAddRental}
+            onUpdate={handleUpdateRental}
+            onDelete={handleDeleteRental}
+            onApprove={handleApproveRental}
+            onMarkDelivered={handleMarkDelivered}
             onMarkReturned={handleMarkReturned}
-            onToggleVisibility={handleToggleVisibility}
           />
-          <OverdueSection rentals={rentbookss} />
+          <OverdueSection rentals={mockRentals} />
         </div>
       </div>
     </div>
