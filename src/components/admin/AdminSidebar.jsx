@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { ChevronLeft, ChevronRight, Home, Book, Users, ShoppingCart, Truck, FileText, Settings, BarChart3, Users2, Shield, Gift, Percent, LogOut, Star, CreditCard, BookOpen } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Home, Book, Users, ShoppingCart, Truck, FileText, Settings, BarChart3, Users2, Shield, Gift, Percent, LogOut, Star, CreditCard, BookOpen, ClipboardList } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const AdminSidebar = ({ activeSection, setActiveSection, sidebarCollapsed, toggleSidebar, handleLogout }) => {
@@ -11,7 +11,8 @@ const AdminSidebar = ({ activeSection, setActiveSection, sidebarCollapsed, toggl
     { id: 'customers', icon: Users, label: 'Quản Lý Khách Hàng', path: '/admin/customers' },
     { id: 'employees', icon: Users, label: 'Quản Lý Nhân Viên', path: '/admin/employees' },
     { id: 'books', icon: Book, label: 'Quản Lý Sách', path: '/admin/books' },
-    { id: 'rentals', icon: BookOpen, label: 'Quản Lý Thuê Sách', path: '/admin/rentals' },
+    { id: 'rent-books', icon: BookOpen, label: 'Quản Lý Sách Thuê', path: '/admin/rent-books' },
+    { id: 'rental-orders', icon: ClipboardList, label: 'Quản Lý Đơn Thuê', path: '/admin/rental-orders' },
     { id: 'sales-orders', icon: ShoppingCart, label: 'Quản Lý Bán Hàng', path: '/admin/sales-orders' },
     { id: 'reports', icon: BarChart3, label: 'Quản Lý Danh Mục', path: '/admin/reports' },
     { id: 'authors', icon: Users2, label: 'Quản Lý Tác Giả', path: '/admin/authors' },

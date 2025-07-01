@@ -13,7 +13,8 @@ import CustomersManagement from './pages/CustomersManagement';
 import EmployeesManagement from './pages/EmployeesManagement';
 import OrdersManagement from './pages/OrdersManagement';
 import SalesOrdersManagement from './pages/SalesOrdersManagement';
-import RentalManagement from './pages/RentalManagement';
+import RentBooksManagement from './pages/RentBooksManagement';
+import RentalOrdersManagement from './pages/RentalOrdersManagement';
 import PointsManagement from './pages/PointsManagement';
 import PromotionsManagement from './pages/PromotionsManagement';
 import DiscountCodesManagement from './pages/DiscountCodesManagement';
@@ -40,7 +41,8 @@ function App() {
             <Route path="/admin/employees" element={<ProtectedRoute><EmployeesManagement /></ProtectedRoute>} />
             <Route path="/admin/reports" element={<ProtectedRoute><ReportsManagement /></ProtectedRoute>} />
             <Route path="/admin/books" element={<ProtectedRoute><BooksManagement /></ProtectedRoute>} />
-            <Route path="/admin/rentals" element={<ProtectedRoute><RentalManagement /></ProtectedRoute>} />
+            <Route path="/admin/rent-books" element={<ProtectedRoute><RentBooksManagement /></ProtectedRoute>} />
+            <Route path="/admin/rental-orders" element={<ProtectedRoute><RentalOrdersManagement /></ProtectedRoute>} />
             <Route path="/admin/authors" element={<ProtectedRoute><AuthorsManagement /></ProtectedRoute>} />
             <Route path="/admin/orders" element={<ProtectedRoute><OrdersManagement /></ProtectedRoute>} />
             <Route path="/admin/sales-orders" element={<ProtectedRoute><SalesOrdersManagement /></ProtectedRoute>} />
