@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { ChevronLeft, ChevronRight, Home, Book, Users, ShoppingCart, Truck, FileText, Settings, BarChart3, Users2, Shield, Gift, Percent, LogOut } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Home, Book, Users, ShoppingCart, Truck, FileText, Settings, BarChart3, Users2, Shield, Gift, Percent, LogOut, Star, CreditCard } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const AdminSidebar = ({ activeSection, setActiveSection, sidebarCollapsed, toggleSidebar, handleLogout }) => {
@@ -11,17 +11,15 @@ const AdminSidebar = ({ activeSection, setActiveSection, sidebarCollapsed, toggl
     { id: 'customers', icon: Users, label: 'Quản Lý Khách Hàng', path: '/admin/customers' },
     { id: 'employees', icon: Users, label: 'Quản Lý Nhân Viên', path: '/admin/employees' },
     { id: 'books', icon: Book, label: 'Quản Lý Sách', path: '/admin/books' },
-        { id: 'rentals', icon: FileText, label: 'Quản Lý Thuê Sách', path: '/admin/rentals' },
+    { id: 'rentals', icon: FileText, label: 'Quản Lý Thuê Sách', path: '/admin/rentals' },
     { id: 'reports', icon: BarChart3, label: 'Quản Lý Danh Mục', path: '/admin/reports' },
     { id: 'authors', icon: Users2, label: 'Quản Lý Tác Giả', path: '/admin/authors' },
-    { id: 'orders', icon: ShoppingCart, label: 'Quản Lý Đơn Hàng', path: '/admin/orders' },
+    { id: 'orders', icon: ShoppingCart, label: 'Quản Lý Đơn Hàng Bán', path: '/admin/orders' },
+    { id: 'sales-orders', icon: ShoppingCart, label: 'Đơn Hàng Bán Hàng', path: '/admin/sales-orders' },
+    { id: 'points', icon: Star, label: 'Quản Lý Điểm Thưởng', path: '/admin/points' },
     { id: 'promotions', icon: Gift, label: 'Quản Lý Khuyến Mãi', path: '/admin/promotions' },
     { id: 'discount-codes', icon: Percent, label: 'Quản Lý Mã Giảm Giá', path: '/admin/discount-codes' },
-    // { id: 'shipping', icon: Truck, label: 'Quản Lý Vận Chuyển', path: '/admin/shipping' }, /*remove*/
-    // { id: 'users', icon: Users, label: 'Quản Lý Người Dùng', path: '/admin/users' }, /*remove*/
-    // { id: 'roles', icon: Shield, label: 'Quản Lý Quyền', path: '/admin/roles' },/*remove*/
     { id: 'stats', icon: BarChart3, label: 'Thống Kê', path: '/admin/stats' }
-    // { id: 'settings', icon: Settings, label: 'Cài Đặt', path: '/admin/settings' }/*remove*/
   ];
 
   const handleMenuClick = (item) => {
@@ -33,12 +31,6 @@ const AdminSidebar = ({ activeSection, setActiveSection, sidebarCollapsed, toggl
     <div className={`col-md-3 col-lg-2 sidebar ${sidebarCollapsed ? 'collapsed' : ''}`}>
       <div className="sidebar-header">
         <h5 className="sidebar-title">BookStore Admin</h5>
-        {/* <button 
-          className="btn btn-sm btn-outline-light toggle-btn"
-          onClick={toggleSidebar}
-        >
-          {sidebarCollapsed ? <ChevronRight size={10} /> : <ChevronLeft size={10} />}
-        </button> */}
       </div>
       
       <ul className="nav nav-pills flex-column">

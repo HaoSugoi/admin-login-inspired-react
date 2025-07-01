@@ -1,10 +1,10 @@
 
 import React from 'react';
 import AdminTopbar from './AdminTopbar';
-import OrdersListSection from './sections/OrdersListSection';
-import OrderStatisticsSection from './sections/OrderStatisticsSection';
+import SalesOrdersListSection from './sections/SalesOrdersListSection';
+import SalesOrdersStatisticsSection from './sections/SalesOrdersStatisticsSection';
 
-const OrdersManagementContent = (props) => {
+const SalesOrdersManagementContent = (props) => {
   return (
     <div className="col-md-9 col-lg-10 main-content">
       <AdminTopbar {...props} />
@@ -17,15 +17,16 @@ const OrdersManagementContent = (props) => {
         </div>
 
         <div className="row">
-          <OrderStatisticsSection statistics={props.statistics} />
+          <SalesOrdersStatisticsSection statistics={props.statistics} />
         </div>
 
         <div className="row">
-          <OrdersListSection 
+          <SalesOrdersListSection 
             orders={props.orders} 
-            onAdd={props.addOrder}
-            onUpdate={props.updateOrder}
-            onDelete={props.deleteOrder}
+            onAdd={props.handleCreateOrder}
+            onUpdate={props.handleUpdateOrder}
+            onDelete={props.handleDeleteOrder}
+            onUpdateStatus={props.handleUpdateOrderStatus}
           />
         </div>
       </div>
@@ -33,4 +34,4 @@ const OrdersManagementContent = (props) => {
   );
 };
 
-export default OrdersManagementContent;
+export default SalesOrdersManagementContent;
