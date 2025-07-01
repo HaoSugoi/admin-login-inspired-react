@@ -1,6 +1,6 @@
 // components/dialogs/DetailRentBookItemListDialog.jsx
 import React, { useEffect, useState } from 'react';
-import { rentBookItemService } from '@/services/rentBookItemService';
+import { rentBookItemService } from '@/services/RentBookItemService';
 import AddEditRentBookItemDialog from './AddEditRentBookItemDialog'; // nhớ import dialog
 
 const DetailRentBookItemListDialog = ({ rentBookId, onClose }) => {
