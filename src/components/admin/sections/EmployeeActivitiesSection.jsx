@@ -5,28 +5,23 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Search, Eye, RefreshCw, Filter } from 'lucide-react';
 
-const EmployeeActivitiesSection = ({ activities, searchEmployeeId, onSearchChange, onSearch, isLoading }) => {
-  const getActivityTypeColor = (type) => {
-    switch (type) {
-      case 'Đăng nhập': return 'bg-blue-100 text-blue-800';
-      case 'Đăng xuất': return 'bg-gray-100 text-gray-800';
-      case 'Tạo đơn hàng': return 'bg-green-100 text-green-800';
-      case 'Cập nhật đơn hàng': return 'bg-yellow-100 text-yellow-800';
-      case 'Xóa đơn hàng': return 'bg-red-100 text-red-800';
-      case 'Thêm sách': return 'bg-purple-100 text-purple-800';
-      case 'Cập nhật sách': return 'bg-orange-100 text-orange-800';
-      case 'Xử lý thanh toán': return 'bg-emerald-100 text-emerald-800';
-      default: return 'bg-gray-100 text-gray-800';
-    }
+const EmployeeActivitiesSection = ({ activities, searchStaffId, onSearchChange, onSearch, isLoading }) => {
+  const formatDateTime = (dateTimeString) => {
+    const date = new Date(dateTimeString);
+    return {
+      date: date.toLocaleDateString('vi-VN'),
+      time: date.toLocaleTimeString('vi-VN', { hour12: false })
+    };
   };
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'Thành công': return 'bg-green-100 text-green-800';
-      case 'Đang xử lý': return 'bg-yellow-100 text-yellow-800';
-      case 'Thất bại': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
-    }
+  const getActivityTypeColor = (description) => {
+    if (description.includes('đăng nhập')) return 'bg-blue-100 text-blue-800';
+    if (description.includes('đăng xuất')) return 'bg-gray-100 text-gray-800';
+    if (description.includes('tạo') || description.includes('Tạo')) return 'bg-green-100 text-green-800';
+    if (description.includes('cập nhật') || description.includes('Cập nhật')) return 'bg-yellow-100 text-yellow-800';
+    if (description.includes('xóa') || description.includes('Xóa')) return 'bg-red-100 text-red-800';
+    if (description.includes('thanh toán')) return 'bg-emerald-100 text-emerald-800';
+    return 'bg-gray-100 text-gray-800';
   };
 
   return (
@@ -53,8 +48,8 @@ const EmployeeActivitiesSection = ({ activities, searchEmployeeId, onSearchChang
               <input
                 type="text"
                 className="form-control"
-                placeholder="Nhập ID nhân viên để tìm kiếm..."
-                value={searchEmployeeId}
+                placeholder="Nhập ID nhân viên hoặc tên để tìm kiếm..."
+                value={searchStaffId}
                 onChange={(e) => onSearchChange(e.target.value)}
               />
               <Button 
@@ -76,57 +71,61 @@ const EmployeeActivitiesSection = ({ activities, searchEmployeeId, onSearchChang
                 <tr>
                   <th>Thời gian</th>
                   <th>Nhân viên</th>
-                  <th>Hoạt động</th>
-                  <th>Chi tiết</th>
-                  <th>Trạng thái</th>
-                  <th>IP Address</th>
+                  <th>Mô tả hoạt động</th>
+                  <th>ID Thông báo</th>
                   <th>Thao tác</th>
                 </tr>
               </thead>
               <tbody>
-                {activities.map((activity) => (
-                  <tr key={activity.id}>
-                    <td>
-                      <div>
-                        <div className="fw-medium">{activity.date}</div>
-                        <small className="text-muted">{activity.time}</small>
-                      </div>
-                    </td>
-                    <td>
-                      <div>
-                        <div className="fw-medium">{activity.employeeName}</div>
-                        <small className="text-muted">ID: {activity.employeeId}</small>
-                      </div>
-                    </td>
-                    <td>
-                      <Badge className={getActivityTypeColor(activity.activityType)}>
-                        {activity.activityType}
-                      </Badge>
-                    </td>
-                    <td>
-                      <div className="text-truncate" style={{ maxWidth: '200px' }}>
-                        {activity.description}
-                      </div>
-                    </td>
-                    <td>
-                      <Badge className={getStatusColor(activity.status)}>
-                        {activity.status}
-                      </Badge>
-                    </td>
-                    <td>
-                      <code className="small">{activity.ipAddress}</code>
-                    </td>
-                    <td>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => console.log('View details:', activity.id)}
-                      >
-                        <Eye size={14} />
-                      </Button>
-                    </td>
-                  </tr>
-                ))}
+                {activities.map((activity) => {
+                  const { date, time } = formatDateTime(activity.createdDate);
+                  
+                  return (
+                    <tr key={activity.notificationId}>
+                      <td>
+                        <div>
+                          <div className="fw-medium">{date}</div>
+                          <small className="text-muted">{time}</small>
+                        </div>
+                      </td>
+                      <td>
+                        <div>
+                          <div className="fw-medium">{activity.staff?.name || 'N/A'}</div>
+                          <small className="text-muted">
+                            ID: {activity.staffId}
+                          </small>
+                          {activity.staff?.email && (
+                            <div>
+                              <small className="text-muted">{activity.staff.email}</small>
+                            </div>
+                          )}
+                        </div>
+                      </td>
+                      <td>
+                        <div className="d-flex flex-column">
+                          <Badge className={`${getActivityTypeColor(activity.description)} mb-1 align-self-start`}>
+                            Hoạt động
+                          </Badge>
+                          <div className="text-truncate" style={{ maxWidth: '300px' }}>
+                            {activity.description}
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <code className="small">{activity.notificationId}</code>
+                      </td>
+                      <td>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => console.log('View details:', activity.notificationId)}
+                        >
+                          <Eye size={14} />
+                        </Button>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
             

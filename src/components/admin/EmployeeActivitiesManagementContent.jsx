@@ -23,7 +23,7 @@ const EmployeeActivitiesManagementContent = (props) => {
         <div className="row">
           <EmployeeActivitiesSection 
             activities={props.activities}
-            searchEmployeeId={props.searchEmployeeId}
+            searchStaffId={props.searchStaffId}
             onSearchChange={props.handleSearchChange}
             onSearch={props.handleSearch}
             isLoading={props.isLoading}

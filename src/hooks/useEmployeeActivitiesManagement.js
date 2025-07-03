@@ -4,82 +4,82 @@ import { useState } from 'react';
 export const useEmployeeActivitiesManagement = () => {
   const [activeSection, setActiveSection] = useState('employee-activities');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [searchEmployeeId, setSearchEmployeeId] = useState('');
+  const [searchStaffId, setSearchStaffId] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  // Mock data cho hoạt động nhân viên
+  // Mock data theo cấu trúc API mới
   const [mockActivities] = useState([
     {
-      id: 1,
-      employeeId: "EMP001",
-      employeeName: "Nguyễn Văn A",
-      activityType: "Đăng nhập",
-      description: "Đăng nhập vào hệ thống",
-      status: "Thành công",
-      date: "2024-01-15",
-      time: "08:30:15",
-      ipAddress: "192.168.1.100",
-      userAgent: "Chrome 120.0.0.0"
+      notificationId: "NOT001",
+      staffId: "STAFF001",
+      description: "Nhân viên đã đăng nhập vào hệ thống",
+      createdDate: "2024-01-15T08:30:15",
+      staff: {
+        id: "STAFF001",
+        name: "Nguyễn Văn A",
+        email: "nguyenvana@example.com",
+        phone: "0123456789"
+      }
     },
     {
-      id: 2,
-      employeeId: "EMP001",
-      employeeName: "Nguyễn Văn A",
-      activityType: "Tạo đơn hàng",
+      notificationId: "NOT002",
+      staffId: "STAFF001",
       description: "Tạo đơn hàng DH001 cho khách hàng KH001",
-      status: "Thành công",
-      date: "2024-01-15",
-      time: "09:15:30",
-      ipAddress: "192.168.1.100",
-      userAgent: "Chrome 120.0.0.0"
+      createdDate: "2024-01-15T09:15:30",
+      staff: {
+        id: "STAFF001",
+        name: "Nguyễn Văn A",
+        email: "nguyenvana@example.com",
+        phone: "0123456789"
+      }
     },
     {
-      id: 3,
-      employeeId: "EMP002",
-      employeeName: "Trần Thị B",
-      activityType: "Cập nhật sách",
+      notificationId: "NOT003",
+      staffId: "STAFF002",
       description: "Cập nhật thông tin sách 'Lập trình React'",
-      status: "Thành công",
-      date: "2024-01-15",
-      time: "10:20:45",
-      ipAddress: "192.168.1.101",
-      userAgent: "Firefox 121.0.0.0"
+      createdDate: "2024-01-15T10:20:45",
+      staff: {
+        id: "STAFF002",
+        name: "Trần Thị B",
+        email: "tranthib@example.com",
+        phone: "0987654321"
+      }
     },
     {
-      id: 4,
-      employeeId: "EMP003",
-      employeeName: "Lê Văn C",
-      activityType: "Xử lý thanh toán",
+      notificationId: "NOT004",
+      staffId: "STAFF003",
       description: "Xử lý thanh toán cho đơn hàng DH002",
-      status: "Đang xử lý",
-      date: "2024-01-15",
-      time: "11:45:20",
-      ipAddress: "192.168.1.102",
-      userAgent: "Chrome 120.0.0.0"
+      createdDate: "2024-01-15T11:45:20",
+      staff: {
+        id: "STAFF003",
+        name: "Lê Văn C",
+        email: "levanc@example.com",
+        phone: "0111222333"
+      }
     },
     {
-      id: 5,
-      employeeId: "EMP002",
-      employeeName: "Trần Thị B",
-      activityType: "Xóa đơn hàng",
+      notificationId: "NOT005",
+      staffId: "STAFF002",
       description: "Xóa đơn hàng DH003 theo yêu cầu khách hàng",
-      status: "Thất bại",
-      date: "2024-01-15",
-      time: "14:30:10",
-      ipAddress: "192.168.1.101",
-      userAgent: "Firefox 121.0.0.0"
+      createdDate: "2024-01-15T14:30:10",
+      staff: {
+        id: "STAFF002",
+        name: "Trần Thị B",
+        email: "tranthib@example.com",
+        phone: "0987654321"
+      }
     },
     {
-      id: 6,
-      employeeId: "EMP001",
-      employeeName: "Nguyễn Văn A",
-      activityType: "Đăng xuất",
-      description: "Đăng xuất khỏi hệ thống",
-      status: "Thành công",
-      date: "2024-01-15",
-      time: "17:00:00",
-      ipAddress: "192.168.1.100",
-      userAgent: "Chrome 120.0.0.0"
+      notificationId: "NOT006",
+      staffId: "STAFF001",
+      description: "Nhân viên đã đăng xuất khỏi hệ thống",
+      createdDate: "2024-01-15T17:00:00",
+      staff: {
+        id: "STAFF001",
+        name: "Nguyễn Văn A",
+        email: "nguyenvana@example.com",
+        phone: "0123456789"
+      }
     }
   ]);
 
@@ -87,11 +87,26 @@ export const useEmployeeActivitiesManagement = () => {
 
   const mockStatistics = {
     totalActivities: mockActivities.length,
-    activeEmployees: [...new Set(mockActivities.map(a => a.employeeId))].length,
-    todayActivities: mockActivities.filter(a => a.date === "2024-01-15").length,
-    processingActivities: mockActivities.filter(a => a.status === "Đang xử lý").length,
-    completedActivities: mockActivities.filter(a => a.status === "Thành công").length,
-    errorActivities: mockActivities.filter(a => a.status === "Thất bại").length
+    activeStaff: [...new Set(mockActivities.map(a => a.staffId))].length,
+    todayActivities: mockActivities.filter(a => {
+      const today = new Date().toISOString().split('T')[0];
+      return a.createdDate.split('T')[0] === today;
+    }).length,
+    thisWeekActivities: mockActivities.filter(a => {
+      const oneWeekAgo = new Date();
+      oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+      return new Date(a.createdDate) >= oneWeekAgo;
+    }).length,
+    thisMonthActivities: mockActivities.filter(a => {
+      const oneMonthAgo = new Date();
+      oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+      return new Date(a.createdDate) >= oneMonthAgo;
+    }).length,
+    recentActivities: mockActivities.filter(a => {
+      const oneHourAgo = new Date();
+      oneHourAgo.setHours(oneHourAgo.getHours() - 1);
+      return new Date(a.createdDate) >= oneHourAgo;
+    }).length
   };
 
   const toggleSidebar = () => {
@@ -103,7 +118,7 @@ export const useEmployeeActivitiesManagement = () => {
   };
 
   const handleSearchChange = (value) => {
-    setSearchEmployeeId(value);
+    setSearchStaffId(value);
   };
 
   const handleSearch = () => {
@@ -111,12 +126,13 @@ export const useEmployeeActivitiesManagement = () => {
     
     // Simulate API call
     setTimeout(() => {
-      if (searchEmployeeId.trim() === '') {
+      if (searchStaffId.trim() === '') {
         setFilteredActivities(mockActivities);
       } else {
         const filtered = mockActivities.filter(activity => 
-          activity.employeeId.toLowerCase().includes(searchEmployeeId.toLowerCase()) ||
-          activity.employeeName.toLowerCase().includes(searchEmployeeId.toLowerCase())
+          activity.staffId.toLowerCase().includes(searchStaffId.toLowerCase()) ||
+          activity.staff?.name.toLowerCase().includes(searchStaffId.toLowerCase()) ||
+          activity.staff?.email.toLowerCase().includes(searchStaffId.toLowerCase())
         );
         setFilteredActivities(filtered);
       }
@@ -134,7 +150,7 @@ export const useEmployeeActivitiesManagement = () => {
     // Employee Activities specific data
     activities: filteredActivities,
     statistics: mockStatistics,
-    searchEmployeeId,
+    searchStaffId,
     handleSearchChange,
     handleSearch,
     isLoading

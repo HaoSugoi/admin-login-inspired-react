@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Activity, Users, Clock, CheckCircle, AlertCircle, Calendar } from 'lucide-react';
 
 const EmployeeActivitiesStatisticsSection = ({ statistics }) => {
@@ -18,7 +18,7 @@ const EmployeeActivitiesStatisticsSection = ({ statistics }) => {
     },
     {
       title: 'Nhân Viên Hoạt Động',
-      value: statistics.activeEmployees,
+      value: statistics.activeStaff,
       icon: Users,
       color: 'text-green-600',
       bgColor: 'bg-green-50'
@@ -31,22 +31,22 @@ const EmployeeActivitiesStatisticsSection = ({ statistics }) => {
       bgColor: 'bg-purple-50'
     },
     {
-      title: 'Đang Xử Lý',
-      value: statistics.processingActivities,
+      title: 'Hoạt Động Tuần Này',
+      value: statistics.thisWeekActivities,
       icon: Clock,
       color: 'text-yellow-600',
       bgColor: 'bg-yellow-50'
     },
     {
-      title: 'Hoàn Thành',
-      value: statistics.completedActivities,
+      title: 'Hoạt Động Tháng Này',
+      value: statistics.thisMonthActivities,
       icon: CheckCircle,
       color: 'text-green-600',
       bgColor: 'bg-green-50'
     },
     {
-      title: 'Lỗi/Thất Bại',
-      value: statistics.errorActivities,
+      title: 'Hoạt Động Gần Đây',
+      value: statistics.recentActivities,
       icon: AlertCircle,
       color: 'text-red-600',
       bgColor: 'bg-red-50'
