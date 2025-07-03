@@ -23,9 +23,11 @@ const AdminSidebar = ({ activeSection, setActiveSection, sidebarCollapsed, toggl
   ];
 
   const handleMenuClick = (item) => {
-    setActiveSection(item.id);
-    navigate(item.path);
-  };
+  if (typeof setActiveSection === "function") {
+    setActiveSection(item.id); // ✅ Chỉ gọi nếu là hàm
+  }
+  navigate(item.path);
+};
 
   return (
     <div className={`col-md-3 col-lg-2 sidebar ${sidebarCollapsed ? 'collapsed' : ''}`}>
