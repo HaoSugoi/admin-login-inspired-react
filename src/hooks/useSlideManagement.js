@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { slideService } from '../services/slideService';
 import { toast } from 'sonner';
@@ -51,56 +50,109 @@ export const useSlideManagement = () => {
     });
   };
 
-  // Thêm slide mới
-  const handleAddSlide = async (slideData) => {
+  const handleAddSlide = async (formData) => {
     try {
-      const response = await slideService.createSlide(slideData);
-      if (response.isSuccess) {
-        toast.success('Thêm slide thành công');
-        loadSlides();
-        setShowAddDialog(false);
-      } else {
-        toast.error(response.message || 'Lỗi khi thêm slide');
+      setIsLoading(true);
+      const slideData = new FormData();
+      
+      if (formData.imageFile) {
+        slideData.append('ImageFile', formData.imageFile);
       }
+      if (formData.linkUrl) {
+        slideData.append('LinkUrl', formData.linkUrl);
+      }
+      slideData.append('IsActive', formData.isActive);
+
+      await slideService.createSlide(slideData);
+      
+      // Show success message with icon
+      toast({
+        title: "✅ Thành công!",
+        description: "Slide đã được thêm thành công",
+        variant: "default",
+      });
+      
+      await loadSlides();
+      setShowAddDialog(false);
     } catch (error) {
       console.error('Error adding slide:', error);
-      toast.error('Lỗi khi thêm slide');
+      toast({
+        title: "❌ Lỗi!",
+        description: "Không thể thêm slide. Vui lòng thử lại.",
+        variant: "destructive",
+      });
+      throw error;
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  // Sửa slide
-  const handleEditSlide = async (slideData) => {
+  const handleEditSlide = async (formData) => {
+    if (!selectedSlide) return;
+    
     try {
-      const response = await slideService.updateSlide(selectedSlide.id, slideData);
-      if (response.isSuccess) {
-        toast.success('Cập nhật slide thành công');
-        loadSlides();
-        setShowEditDialog(false);
-        setSelectedSlide(null);
-      } else {
-        toast.error(response.message || 'Lỗi khi cập nhật slide');
+      setIsLoading(true);
+      const slideData = new FormData();
+      
+      if (formData.imageFile) {
+        slideData.append('ImageFile', formData.imageFile);
       }
+      if (formData.linkUrl) {
+        slideData.append('LinkUrl', formData.linkUrl);
+      }
+      slideData.append('IsActive', formData.isActive);
+
+      await slideService.updateSlide(selectedSlide.id, slideData);
+      
+      // Show success message with icon
+      toast({
+        title: "✅ Cập nhật thành công!",
+        description: "Slide đã được cập nhật thành công",
+        variant: "default",
+      });
+      
+      await loadSlides();
+      setShowEditDialog(false);
+      setSelectedSlide(null);
     } catch (error) {
       console.error('Error updating slide:', error);
-      toast.error('Lỗi khi cập nhật slide');
+      toast({
+        title: "❌ Lỗi!",
+        description: "Không thể cập nhật slide. Vui lòng thử lại.",
+        variant: "destructive",
+      });
+      throw error;
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  // Xóa slide
   const handleDeleteSlide = async () => {
+    if (!selectedSlide) return;
+    
     try {
-      const response = await slideService.deleteSlide(selectedSlide.id);
-      if (response.isSuccess) {
-        toast.success('Xóa slide thành công');
-        loadSlides();
-        setShowDeleteDialog(false);
-        setSelectedSlide(null);
-      } else {
-        toast.error(response.message || 'Lỗi khi xóa slide');
-      }
+      setIsLoading(true);
+      await slideService.deleteSlide(selectedSlide.id);
+      
+      // Show success message with icon  
+      toast({
+        title: "🗑️ Đã xóa!",
+        description: "Slide đã được xóa thành công",
+        variant: "default",
+      });
+      
+      await loadSlides();
+      setShowDeleteDialog(false);
+      setSelectedSlide(null);
     } catch (error) {
       console.error('Error deleting slide:', error);
-      toast.error('Lỗi khi xóa slide');
+      toast({
+        title: "❌ Lỗi!",
+        description: "Không thể xóa slide. Vui lòng thử lại.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
