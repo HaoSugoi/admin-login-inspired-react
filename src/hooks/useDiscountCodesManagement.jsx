@@ -1,5 +1,6 @@
 
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 export const useDiscountCodesManagement = () => {
   const [activeSection, setActiveSection] = useState('discount-codes');
@@ -63,6 +64,11 @@ export const useDiscountCodesManagement = () => {
       status: 'active'
     };
     setDiscountCodes([...discountCodes, discountCode]);
+    
+    toast.success('🎉 Thành công!', {
+      description: 'Mã giảm giá đã được thêm thành công',
+    });
+    
     console.log('Added discount code:', discountCode);
   };
 
@@ -70,11 +76,21 @@ export const useDiscountCodesManagement = () => {
     setDiscountCodes(discountCodes.map(code => 
       code.id === updatedCode.id ? updatedCode : code
     ));
+    
+    toast.success('✅ Cập nhật thành công!', {
+      description: 'Mã giảm giá đã được cập nhật thành công',
+    });
+    
     console.log('Updated discount code:', updatedCode);
   };
 
   const handleDeleteDiscountCode = (codeId) => {
     setDiscountCodes(discountCodes.filter(code => code.id !== codeId));
+    
+    toast.success('🗑️ Đã xóa!', {
+      description: 'Mã giảm giá đã được xóa thành công',
+    });
+    
     console.log('Deleted discount code with id:', codeId);
   };
 
@@ -82,6 +98,12 @@ export const useDiscountCodesManagement = () => {
     setDiscountCodes(discountCodes.map(code => 
       code.id === codeId ? { ...code, status: newStatus } : code
     ));
+    
+    const statusText = newStatus === 'active' ? 'kích hoạt' : 'tạm dừng';
+    toast.success(`🔄 Đã ${statusText}!`, {
+      description: `Mã giảm giá đã được ${statusText} thành công`,
+    });
+    
     console.log('Toggled code status:', codeId, newStatus);
   };
 

@@ -1,134 +1,198 @@
 
 import React, { useState } from 'react';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "../../ui/dialog";
-import { Button } from "../../ui/button";
-import { Input } from "../../ui/input";
-import { Label } from "../../ui/label";
-import { Plus } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Plus, User, Mail, Phone, MapPin, Calendar, Shield, AlertCircle, Save, X } from 'lucide-react';
 
 const AddCustomerDialog = ({ onAddCustomer }) => {
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    address: '',
-    status: 'Hoạt động'
+    UserName: '',
+    Email: '',
+    PhoneNumber: '',
+    Address: '',
+    DateOfBirth: '',
+    Role: 'Customer'
   });
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const newCustomer = {
-      ...formData,
-      id: Date.now(),
-      joinDate: new Date().toLocaleDateString('vi-VN'),
-      totalOrders: 0,
-      totalSpent: 0
-    };
-    onAddCustomer(newCustomer);
+  const resetForm = () => {
     setFormData({
-      name: '',
-      email: '',
-      phone: '',
-      address: '',
-      status: 'Hoạt động'
+      UserName: '',
+      Email: '',
+      PhoneNumber: '',
+      Address: '',
+      DateOfBirth: '',
+      Role: 'Customer'
     });
-    setOpen(false);
+    setError('');
   };
 
-  const handleInputChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+
+    if (!formData.UserName || !formData.Email) {
+      setError('Vui lòng điền đầy đủ thông tin bắt buộc');
+      return;
+    }
+
+    try {
+      await onAddCustomer(formData);
+      setOpen(false);
+      resetForm();
+    } catch (err) {
+      setError(err.message || 'Có lỗi xảy ra khi thêm khách hàng');
+    }
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button className="btn btn-success">
-          <Plus size={16} className="me-1" />
-          Thêm Khách Hàng
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="max-w-md mx-auto max-h-[80vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="text-center">Thêm Khách Hàng Mới</DialogTitle>
-        </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <Label htmlFor="name">Họ và Tên *</Label>
-            <Input
-              id="name"
-              name="name"
-              value={formData.name}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
-          <div>
-            <Label htmlFor="email">Email *</Label>
-            <Input
-              id="email"
-              name="email"
-              type="email"
-              value={formData.email}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
-          <div>
-            <Label htmlFor="phone">Số Điện Thoại *</Label>
-            <Input
-              id="phone"
-              name="phone"
-              type="tel"
-              value={formData.phone}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
-          <div>
-            <Label htmlFor="address">Địa Chỉ</Label>
-            <textarea
-              id="address"
-              name="address"
-              rows="2"
-              value={formData.address}
-              onChange={handleInputChange}
-              className="form-control w-full"
-              placeholder="Nhập địa chỉ khách hàng..."
-            />
-          </div>
-          <div>
-            <Label htmlFor="status">Trạng Thái</Label>
-            <select
-              id="status"
-              name="status"
-              value={formData.status}
-              onChange={handleInputChange}
-              className="form-select w-full"
-            >
-              <option value="Hoạt động">Hoạt động</option>
-              <option value="Tạm khóa">Tạm khóa</option>
-              <option value="Đã khóa">Đã khóa</option>
-            </select>
-          </div>
-          <div className="flex justify-end space-x-2 pt-4">
-            <Button type="button" variant="outline" onClick={() => setOpen(false)}>
-              Hủy
-            </Button>
-            <Button type="submit">Thêm Khách Hàng</Button>
-          </div>
-        </form>
-      </DialogContent>
-    </Dialog>
+    <>
+      <Button onClick={() => setOpen(true)} className="bg-green-600 hover:bg-green-700">
+        <Plus className="w-4 h-4 mr-2" />
+        Thêm Khách Hàng
+      </Button>
+
+      <Dialog open={open} onOpenChange={(isOpen) => {
+        setOpen(isOpen);
+        if (!isOpen) resetForm();
+      }}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-lg font-semibold">
+              <User className="w-5 h-5 text-green-500" />
+              Thêm Khách Hàng Mới
+            </DialogTitle>
+          </DialogHeader>
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {error && (
+              <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
+
+            <div className="grid grid-cols-1 gap-4">
+              <div>
+                <Label htmlFor="userName" className="flex items-center gap-2 text-sm font-medium">
+                  <User className="w-4 h-4 text-blue-500" />
+                  Họ Tên *
+                </Label>
+                <Input
+                  id="userName"
+                  value={formData.UserName}
+                  onChange={(e) => setFormData({...formData, UserName: e.target.value})}
+                  placeholder="Nhập họ tên khách hàng"
+                  className="mt-1"
+                  required
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="email" className="flex items-center gap-2 text-sm font-medium">
+                    <Mail className="w-4 h-4 text-red-500" />
+                    Email *
+                  </Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={formData.Email}
+                    onChange={(e) => setFormData({...formData, Email: e.target.value})}
+                    placeholder="Nhập email"
+                    className="mt-1"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="phoneNumber" className="flex items-center gap-2 text-sm font-medium">
+                    <Phone className="w-4 h-4 text-green-500" />
+                    Số Điện Thoại
+                  </Label>
+                  <Input
+                    id="phoneNumber"
+                    value={formData.PhoneNumber}
+                    onChange={(e) => setFormData({...formData, PhoneNumber: e.target.value})}
+                    placeholder="Nhập số điện thoại"
+                    className="mt-1"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="address" className="flex items-center gap-2 text-sm font-medium">
+                  <MapPin className="w-4 h-4 text-purple-500" />
+                  Địa Chỉ
+                </Label>
+                <Input
+                  id="address"
+                  value={formData.Address}
+                  onChange={(e) => setFormData({...formData, Address: e.target.value})}
+                  placeholder="Nhập địa chỉ"
+                  className="mt-1"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="dateOfBirth" className="flex items-center gap-2 text-sm font-medium">
+                    <Calendar className="w-4 h-4 text-orange-500" />
+                    Ngày Sinh
+                  </Label>
+                  <Input
+                    id="dateOfBirth"
+                    type="date"
+                    value={formData.DateOfBirth}
+                    onChange={(e) => setFormData({...formData, DateOfBirth: e.target.value})}
+                    className="mt-1"
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="role" className="flex items-center gap-2 text-sm font-medium">
+                    <Shield className="w-4 h-4 text-blue-500" />
+                    Vai Trò
+                  </Label>
+                  <select
+                    id="role"
+                    value={formData.Role}
+                    onChange={(e) => setFormData({...formData, Role: e.target.value})}
+                    className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="Customer">Khách Hàng</option>
+                    <option value="VIP">VIP</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <DialogFooter className="gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setOpen(false)}
+                className="flex items-center gap-2"
+              >
+                <X className="w-4 h-4" />
+                Hủy
+              </Button>
+              <Button
+                type="submit"
+                className="flex items-center gap-2 bg-green-600 hover:bg-green-700"
+              >
+                <Save className="w-4 h-4" />
+                Thêm Khách Hàng
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 

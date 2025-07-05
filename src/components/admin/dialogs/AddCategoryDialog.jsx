@@ -1,15 +1,12 @@
+
 import React, { useState } from 'react';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "../../ui/dialog";
-import { Button } from "../../ui/button";
-import { Input } from "../../ui/input";
-import { Label } from "../../ui/label";
-import { Plus } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Plus, FolderPlus, Tag, FileText, AlertCircle, Save, X } from 'lucide-react';
 
 const AddCategoryDialog = ({ onAddCategory, isCreating }) => {
   const [open, setOpen] = useState(false);
@@ -18,131 +15,123 @@ const AddCategoryDialog = ({ onAddCategory, isCreating }) => {
     description: ''
   });
   const [error, setError] = useState('');
-  const [apiError, setApiError] = useState('');
+
+  const resetForm = () => {
+    setFormData({
+      name: '',
+      description: ''
+    });
+    setError('');
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+    setError('');
+
     if (!formData.name.trim()) {
       setError('Vui lòng nhập tên danh mục');
       return;
     }
 
     try {
-      // Gọi hàm callback từ prop với dữ liệu đã chuẩn hóa
-      await onAddCategory({
-        name: formData.name.trim(),
-        description: formData.description.trim()
-      });
-      
-      // Reset form sau khi thành công
-      setFormData({ name: '', description: '' });
-      setError('');
-      setApiError('');
+      await onAddCategory(formData);
       setOpen(false);
+      resetForm();
     } catch (err) {
-      // Xử lý lỗi từ API
-      setApiError('Thêm danh mục thất bại. Vui lòng thử lại.');
-      console.error('Failed to add category:', err);
-    }
-  };
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-    
-    if (name === 'name' && value.trim()) {
-      setError('');
+      setError(err.message || 'Có lỗi xảy ra khi thêm danh mục');
     }
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button 
-          size="sm" 
-          className="btn btn-success"
-          disabled={isCreating}
-        >
-          {isCreating ? (
-            <span className="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
-          ) : (
-            <Plus size={16} className="me-1" />
-          )}
-          Thêm Danh Mục
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="max-w-md max-h-[80vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="text-center">Thêm Danh Mục Mới</DialogTitle>
-        </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4 pt-2">
-          {apiError && (
-            <div className="alert alert-danger">{apiError}</div>
-          )}
-          
-          <div>
-            <Label htmlFor="name">
-              Tên Danh Mục <span className="text-red-500">*</span>
-            </Label>
-            <Input
-              id="name"
-              name="name"
-              value={formData.name}
-              onChange={handleInputChange}
-              placeholder="Nhập tên danh mục"
-              className="mt-1"
-              disabled={isCreating}
-            />
+    <>
+      <Button 
+        onClick={() => setOpen(true)} 
+        className="bg-green-600 hover:bg-green-700"
+        disabled={isCreating}
+      >
+        <Plus className="w-4 h-4 mr-2" />
+        Thêm Danh Mục
+      </Button>
+
+      <Dialog open={open} onOpenChange={(isOpen) => {
+        setOpen(isOpen);
+        if (!isOpen) resetForm();
+      }}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-lg font-semibold">
+              <FolderPlus className="w-5 h-5 text-green-500" />
+              Thêm Danh Mục Mới
+            </DialogTitle>
+          </DialogHeader>
+
+          <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
-              <p className="mt-1 text-sm text-red-500">{error}</p>
+              <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
             )}
-          </div>
-          
-          <div>
-            <Label htmlFor="description">Mô Tả</Label>
-            <textarea
-              id="description"
-              name="description"
-              rows="2"
-              value={formData.description}
-              onChange={handleInputChange}
-              placeholder="Mô tả danh mục (tùy chọn)"
-              className="mt-1 w-full p-2 border rounded-md focus:ring focus:ring-opacity-50"
-              disabled={isCreating}
-            />
-          </div>
-          
-          <div className="flex justify-end space-x-2 pt-4">
-            <Button 
-              type="button" 
-              variant="outline" 
-              onClick={() => {
-                setOpen(false);
-                setError('');
-                setApiError('');
-              }}
-              disabled={isCreating}
-            >
-              Hủy
-            </Button>
-            <Button 
-              type="submit"
-              disabled={isCreating}
-            >
-              {isCreating ? (
-                <>
-                  <span className="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
-                  Đang thêm...
-                </>
-              ) : (
-                'Thêm Danh Mục'
-              )}
-            </Button>
-          </div>
-        </form>
-      </DialogContent>
-    </Dialog>
+
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="categoryName" className="flex items-center gap-2 text-sm font-medium">
+                  <Tag className="w-4 h-4 text-blue-500" />
+                  Tên Danh Mục *
+                </Label>
+                <Input
+                  id="categoryName"
+                  value={formData.name}
+                  onChange={(e) => setFormData({...formData, name: e.target.value})}
+                  placeholder="Nhập tên danh mục"
+                  className="mt-1"
+                  required
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="categoryDescription" className="flex items-center gap-2 text-sm font-medium">
+                  <FileText className="w-4 h-4 text-purple-500" />
+                  Mô Tả
+                </Label>
+                <Textarea
+                  id="categoryDescription"
+                  value={formData.description}
+                  onChange={(e) => setFormData({...formData, description: e.target.value})}
+                  placeholder="Nhập mô tả cho danh mục"
+                  className="mt-1"
+                  rows={3}
+                />
+              </div>
+            </div>
+
+            <DialogFooter className="gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setOpen(false)}
+                className="flex items-center gap-2"
+              >
+                <X className="w-4 h-4" />
+                Hủy
+              </Button>
+              <Button
+                type="submit"
+                className="flex items-center gap-2 bg-green-600 hover:bg-green-700"
+                disabled={isCreating}
+              >
+                {isCreating ? (
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <Save className="w-4 h-4" />
+                )}
+                {isCreating ? 'Đang thêm...' : 'Thêm Danh Mục'}
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 
