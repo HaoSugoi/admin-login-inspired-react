@@ -51,7 +51,11 @@ const AddCustomerDialog = ({ onAddCustomer }) => {
 
   return (
     <>
-      <Button onClick={() => setOpen(true)} className="bg-green-600 hover:bg-green-700">
+      <Button 
+        onClick={() => setOpen(true)} 
+        className="bg-green-600 hover:bg-green-700 text-white border-0"
+        style={{ backgroundColor: '#16a34a', color: 'white' }}
+      >
         <Plus className="w-4 h-4 mr-2" />
         Thêm Khách Hàng
       </Button>
@@ -60,9 +64,9 @@ const AddCustomerDialog = ({ onAddCustomer }) => {
         setOpen(isOpen);
         if (!isOpen) resetForm();
       }}>
-        <DialogContent className="sm:max-w-[600px]">
+        <DialogContent className="sm:max-w-[600px] bg-white">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-lg font-semibold">
+            <DialogTitle className="flex items-center gap-2 text-lg font-semibold text-gray-800">
               <User className="w-5 h-5 text-green-500" />
               Thêm Khách Hàng Mới
             </DialogTitle>
@@ -70,15 +74,15 @@ const AddCustomerDialog = ({ onAddCustomer }) => {
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
-              <Alert variant="destructive">
+              <Alert variant="destructive" className="border-red-200 bg-red-50">
                 <AlertCircle className="h-4 w-4" />
-                <AlertDescription>{error}</AlertDescription>
+                <AlertDescription className="text-red-800">{error}</AlertDescription>
               </Alert>
             )}
 
             <div className="grid grid-cols-1 gap-4">
               <div>
-                <Label htmlFor="userName" className="flex items-center gap-2 text-sm font-medium">
+                <Label htmlFor="userName" className="flex items-center gap-2 text-sm font-medium text-gray-700">
                   <User className="w-4 h-4 text-blue-500" />
                   Họ Tên *
                 </Label>
@@ -87,14 +91,14 @@ const AddCustomerDialog = ({ onAddCustomer }) => {
                   value={formData.UserName}
                   onChange={(e) => setFormData({...formData, UserName: e.target.value})}
                   placeholder="Nhập họ tên khách hàng"
-                  className="mt-1"
+                  className="mt-1 border-gray-300 bg-white text-gray-900"
                   required
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="email" className="flex items-center gap-2 text-sm font-medium">
+                  <Label htmlFor="email" className="flex items-center gap-2 text-sm font-medium text-gray-700">
                     <Mail className="w-4 h-4 text-red-500" />
                     Email *
                   </Label>
@@ -104,13 +108,13 @@ const AddCustomerDialog = ({ onAddCustomer }) => {
                     value={formData.Email}
                     onChange={(e) => setFormData({...formData, Email: e.target.value})}
                     placeholder="Nhập email"
-                    className="mt-1"
+                    className="mt-1 border-gray-300 bg-white text-gray-900"
                     required
                   />
                 </div>
 
                 <div>
-                  <Label htmlFor="phoneNumber" className="flex items-center gap-2 text-sm font-medium">
+                  <Label htmlFor="phoneNumber" className="flex items-center gap-2 text-sm font-medium text-gray-700">
                     <Phone className="w-4 h-4 text-green-500" />
                     Số Điện Thoại
                   </Label>
@@ -119,13 +123,13 @@ const AddCustomerDialog = ({ onAddCustomer }) => {
                     value={formData.PhoneNumber}
                     onChange={(e) => setFormData({...formData, PhoneNumber: e.target.value})}
                     placeholder="Nhập số điện thoại"
-                    className="mt-1"
+                    className="mt-1 border-gray-300 bg-white text-gray-900"
                   />
                 </div>
               </div>
 
               <div>
-                <Label htmlFor="address" className="flex items-center gap-2 text-sm font-medium">
+                <Label htmlFor="address" className="flex items-center gap-2 text-sm font-medium text-gray-700">
                   <MapPin className="w-4 h-4 text-purple-500" />
                   Địa Chỉ
                 </Label>
@@ -134,13 +138,13 @@ const AddCustomerDialog = ({ onAddCustomer }) => {
                   value={formData.Address}
                   onChange={(e) => setFormData({...formData, Address: e.target.value})}
                   placeholder="Nhập địa chỉ"
-                  className="mt-1"
+                  className="mt-1 border-gray-300 bg-white text-gray-900"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="dateOfBirth" className="flex items-center gap-2 text-sm font-medium">
+                  <Label htmlFor="dateOfBirth" className="flex items-center gap-2 text-sm font-medium text-gray-700">
                     <Calendar className="w-4 h-4 text-orange-500" />
                     Ngày Sinh
                   </Label>
@@ -149,24 +153,23 @@ const AddCustomerDialog = ({ onAddCustomer }) => {
                     type="date"
                     value={formData.DateOfBirth}
                     onChange={(e) => setFormData({...formData, DateOfBirth: e.target.value})}
-                    className="mt-1"
+                    className="mt-1 border-gray-300 bg-white text-gray-900"
                   />
                 </div>
 
                 <div>
-                  <Label htmlFor="role" className="flex items-center gap-2 text-sm font-medium">
+                  <Label htmlFor="role" className="flex items-center gap-2 text-sm font-medium text-gray-700">
                     <Shield className="w-4 h-4 text-blue-500" />
                     Vai Trò
                   </Label>
-                  <select
-                    id="role"
-                    value={formData.Role}
-                    onChange={(e) => setFormData({...formData, Role: e.target.value})}
-                    className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="Customer">Khách Hàng</option>
-                    <option value="VIP">VIP</option>
-                  </select>
+                  <div className="mt-1">
+                    <input
+                      type="text"
+                      value="Khách Hàng"
+                      readOnly
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 text-gray-700"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -176,14 +179,15 @@ const AddCustomerDialog = ({ onAddCustomer }) => {
                 type="button"
                 variant="outline"
                 onClick={() => setOpen(false)}
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 border-gray-300 text-gray-700 hover:bg-gray-50"
               >
                 <X className="w-4 h-4" />
                 Hủy
               </Button>
               <Button
                 type="submit"
-                className="flex items-center gap-2 bg-green-600 hover:bg-green-700"
+                className="flex items-center gap-2 text-white border-0"
+                style={{ backgroundColor: '#16a34a', color: 'white' }}
               >
                 <Save className="w-4 h-4" />
                 Thêm Khách Hàng

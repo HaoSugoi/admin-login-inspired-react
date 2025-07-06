@@ -15,7 +15,7 @@ const AddEmployeeDialog = ({ onAddEmployee }) => {
     PhoneNumber: '',
     Address: '',
     DateOfBirth: '',
-    Role: 'Employee',
+    Role: 'Staff',
     ImageUser: null
   });
   const [error, setError] = useState('');
@@ -27,7 +27,7 @@ const AddEmployeeDialog = ({ onAddEmployee }) => {
       PhoneNumber: '',
       Address: '',
       DateOfBirth: '',
-      Role: 'Employee',
+      Role: 'Staff',
       ImageUser: null
     });
     setError('');
@@ -58,7 +58,11 @@ const AddEmployeeDialog = ({ onAddEmployee }) => {
 
   return (
     <>
-      <Button onClick={() => setOpen(true)} className="bg-green-600 hover:bg-green-700">
+      <Button 
+        onClick={() => setOpen(true)} 
+        className="bg-green-600 hover:bg-green-700 text-white border-0"
+        style={{ backgroundColor: '#16a34a', color: 'white' }}
+      >
         <Plus className="w-4 h-4 mr-2" />
         Thêm Nhân Viên
       </Button>
@@ -67,9 +71,9 @@ const AddEmployeeDialog = ({ onAddEmployee }) => {
         setOpen(isOpen);
         if (!isOpen) resetForm();
       }}>
-        <DialogContent className="sm:max-w-[700px]">
+        <DialogContent className="sm:max-w-[700px] bg-white">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-lg font-semibold">
+            <DialogTitle className="flex items-center gap-2 text-lg font-semibold text-gray-800">
               <User className="w-5 h-5 text-green-500" />
               Thêm Nhân Viên Mới
             </DialogTitle>
@@ -77,15 +81,15 @@ const AddEmployeeDialog = ({ onAddEmployee }) => {
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
-              <Alert variant="destructive">
+              <Alert variant="destructive" className="border-red-200 bg-red-50">
                 <AlertCircle className="h-4 w-4" />
-                <AlertDescription>{error}</AlertDescription>
+                <AlertDescription className="text-red-800">{error}</AlertDescription>
               </Alert>
             )}
 
             <div className="grid grid-cols-1 gap-4">
               <div>
-                <Label htmlFor="imageUser" className="flex items-center gap-2 text-sm font-medium">
+                <Label htmlFor="imageUser" className="flex items-center gap-2 text-sm font-medium text-gray-700">
                   <Image className="w-4 h-4 text-blue-500" />
                   Ảnh Đại Diện
                 </Label>
@@ -94,12 +98,12 @@ const AddEmployeeDialog = ({ onAddEmployee }) => {
                   type="file"
                   accept="image/*"
                   onChange={handleFileChange}
-                  className="mt-1"
+                  className="mt-1 border-gray-300 bg-white text-gray-900"
                 />
               </div>
 
               <div>
-                <Label htmlFor="userName" className="flex items-center gap-2 text-sm font-medium">
+                <Label htmlFor="userName" className="flex items-center gap-2 text-sm font-medium text-gray-700">
                   <User className="w-4 h-4 text-blue-500" />
                   Họ Tên *
                 </Label>
@@ -108,14 +112,14 @@ const AddEmployeeDialog = ({ onAddEmployee }) => {
                   value={formData.UserName}
                   onChange={(e) => setFormData({...formData, UserName: e.target.value})}
                   placeholder="Nhập họ tên nhân viên"
-                  className="mt-1"
+                  className="mt-1 border-gray-300 bg-white text-gray-900"
                   required
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="email" className="flex items-center gap-2 text-sm font-medium">
+                  <Label htmlFor="email" className="flex items-center gap-2 text-sm font-medium text-gray-700">
                     <Mail className="w-4 h-4 text-red-500" />
                     Email *
                   </Label>
@@ -125,13 +129,13 @@ const AddEmployeeDialog = ({ onAddEmployee }) => {
                     value={formData.Email}
                     onChange={(e) => setFormData({...formData, Email: e.target.value})}
                     placeholder="Nhập email"
-                    className="mt-1"
+                    className="mt-1 border-gray-300 bg-white text-gray-900"
                     required
                   />
                 </div>
 
                 <div>
-                  <Label htmlFor="phoneNumber" className="flex items-center gap-2 text-sm font-medium">
+                  <Label htmlFor="phoneNumber" className="flex items-center gap-2 text-sm font-medium text-gray-700">
                     <Phone className="w-4 h-4 text-green-500" />
                     Số Điện Thoại
                   </Label>
@@ -140,13 +144,13 @@ const AddEmployeeDialog = ({ onAddEmployee }) => {
                     value={formData.PhoneNumber}
                     onChange={(e) => setFormData({...formData, PhoneNumber: e.target.value})}
                     placeholder="Nhập số điện thoại"
-                    className="mt-1"
+                    className="mt-1 border-gray-300 bg-white text-gray-900"
                   />
                 </div>
               </div>
 
               <div>
-                <Label htmlFor="address" className="flex items-center gap-2 text-sm font-medium">
+                <Label htmlFor="address" className="flex items-center gap-2 text-sm font-medium text-gray-700">
                   <MapPin className="w-4 h-4 text-purple-500" />
                   Địa Chỉ
                 </Label>
@@ -155,13 +159,13 @@ const AddEmployeeDialog = ({ onAddEmployee }) => {
                   value={formData.Address}
                   onChange={(e) => setFormData({...formData, Address: e.target.value})}
                   placeholder="Nhập địa chỉ"
-                  className="mt-1"
+                  className="mt-1 border-gray-300 bg-white text-gray-900"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="dateOfBirth" className="flex items-center gap-2 text-sm font-medium">
+                  <Label htmlFor="dateOfBirth" className="flex items-center gap-2 text-sm font-medium text-gray-700">
                     <Calendar className="w-4 h-4 text-orange-500" />
                     Ngày Sinh
                   </Label>
@@ -170,12 +174,12 @@ const AddEmployeeDialog = ({ onAddEmployee }) => {
                     type="date"
                     value={formData.DateOfBirth}
                     onChange={(e) => setFormData({...formData, DateOfBirth: e.target.value})}
-                    className="mt-1"
+                    className="mt-1 border-gray-300 bg-white text-gray-900"
                   />
                 </div>
 
                 <div>
-                  <Label htmlFor="role" className="flex items-center gap-2 text-sm font-medium">
+                  <Label htmlFor="role" className="flex items-center gap-2 text-sm font-medium text-gray-700">
                     <Shield className="w-4 h-4 text-blue-500" />
                     Vai Trò
                   </Label>
@@ -183,9 +187,9 @@ const AddEmployeeDialog = ({ onAddEmployee }) => {
                     id="role"
                     value={formData.Role}
                     onChange={(e) => setFormData({...formData, Role: e.target.value})}
-                    className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
-                    <option value="Employee">Nhân Viên</option>
+                    <option value="Staff">Nhân Viên</option>
                     <option value="Manager">Quản Lý</option>
                     <option value="Admin">Quản Trị Viên</option>
                   </select>
@@ -198,14 +202,15 @@ const AddEmployeeDialog = ({ onAddEmployee }) => {
                 type="button"
                 variant="outline"
                 onClick={() => setOpen(false)}
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 border-gray-300 text-gray-700 hover:bg-gray-50"
               >
                 <X className="w-4 h-4" />
                 Hủy
               </Button>
               <Button
                 type="submit"
-                className="flex items-center gap-2 bg-green-600 hover:bg-green-700"
+                className="flex items-center gap-2 text-white border-0"
+                style={{ backgroundColor: '#16a34a', color: 'white' }}
               >
                 <Save className="w-4 h-4" />
                 Thêm Nhân Viên
