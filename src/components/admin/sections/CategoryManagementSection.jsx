@@ -75,18 +75,16 @@ const CategoryManagementSection = ({ categories = [], onAddCategory, onUpdateCat
                     <td>
                       <div className="d-flex gap-1">
                         <button
-                          className="btn btn-sm text-white border-0"
+                          className="btn btn-sm btn-primary"
                           onClick={() => handleEditClick(category)}
                           title="Chỉnh sửa danh mục"
-                          style={{ backgroundColor: '#3b82f6' }}
                         >
                           <Edit size={14} />
                         </button>
                         <button
-                          className="btn btn-sm text-white border-0"
+                          className="btn btn-sm btn-danger"
                           onClick={() => handleDeleteClick(category.id)}
                           title="Xóa danh mục"
-                          style={{ backgroundColor: '#ef4444' }}
                         >
                           <Trash2 size={14} />
                         </button>

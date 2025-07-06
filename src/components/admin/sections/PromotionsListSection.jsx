@@ -59,26 +59,23 @@ const PromotionsListSection = ({ promotions, categories, onAdd, onUpdate, onDele
                   <td>
                     <div className="d-flex gap-1">
                       <button
-                        className="btn btn-sm text-white border-0"
+                        className="btn btn-sm btn-primary"
                         onClick={() => handleEditPromotion(promotion)}
                         title="Sửa"
-                        style={{ backgroundColor: '#3b82f6' }}
                       >
                         <Edit size={14} />
                       </button>
                       <button
-                        className="btn btn-sm text-white border-0"
+                        className="btn btn-sm btn-warning"
                         onClick={() => handleToggleStatus(promotion.PromotionId, promotion.IsActive ? 'active' : 'inactive')}
                         title={promotion.IsActive ? 'Tạm dừng' : 'Kích hoạt'}
-                        style={{ backgroundColor: promotion.IsActive ? '#f59e0b' : '#10b981' }}
                       >
                         {promotion.IsActive ? <Pause size={14} /> : <Play size={14} />}
                       </button>
                       <button
-                        className="btn btn-sm text-white border-0"
+                        className="btn btn-sm btn-danger"
                         onClick={() => handleDeletePromotion(promotion.PromotionId)}
                         title="Xóa"
-                        style={{ backgroundColor: '#ef4444' }}
                       >
                         <Trash2 size={14} />
                       </button>

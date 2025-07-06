@@ -65,26 +65,23 @@ const DiscountCodesListSection = ({ discountCodes, onAdd, onUpdateDiscountCode, 
                   <td>
                     <div className="d-flex gap-1">
                       <button
-                        className="btn btn-sm text-white border-0"
+                        className="btn btn-sm btn-primary"
                         onClick={() => handleEditDiscountCode(discountCode)}
                         title="Sửa"
-                        style={{ backgroundColor: '#3b82f6' }}
                       >
                         <Edit size={14} />
                       </button>
                       <button
-                        className="btn btn-sm text-white border-0"
+                        className="btn btn-sm btn-warning"
                         onClick={() => handleToggleStatus(discountCode.DiscountCodeId, discountCode.IsActive ? 'active' : 'inactive')}
                         title={discountCode.IsActive ? 'Tạm dừng' : 'Kích hoạt'}
-                        style={{ backgroundColor: discountCode.IsActive ? '#f59e0b' : '#10b981' }}
                       >
                         {discountCode.IsActive ? <Pause size={14} /> : <Play size={14} />}
                       </button>
                       <button
-                        className="btn btn-sm text-white border-0"
+                        className="btn btn-sm btn-danger"
                         onClick={() => handleDeleteDiscountCode(discountCode.DiscountCodeId)}
                         title="Xóa"
-                        style={{ backgroundColor: '#ef4444' }}
                       >
                         <Trash2 size={14} />
                       </button>
