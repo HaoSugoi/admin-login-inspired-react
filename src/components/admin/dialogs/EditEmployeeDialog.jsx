@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import {
   Dialog,
@@ -15,23 +16,22 @@ const EditEmployeeDialog = ({ employee, open, onClose, onUpdateEmployee }) => {
     PhoneNumber: "",
     DateOfBirth: "",
     Role: "",
-    imageFile: null,
+    Points: 0,
   });
 
   useEffect(() => {
-  if (employee) {
-    setFormData({
-      Address: employee.Address || "",
-      PhoneNumber: employee.PhoneNumber || "",
-      DateOfBirth: employee.DateOfBirth
-        ? new Date(employee.DateOfBirth)
-        : "",
-      Role: employee.Role || "", // <-- Role này phải là "Customer", "Staff", "Admin"
-      imageFile: null,
-    });
-  }
-}, [employee]);
-
+    if (employee) {
+      setFormData({
+        Address: employee.Address || "",
+        PhoneNumber: employee.PhoneNumber || "",
+        DateOfBirth: employee.DateOfBirth
+          ? new Date(employee.DateOfBirth).toISOString().split("T")[0]
+          : "",
+        Role: employee.Role || "Staff",
+        Points: employee.points || 0,
+      });
+    }
+  }, [employee]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -41,28 +41,18 @@ const EditEmployeeDialog = ({ employee, open, onClose, onUpdateEmployee }) => {
     }));
   };
 
-  const handleFileChange = (e) => {
-    setFormData((prev) => ({
-      ...prev,
-      imageFile: e.target.files[0],
-    }));
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const updatedemployees = {
-
+    const updatedEmployee = {
       Address: formData.Address,
       Role: formData.Role,
       PhoneNumber: formData.PhoneNumber,
-      DateOfBirth: new Date(formData.DateOfBirth).toISOString(), // yyyy-MM-dd
-      Points: 0,
-      ImageFile: formData.imageFile, // File từ input type="file"
+      DateOfBirth: formData.DateOfBirth ? new Date(formData.DateOfBirth).toISOString() : "",
+      Points: parseInt(formData.Points) || 0,
     };
 
-    onUpdateEmployee({ StaffId: employee.StaffId, data: updatedemployees });
-
+    onUpdateEmployee({ StaffId: employee.Id, data: updatedEmployee });
     onClose();
   };
 
@@ -73,7 +63,7 @@ const EditEmployeeDialog = ({ employee, open, onClose, onUpdateEmployee }) => {
       <DialogContent className="max-w-lg mx-auto min-h-[500px]">
         <DialogHeader>
           <DialogTitle className="text-center">
-            Cập Nhật Thông Tin Khách Hàng
+            Cập Nhật Thông Tin Nhân Viên
           </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -85,18 +75,29 @@ const EditEmployeeDialog = ({ employee, open, onClose, onUpdateEmployee }) => {
               type="email"
               value={employee.Email}
               readOnly
+              className="bg-gray-100"
             />
           </div>
 
           <div>
-            <Label htmlFor="PhoneNumber">Số Điện Thoại *</Label>
+            <Label htmlFor="UserName">Họ Tên *</Label>
+            <Input
+              id="UserName"
+              name="UserName"
+              value={employee.UserName}
+              readOnly
+              className="bg-gray-100"
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="PhoneNumber">Số Điện Thoại</Label>
             <Input
               id="PhoneNumber"
               name="PhoneNumber"
               type="tel"
               value={formData.PhoneNumber}
               onChange={handleInputChange}
-              required
             />
           </div>
 
@@ -132,19 +133,20 @@ const EditEmployeeDialog = ({ employee, open, onClose, onUpdateEmployee }) => {
               onChange={handleInputChange}
               className="form-select w-full"
             >
-              <option value="Customer">Customer</option>
               <option value="Staff">Staff</option>
               <option value="Admin">Admin</option>
             </select>
           </div>
 
           <div>
-            <Label htmlFor="avatar">Ảnh đại diện</Label>
+            <Label htmlFor="Points">Điểm</Label>
             <Input
-              id="avatar"
-              type="file"
-              accept="image/*"
-              onChange={handleFileChange}
+              id="Points"
+              name="Points"
+              type="number"
+              value={formData.Points}
+              onChange={handleInputChange}
+              min="0"
             />
           </div>
 

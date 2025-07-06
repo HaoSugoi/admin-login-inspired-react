@@ -1,129 +1,96 @@
-import React, { useState } from "react";
-import AddCategoryDialog from "../dialogs/AddCategoryDialog";
-// import EditCategoryDialog from '../dialogs/EditCategoryDialog';
-import { useCategoryManagement } from "../../../hooks/useCategoryManagement";
 
-const CategoryManagementSection = () => {
-  const {
-    categories,
-    statistics,
-    isLoadingCategories,
-    handleCreateCategory,
-    handleUpdateCategory,
-    handleDeleteCategory,
-    filterCategories,
-    isCreating,
-    isUpdating,
-    isDeleting,
-  } = useCategoryManagement();
+import React, { useState } from 'react';
+import AddCategoryDialog from '../dialogs/AddCategoryDialog';
+import { Edit, Trash2, FolderOpen, Book } from 'lucide-react';
 
+const CategoryManagementSection = ({ categories = [], onAddCategory, onUpdateCategory, onDeleteCategory, isCreating }) => {
   const [editingCategory, setEditingCategory] = useState(null);
-  const [searchTerm, setSearchTerm] = useState("");
 
-  // Lọc danh mục dựa trên search term
-  const filteredCategories = filterCategories(searchTerm);
-  
-  // Tạo biến an toàn để tránh lỗi khi dữ liệu chưa có
-  const safeCategories = filteredCategories || [];
+  const handleEditClick = (category) => {
+    setEditingCategory(category);
+  };
+
+  const handleDeleteClick = (categoryId) => {
+    if (window.confirm('Bạn có chắc chắn muốn xóa danh mục này?')) {
+      onDeleteCategory(categoryId);
+    }
+  };
 
   return (
     <div className="col-12 mb-4">
       <div className="section-card">
-        <div className="d-flex justify-content-between align-items-center mb-3">
-          <div>
-            <h5>Quản Lý Danh Mục</h5>
-            <div className="d-flex gap-2 mt-2">
-              <span className="badge bg-primary">
-                Tổng: {statistics.totalCategories}
-              </span>
-              <span className="badge bg-success">
-                Có sách: {statistics.categoriesWithBooks}
-              </span>
-              <span className="badge bg-warning">
-                Trống: {statistics.emptyCategories}
-              </span>
-            </div>
-          </div>
-
-          <div className="d-flex gap-2">
-            <input
-              type="text"
-              placeholder="Tìm kiếm danh mục..."
-              className="form-control"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            <AddCategoryDialog
-              onAddCategory={handleCreateCategory}
-              isCreating={isCreating}
-            />
-          </div>
+        <div className="section-title d-flex justify-content-between align-items-center">
+          <span className="d-flex align-items-center gap-2">
+            <FolderOpen className="text-primary" size={20} />
+            Quản Lý Danh Mục
+          </span>
+          <AddCategoryDialog onAddCategory={onAddCategory} isCreating={isCreating} />
         </div>
 
-        <div className="table-responsive">
-          <table className="table table-hover">
-            <thead className="table-light">
+        <div className="table-responsive mt-3">
+          <table className="table order-table">
+            <thead>
               <tr>
+                <th>ID</th>
                 <th>Tên Danh Mục</th>
                 <th>Mô Tả</th>
                 <th>Số Sách</th>
-                <th className="text-end">Thao Tác</th>
+                <th>Ngày Tạo</th>
+                <th>Thao Tác</th>
               </tr>
             </thead>
             <tbody>
-              {isLoadingCategories ? (
-                <tr key="loading-row">
-                  <td colSpan="4" className="text-center">
-                    <div className="spinner-border" role="status">
-                      <span className="visually-hidden">Loading...</span>
-                    </div>
-                  </td>
-                </tr>
-              ) : safeCategories.length === 0 ? (
-                <tr key="no-results-row">
-                  <td colSpan="4" className="text-center text-muted">
-                    Không tìm thấy danh mục nào
+              {categories.length === 0 ? (
+                <tr>
+                  <td colSpan="6" className="text-center text-muted py-4">
+                    Chưa có danh mục nào. Hãy thêm danh mục đầu tiên!
                   </td>
                 </tr>
               ) : (
-                safeCategories.map((category) => (
-                  <tr key={`category-${category.id}`}>
-                    <td className="fw-medium">{category.name}</td>
-                    <td className="text-muted">
-                      {category.description || "—"}
+                categories.map((category) => (
+                  <tr key={category.id}>
+                    <td className="fw-bold text-primary">#{category.id}</td>
+                    <td>
+                      <div className="d-flex align-items-center gap-2">
+                        <Book size={16} className="text-success" />
+                        <span className="fw-medium">{category.name}</span>
+                      </div>
                     </td>
                     <td>
-                      <span className="badge bg-primary">
-                        {category.booksCount || 0}
+                      <span className="text-muted">
+                        {category.description || 'Không có mô tả'}
                       </span>
                     </td>
-                    <td className="text-end">
-                      <button
-                        className="btn btn-sm btn-outline-primary me-2"
-                        onClick={() => setEditingCategory(category)}
-                        disabled={isUpdating}
-                      >
-                        {isUpdating && editingCategory?.id === category.id ? (
-                          <span
-                            className="spinner-border spinner-border-sm me-1"
-                            role="status"
-                          ></span>
-                        ) : null}
-                        Sửa
-                      </button>
-                      <button
-                        className="btn btn-sm btn-outline-danger"
-                        onClick={() => handleDeleteCategory(category.id)}
-                        disabled={isDeleting}
-                      >
-                        {isDeleting ? (
-                          <span
-                            className="spinner-border spinner-border-sm me-1"
-                            role="status"
-                          ></span>
-                        ) : null}
-                        Xóa
-                      </button>
+                    <td>
+                      <span className="badge bg-info">
+                        {category.booksCount || 0} cuốn
+                      </span>
+                    </td>
+                    <td className="text-muted">
+                      {category.createdAt 
+                        ? new Date(category.createdAt).toLocaleDateString('vi-VN')
+                        : 'N/A'
+                      }
+                    </td>
+                    <td>
+                      <div className="d-flex gap-1">
+                        <button
+                          className="btn btn-sm text-white border-0"
+                          onClick={() => handleEditClick(category)}
+                          title="Chỉnh sửa danh mục"
+                          style={{ backgroundColor: '#3b82f6' }}
+                        >
+                          <Edit size={14} />
+                        </button>
+                        <button
+                          className="btn btn-sm text-white border-0"
+                          onClick={() => handleDeleteClick(category.id)}
+                          title="Xóa danh mục"
+                          style={{ backgroundColor: '#ef4444' }}
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))
@@ -132,18 +99,6 @@ const CategoryManagementSection = () => {
           </table>
         </div>
       </div>
-
-      {/* Dialog chỉnh sửa */}
-      {editingCategory && (
-        <EditCategoryDialog
-          category={editingCategory}
-          onClose={() => setEditingCategory(null)}
-          onUpdate={(updatedCategory) => 
-            handleUpdateCategory(updatedCategory.id, updatedCategory)
-          }
-          isUpdating={isUpdating}
-        />
-      )}
     </div>
   );
 };

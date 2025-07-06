@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import {
   Dialog,
@@ -14,24 +15,25 @@ const EditCustomerDialog = ({ customer, open, onClose, onUpdateCustomer }) => {
     Address: "",
     PhoneNumber: "",
     DateOfBirth: "",
-    Role: "",
+    Role: "Customer",
+    Points: 0,
     imageFile: null,
   });
 
   useEffect(() => {
-  if (customer) {
-    setFormData({
-      Address: customer.Address || "",
-      PhoneNumber: customer.PhoneNumber || "",
-      DateOfBirth: customer.DateOfBirth
-        ? new Date(customer.DateOfBirth).toISOString().split("T")[0]
-        : "",
-      Role: customer.Role || "", // <-- Role này phải là "Customer", "Staff", "Admin"
-      imageFile: null,
-    });
-  }
-}, [customer]);
-
+    if (customer) {
+      setFormData({
+        Address: customer.Address || "",
+        PhoneNumber: customer.PhoneNumber || "",
+        DateOfBirth: customer.DateOfBirth
+          ? new Date(customer.DateOfBirth).toISOString().split("T")[0]
+          : "",
+        Role: customer.Role || "Customer",
+        Points: customer.Points || 0,
+        imageFile: null,
+      });
+    }
+  }, [customer]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -55,13 +57,12 @@ const EditCustomerDialog = ({ customer, open, onClose, onUpdateCustomer }) => {
       Address: formData.Address,
       Role: formData.Role,
       PhoneNumber: formData.PhoneNumber,
-      DateOfBirth: new Date(formData.DateOfBirth).toISOString(), // yyyy-MM-dd
-      Points: 0,
-      ImageFile: formData.imageFile, // File từ input type="file"
+      DateOfBirth: formData.DateOfBirth ? new Date(formData.DateOfBirth).toISOString() : "",
+      Points: parseInt(formData.Points) || 0,
+      ImageFile: formData.imageFile,
     };
 
     onUpdateCustomer({ Id: customer.Id, data: updatedCustomer });
-
     onClose();
   };
 
@@ -84,18 +85,29 @@ const EditCustomerDialog = ({ customer, open, onClose, onUpdateCustomer }) => {
               type="email"
               value={customer.Email}
               readOnly
+              className="bg-gray-100"
             />
           </div>
 
           <div>
-            <Label htmlFor="PhoneNumber">Số Điện Thoại *</Label>
+            <Label htmlFor="UserName">Họ Tên *</Label>
+            <Input
+              id="UserName"
+              name="UserName"
+              value={customer.UserName}
+              readOnly
+              className="bg-gray-100"
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="PhoneNumber">Số Điện Thoại</Label>
             <Input
               id="PhoneNumber"
               name="PhoneNumber"
               type="tel"
               value={formData.PhoneNumber}
               onChange={handleInputChange}
-              required
             />
           </div>
 
@@ -123,18 +135,15 @@ const EditCustomerDialog = ({ customer, open, onClose, onUpdateCustomer }) => {
           </div>
 
           <div>
-            <Label htmlFor="Role">Vai trò</Label>
-            <select
-              id="Role"
-              name="Role"
-              value={formData.Role}
+            <Label htmlFor="Points">Điểm</Label>
+            <Input
+              id="Points"
+              name="Points"
+              type="number"
+              value={formData.Points}
               onChange={handleInputChange}
-              className="form-select w-full"
-            >
-              <option value="Customer">Customer</option>
-              <option value="Staff">Staff</option>
-              <option value="Admin">Admin</option>
-            </select>
+              min="0"
+            />
           </div>
 
           <div>
