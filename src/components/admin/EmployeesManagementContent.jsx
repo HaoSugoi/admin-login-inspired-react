@@ -23,7 +23,7 @@ const EmployeesManagementContent = (props) => {
         <div className="row">
           <EmployeesListSection 
             employees={props.employees}
-            onAdd={props.addEmployee}
+            onAdd={props.createEmployee}
             onUpdate={props.updateEmployee}
             onDelete={props.deleteEmployee}
           />

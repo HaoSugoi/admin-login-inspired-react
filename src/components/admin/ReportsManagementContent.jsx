@@ -1,12 +1,12 @@
+
 import React from 'react';
 import AdminTopbar from './AdminTopbar';
 import CategoryStatisticsSection from './sections/CategoryStatisticsSection';
 import CategoryManagementSection from './sections/CategoryManagementSection';
-import { useCategoryManagement } from '../../hooks/useCategoryManagement'; // Import hook
+import { useCategoryManagement } from '../../hooks/useCategoryManagement';
 
 const ReportsManagementContent = (props) => {
-  // Sử dụng hook ở component cha
-  const { statistics } = useCategoryManagement();
+  const { statistics, handleAddCategory } = useCategoryManagement();
 
   return (
     <div className="col-md-9 col-lg-10 main-content">
@@ -23,9 +23,8 @@ const ReportsManagementContent = (props) => {
         </div>
 
         <div className="row">
-          
           <CategoryManagementSection
-          
+            onAddCategory={handleAddCategory}
           />
         </div>
       </div>

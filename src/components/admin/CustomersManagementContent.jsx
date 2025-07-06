@@ -23,7 +23,7 @@ const CustomersManagementContent = (props) => {
         <div className="row">
           <CustomersListSection 
             customers={props.customers}
-            onAdd={props.addCustomer}
+            onAdd={props.createCustomer}
             onUpdate={props.updateCustomer}
             onDelete={props.deleteCustomer}
           />
