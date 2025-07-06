@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import AddCustomerDialog from "../dialogs/AddCustomerDialog";
 import EditCustomerDialog from "../dialogs/EditCustomerDialog";
@@ -83,18 +82,16 @@ const CustomersListSection = ({ customers = [], onAdd, onUpdate, onDelete }) => 
                     <td>
                       <div className="d-flex gap-1">
                         <button
-                          className="btn btn-sm btn-outline-primary text-white border-0"
+                          className="btn btn-sm btn-outline-primary"
                           onClick={() => handleEditCustomer(customer)}
                           title="Sửa"
-                          style={{ backgroundColor: '#3b82f6', color: 'white' }}
                         >
                           <Edit size={14} />
                         </button>
                         <button
-                          className="btn btn-sm btn-outline-danger text-white border-0"
+                          className="btn btn-sm btn-outline-danger"
                           onClick={() => handleDeleteCustomer(customer.Id)}
                           title="Xóa"
-                          style={{ backgroundColor: '#ef4444', color: 'white' }}
                         >
                           <Trash2 size={14} />
                         </button>

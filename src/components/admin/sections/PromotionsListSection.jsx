@@ -1,31 +1,31 @@
+import React, { useState } from 'react';
+import AddPromotionDialog from '../dialogs/AddPromotionDialog';
+import EditPromotionDialog from '../dialogs/EditPromotionDialog';
 
-import React, { useState } from "react";
-import AddPromotionDialog from "../dialogs/AddPromotionDialog";
-import EditPromotionDialog from "../dialogs/EditPromotionDialog";
-import { Edit, Trash2, Play, Pause } from "lucide-react";
-
-const PromotionsListSection = ({ promotions, categories, onAdd, onUpdate, onDelete, onToggleStatus }) => {
+const PromotionsListSection = ({
+  promotions,
+  categories,
+  onAdd,
+  onUpdate,
+  onDelete,
+  onToggleStatus
+}) => {
   const [editingPromotion, setEditingPromotion] = useState(null);
 
-  const handleEditPromotion = (promotion) => {
-    setEditingPromotion(promotion);
-  };
+  const getStatusBadge = (startDate, endDate) => {
+    const now = new Date();
+    const start = new Date(startDate);
+    const end = new Date(endDate);
 
-  const handleDeletePromotion = (id) => {
-    if (window.confirm("Bạn có chắc chắn muốn xóa khuyến mãi này?")) {
-      onDelete(id);
-    }
-  };
-
-  const handleToggleStatus = (id, currentStatus) => {
-    const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
-    onToggleStatus(id, newStatus);
+    if (now < start) return <span className="badge bg-secondary">Chưa bắt đầu</span>;
+    if (now > end) return <span className="badge bg-warning">Hết hạn</span>;
+    return <span className="badge bg-success">Đang hoạt động</span>;
   };
 
   return (
-    <div className="col-12 mb-4">
+    <div className="col-12">
       <div className="section-card">
-        <div className="section-title d-flex justify-content-between align-items-center">
+        <div className="section-title">
           <span>Danh Sách Khuyến Mãi</span>
           <AddPromotionDialog categories={categories} onAdd={onAdd} />
         </div>
@@ -36,50 +36,55 @@ const PromotionsListSection = ({ promotions, categories, onAdd, onUpdate, onDele
               <tr>
                 <th>Mã</th>
                 <th>Tên Khuyến Mãi</th>
-                <th>Giảm Giá (%)</th>
-                <th>Ngày Bắt Đầu</th>
-                <th>Ngày Kết Thúc</th>
+                <th>Giá Trị</th>
+                <th>Thể Loại Áp Dụng</th>
+                <th>Thời Gian</th>
                 <th>Trạng Thái</th>
                 <th>Thao Tác</th>
               </tr>
             </thead>
             <tbody>
-              {promotions?.map((promotion) => (
+              {promotions.map((promotion) => (
                 <tr key={promotion.PromotionId}>
-                  <td>#{promotion.PromotionId?.toString().slice(0, 6).toUpperCase() || "N/A"}</td>
-                  <td>{promotion.PromotionName}</td>
-                  <td>{promotion.DiscountPercentage}%</td>
-                  <td>{new Date(promotion.StartDate).toLocaleDateString('vi-VN')}</td>
-                  <td>{new Date(promotion.EndDate).toLocaleDateString('vi-VN')}</td>
                   <td>
-                    <span className={`badge ${promotion.IsActive ? 'bg-success' : 'bg-secondary'}`}>
-                      {promotion.IsActive ? 'Hoạt động' : 'Tạm dừng'}
+                    <strong className="text-primary">{promotion.PromotionId}</strong>
+                  </td>
+                  <td>
+                    <div>
+                      <strong>{promotion.PromotionName}</strong>
+                    </div>
+                  </td>
+                  <td>
+                    <span className="badge bg-info">
+                      {promotion.DiscountPercentage}%
                     </span>
                   </td>
                   <td>
-                    <div className="d-flex gap-1">
-                      <button
-                        className="btn btn-sm btn-primary"
-                        onClick={() => handleEditPromotion(promotion)}
-                        title="Sửa"
-                      >
-                        <Edit size={14} />
-                      </button>
-                      <button
-                        className="btn btn-sm btn-warning"
-                        onClick={() => handleToggleStatus(promotion.PromotionId, promotion.IsActive ? 'active' : 'inactive')}
-                        title={promotion.IsActive ? 'Tạm dừng' : 'Kích hoạt'}
-                      >
-                        {promotion.IsActive ? <Pause size={14} /> : <Play size={14} />}
-                      </button>
-                      <button
-                        className="btn btn-sm btn-danger"
-                        onClick={() => handleDeletePromotion(promotion.PromotionId)}
-                        title="Xóa"
-                      >
-                        <Trash2 size={14} />
-                      </button>
-                    </div>
+                    <span className="badge bg-secondary">
+                      {/* Nếu có category, hiển thị ở đây */}
+                      Chưa có
+                    </span>
+                  </td>
+                  <td>
+                    <small>
+                      <div>{new Date(promotion.StartDate).toLocaleDateString()}</div>
+                      <div>đến {new Date(promotion.EndDate).toLocaleDateString()}</div>
+                    </small>
+                  </td>
+                  <td>{getStatusBadge(promotion.StartDate, promotion.EndDate)}</td>
+                  <td>
+                    <button
+                      className="btn btn-sm btn-outline-primary me-2"
+                      onClick={() => setEditingPromotion(promotion)}
+                    >
+                      Sửa
+                    </button>
+                    <button
+className="btn btn-sm btn-outline-danger"
+                      onClick={() => onDelete(promotion.PromotionId)}
+                    >
+                      Xóa
+                    </button>
                   </td>
                 </tr>
               ))}

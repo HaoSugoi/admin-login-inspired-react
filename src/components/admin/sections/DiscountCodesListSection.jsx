@@ -1,27 +1,26 @@
-
-import React, { useState } from "react";
-import AddDiscountCodeDialog from "../dialogs/AddDiscountCodeDialog";
-import EditDiscountCodeDialog from "../dialogs/EditDiscountCodeDialog";
-import { Edit, Trash2, Play, Pause } from "lucide-react";
+import React, { useState } from 'react';
+import AddDiscountCodeDialog from '../dialogs/AddDiscountCodeDialog';
+import EditDiscountCodeDialog from '../dialogs/EditDiscountCodeDialog';
+import { Edit, Trash2, ToggleLeft, ToggleRight } from 'lucide-react';
 
 const DiscountCodesListSection = ({ discountCodes, onAdd, onUpdateDiscountCode, onDelete, onToggleStatus }) => {
-  const [editingDiscountCode, setEditingDiscountCode] = useState(null);
+  const [editingCode, setEditingCode] = useState(null);
   const [showEditDialog, setShowEditDialog] = useState(false);
 
-  const handleEditDiscountCode = (discountCode) => {
-    setEditingDiscountCode(discountCode);
+  const handleEditCode = (discountCodes) => {
+    setEditingCode(discountCodes);
     setShowEditDialog(true);
   };
 
-  const handleDeleteDiscountCode = (id) => {
-    if (window.confirm("Bạn có chắc chắn muốn xóa mã giảm giá này?")) {
-      onDelete(id);
+  const handleDeleteCode = (DiscountCodeId) => {
+    if (window.confirm('Bạn có chắc chắn muốn xóa mã giảm giá này?')) {
+      onDelete(DiscountCodeId);
     }
   };
 
-  const handleToggleStatus = (id, currentStatus) => {
-    const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
-    onToggleStatus(id, newStatus);
+  const handleToggleStatus = (discountCodes) => {
+    const newStatus = discountCodes.status === 'active' ? 'inactive' : 'active';
+    onToggleStatus(discountCodes.DiscountCodeId, newStatus);
   };
 
   return (
@@ -31,80 +30,93 @@ const DiscountCodesListSection = ({ discountCodes, onAdd, onUpdateDiscountCode, 
           <span>Danh Sách Mã Giảm Giá</span>
           <AddDiscountCodeDialog onAddDiscountCode={onAdd} />
         </div>
-
+        
         <div className="table-responsive">
           <table className="table order-table">
             <thead>
               <tr>
                 <th>Mã</th>
                 <th>Tên Mã</th>
-                <th>Giá Trị (%)</th>
-                <th>Số Lượng</th>
-                <th>Ngày Bắt Đầu</th>
-                <th>Ngày Kết Thúc</th>
-                <th>Điểm Yêu Cầu</th>
-                <th>Trạng Thái</th>
+              
+                <th>Giá Trị</th>
+                <th>Sử Dụng</th>
+                <th>Số lượng</th>
+                <th>Điểm đổi</th>
+                <th>Thời gian</th>
                 <th>Thao Tác</th>
               </tr>
             </thead>
             <tbody>
-              {discountCodes?.map((discountCode) => (
-                <tr key={discountCode.DiscountCodeId}>
-                  <td>#{discountCode.DiscountCodeId?.toString().slice(0, 6).toUpperCase() || "N/A"}</td>
-                  <td>{discountCode.DiscountCodeName}</td>
-                  <td>{discountCode.DiscountValue}%</td>
-                  <td>{discountCode.AvailableQuantity}</td>
-                  <td>{new Date(discountCode.StartDate).toLocaleDateString('vi-VN')}</td>
-                  <td>{new Date(discountCode.EndDate).toLocaleDateString('vi-VN')}</td>
-                  <td>{discountCode.RequiredPoints || 0} điểm</td>
-                  <td>
-                    <span className={`badge ${discountCode.IsActive ? 'bg-success' : 'bg-secondary'}`}>
-                      {discountCode.IsActive ? 'Hoạt động' : 'Tạm dừng'}
-                    </span>
-                  </td>
-                  <td>
-                    <div className="d-flex gap-1">
-                      <button
-                        className="btn btn-sm btn-primary"
-                        onClick={() => handleEditDiscountCode(discountCode)}
-                        title="Sửa"
-                      >
-                        <Edit size={14} />
-                      </button>
-                      <button
-                        className="btn btn-sm btn-warning"
-                        onClick={() => handleToggleStatus(discountCode.DiscountCodeId, discountCode.IsActive ? 'active' : 'inactive')}
-                        title={discountCode.IsActive ? 'Tạm dừng' : 'Kích hoạt'}
-                      >
-                        {discountCode.IsActive ? <Pause size={14} /> : <Play size={14} />}
-                      </button>
-                      <button
-                        className="btn btn-sm btn-danger"
-                        onClick={() => handleDeleteDiscountCode(discountCode.DiscountCodeId)}
-                        title="Xóa"
-                      >
-                        <Trash2 size={14} />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+            {discountCodes.map((code) => (
+  <tr key={code.DiscountCodeId}>
+    <td>
+      <code className="bg-light px-2 py-1 rounded">{code.DiscountCodeId}</code>
+    </td>
+    <td>{code.DiscountCodeName}</td>
+   
+    <td>{code.DiscountValue }%</td>
+    <td>{code.RequiredPoints}</td>
+    
+    <td>{code.AvailableQuantity}</td>
+    
+    <td>{code.RequiredPoints}</td>
+    <td>
+          <small>
+              <div>{new Date(code.StartDate).toLocaleDateString()}</div>
+              <div>đến {new Date(code.EndDate).toLocaleDateString()}</div>
+          </small>
+   </td>
+                
+    <td>
+      <div className="d-flex gap-1">
+        <button
+          className="btn btn-sm btn-outline-primary"
+          onClick={() => handleEditCode(code)}
+          title="Sửa"
+        >
+          <Edit size={14} />
+        </button>
+        <button
+          className="btn btn-sm btn-outline-warning"
+          onClick={() => handleToggleStatus(code)}
+          title="Tạm dừng"
+        >
+          <ToggleRight size={14} />
+        </button>
+        <button
+          className="btn btn-sm btn-outline-danger"
+          onClick={() => handleDeleteCode(code.DiscountCodeId)}
+          title="Xóa"
+        >
+<Trash2 size={14} />
+        </button>
+      </div>
+    </td>
+  </tr>
+))}
+
+
             </tbody>
           </table>
         </div>
       </div>
 
-      {editingDiscountCode && (
-        <EditDiscountCodeDialog
-          discountCode={editingDiscountCode}
-          open={showEditDialog}
-          onClose={() => {
-            setShowEditDialog(false);
-            setEditingDiscountCode(null);
-          }}
-          onUpdate={onUpdateDiscountCode}
-        />
-      )}
+      {editingCode && (
+  <EditDiscountCodeDialog
+  discountCode={editingCode}
+  open={showEditDialog}
+  onClose={() => {
+    setShowEditDialog(false);
+    setEditingCode(null);
+  }}
+  
+  onUpdate={(id, data) => {
+    onUpdateDiscountCode({ id, data }); // truyền đúng function xử lý từ cha
+  }}
+/>
+)}
+
+    
     </div>
   );
 };
