@@ -2,12 +2,11 @@
 import React from 'react';
 import AdminTopbar from './AdminTopbar';
 import BooksListSection from './sections/BooksListSection';
-import CategoriesSection from './sections/CategoriesSection';
 import BookStatisticsSection from './sections/BookStatisticsSection';
 
 const BooksManagementContent = (props) => {
   return (
-    <div className="col-md-9 col-lg-10 main-content ">
+    <div className="col-md-9 col-lg-10 main-content">
       <AdminTopbar {...props} />
       
       <div className="content-section">
@@ -22,16 +21,17 @@ const BooksManagementContent = (props) => {
         </div>
 
         <div className="row">
-          <BooksListSection 
-            books={props.books} 
-            categories={props.categories}
-            onAddBook={props.handleAddBook}
-            onUpdateBook={props.handleUpdateBook}
-            onDeleteBook={props.handleDeleteBook}
-            onToggleBookVisibility={props.handleToggleBookVisibility}
-            promotions={props.promotions || []}
-          />
-          
+          <div className="col-12">
+            <BooksListSection 
+              books={props.books} 
+              categories={props.categories}
+              onAddBook={props.handleAddBook}
+              onUpdateBook={props.handleUpdateBook}
+              onDeleteBook={props.handleDeleteBook}
+              onToggleBookVisibility={props.handleToggleBookVisibility}
+              promotions={props.promotions || []}
+            />
+          </div>
         </div>
       </div>
     </div>

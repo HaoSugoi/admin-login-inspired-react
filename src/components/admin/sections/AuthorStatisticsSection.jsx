@@ -1,43 +1,34 @@
+
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '../../ui/card';
 
 const AuthorStatisticsSection = ({ statistics }) => {
   return (
     <div className="col-12 mb-4">
       <div className="row">
-        <div className="col-md-4">
-          <Card className="border-0 shadow-sm">
-            <CardHeader className="py-3">
-              <CardTitle className="text-sm font-medium">Tổng số tác giả</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{statistics.totalAuthors}</div>
-            </CardContent>
-          </Card>
+        <div className="col-md-3 mb-3">
+          <div className="section-card text-center">
+            <h3 className="text-success">{statistics?.totalAuthors || 0}</h3>
+            <p className="mb-0">Tổng Tác Giả</p>
+          </div>
         </div>
-        
-        {/* Thêm các thống kê khác nếu cần */}
-        {/* <div className="col-md-4">
-          <Card className="border-0 shadow-sm">
-            <CardHeader className="py-3">
-              <CardTitle className="text-sm font-medium">Tác giả có sách</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{statistics.authorsWithBooks}</div>
-            </CardContent>
-          </Card>
+        <div className="col-md-3 mb-3">
+          <div className="section-card text-center">
+            <h3 className="text-primary">{statistics?.authorsWithBooks || 0}</h3>
+            <p className="mb-0">Có Sách</p>
+          </div>
         </div>
-        
-        <div className="col-md-4">
-          <Card className="border-0 shadow-sm">
-            <CardHeader className="py-3">
-              <CardTitle className="text-sm font-medium">Tác giả chưa có sách</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{statistics.emptyAuthors}</div>
-            </CardContent>
-          </Card>
-        </div> */}
+        <div className="col-md-3 mb-3">
+          <div className="section-card text-center">
+            <h3 className="text-warning">{statistics?.emptyAuthors || 0}</h3>
+            <p className="mb-0">Chưa Có Sách</p>
+          </div>
+        </div>
+        <div className="col-md-3 mb-3">
+          <div className="section-card text-center">
+            <h3 className="text-info">0</h3>
+            <p className="mb-0">Hoạt Động</p>
+          </div>
+        </div>
       </div>
     </div>
   );

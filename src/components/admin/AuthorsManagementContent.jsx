@@ -1,9 +1,8 @@
+
 import React from 'react';
 import AdminTopbar from './AdminTopbar';
 import AuthorsListSection from './sections/AuthorsListSection';
-// import AuthorBooksSection from './sections/AuthorBooksSection';
 import AuthorStatisticsSection from './sections/AuthorStatisticsSection';
-import { useAuthorApi } from '../../hooks/useAuthorApi'; // Import hook cho author
 
 const AuthorsManagementContent = (props) => {
   return (
@@ -22,21 +21,23 @@ const AuthorsManagementContent = (props) => {
         </div>
 
         <div className="row">
-          <AuthorsListSection 
-            authors={props.authors}
-            statistics={props.statistics}
-            isLoadingAuthors={props.isLoadingAuthors}
-            onAddAuthor={props.handleAddAuthor}
-            onUpdateAuthor={props.handleUpdateAuthor}
-            onDeleteAuthor={props.handleDeleteAuthor}
-            isCreating={props.isCreating}
-            isUpdating={props.isUpdating}
-            isDeleting={props.isDeleting}
-          />
-          {/* <AuthorBooksSection recentBooks={props.recentBooks} /> */}
+          <div className="col-12">
+            <AuthorsListSection 
+              authors={props.authors}
+              statistics={props.statistics}
+              isLoadingAuthors={props.isLoadingAuthors}
+              onAddAuthor={props.handleAddAuthor}
+              onUpdateAuthor={props.handleUpdateAuthor}
+              onDeleteAuthor={props.handleDeleteAuthor}
+              isCreating={props.isCreating}
+              isUpdating={props.isUpdating}
+              isDeleting={props.isDeleting}
+            />
+          </div>
         </div>
       </div>
     </div>
   );
 };
+
 export default AuthorsManagementContent;
