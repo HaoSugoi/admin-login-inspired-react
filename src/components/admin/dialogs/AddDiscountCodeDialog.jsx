@@ -54,7 +54,7 @@ const AddDiscountCodeDialog = ({ onAddDiscountCode }) => {
 
   return (
     <>
-      <Button onClick={() => setOpen(true)} className="bg-green-600 hover:bg-green-700">
+      <Button onClick={() => setOpen(true)} className="bg-green-600 hover:bg-green-700 text-white border-0" style={{ backgroundColor: '#16a34a', color: 'white' }}>
         <Plus className="w-4 h-4 mr-2" />
         Thêm Mã Giảm Giá
       </Button>

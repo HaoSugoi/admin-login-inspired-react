@@ -46,7 +46,8 @@ const AddCategoryDialog = ({ onAddCategory, isCreating }) => {
     <>
       <Button 
         onClick={() => setOpen(true)} 
-        className="bg-green-600 hover:bg-green-700"
+        className="bg-green-600 hover:bg-green-700 text-white border-0"
+        style={{ backgroundColor: '#16a34a', color: 'white' }}
         disabled={isCreating}
       >
         <Plus className="w-4 h-4 mr-2" />
