@@ -31,20 +31,28 @@ export const authorService = {
       console.log("🔄 Creating author with data:", authorData);
       
       // Validate input data
-      if (!authorData.Name || authorData.Name.trim() === '') {
+      if (!authorData || !authorData.Name || authorData.Name.trim() === '') {
         throw new Error('Tên tác giả không được để trống');
       }
 
+      // Tạo payload đúng format
       const payload = {
         Name: authorData.Name.trim(),
-        Description: (authorData.Description || '').trim()
+        Description: authorData.Description ? authorData.Description.trim() : ""
       };
       
-      console.log("📤 Payload being sent:", JSON.stringify(payload, null, 2));
+      console.log("📤 CREATE payload:", JSON.stringify(payload, null, 2));
+      console.log("🔗 CREATE URL:", '/Author');
       
-      const response = await apiClient.post('/Author', payload);
+      // Gửi request với headers rõ ràng
+      const response = await apiClient.post('/Author', payload, {
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
       
-      console.log("✅ Author created successfully:", response.data);
+      console.log("✅ Author created - Response:", response.data);
+      console.log("✅ Response status:", response.status);
       
       return {
         AuthorId: response.data.AuthorId,
@@ -53,20 +61,18 @@ export const authorService = {
         BooksCount: 0
       };
     } catch (error) {
-      console.error('❌ Error creating author:', error);
-      console.error('Full error details:', {
+      console.error('❌ CREATE Error:', error);
+      console.error('❌ CREATE Error details:', {
         status: error.response?.status,
         statusText: error.response?.statusText,
         data: error.response?.data,
         message: error.message,
-        config: {
-          url: error.config?.url,
-          method: error.config?.method,
-          data: error.config?.data
-        }
+        url: error.config?.url,
+        method: error.config?.method,
+        sentData: error.config?.data,
+        headers: error.config?.headers
       });
       
-      // Ném lại lỗi với thông tin chi tiết hơn
       if (error.response?.data?.message) {
         throw new Error(error.response.data.message);
       } else if (error.response?.status === 400) {
@@ -81,38 +87,49 @@ export const authorService = {
 
   updateAuthor: async (id, authorData) => {
     try {
-      console.log('🔄 Updating author:', { id, authorData });
+      console.log('🔄 Updating author with params:', { id, authorData });
       
       if (!id) {
         throw new Error('ID tác giả không hợp lệ');
       }
       
-      if (!authorData.Name || authorData.Name.trim() === '') {
+      if (!authorData || !authorData.Name || authorData.Name.trim() === '') {
         throw new Error('Tên tác giả không được để trống');
       }
 
+      // Tạo payload đúng format 
       const payload = {
         Name: authorData.Name.trim(),
-        Description: (authorData.Description || '').trim()
+        Description: authorData.Description ? authorData.Description.trim() : ""
       };
       
-      console.log('📤 Update payload:', JSON.stringify(payload, null, 2));
-      console.log('🔗 Request URL:', `/Author/${id}`);
+      console.log('📤 UPDATE payload:', JSON.stringify(payload, null, 2));
+      console.log('🔗 UPDATE URL:', `/Author/${id}`);
       
-      const response = await apiClient.put(`/Author/${id}`, payload);
+      // Gửi request với headers rõ ràng
+      const response = await apiClient.put(`/Author/${id}`, payload, {
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
       
-      console.log('✅ Author updated successfully:', response.data);
+      console.log('✅ Author updated - Response:', response.data);
+      console.log('✅ Response status:', response.status);
       
       return response.data;
     } catch (error) {
-      console.error('❌ Update failed:', {
+      console.error('❌ UPDATE Error:', error);
+      console.error('❌ UPDATE Error details:', {
         id,
         authorData,
-        url: error.config?.url,
-        data: error.config?.data,
         status: error.response?.status,
-        response: error.response?.data,
-        message: error.message
+        statusText: error.response?.statusText,
+        responseData: error.response?.data,
+        message: error.message,
+        url: error.config?.url,
+        method: error.config?.method,
+        sentData: error.config?.data,
+        headers: error.config?.headers
       });
       
       if (error.response?.data?.message) {
@@ -135,17 +152,23 @@ export const authorService = {
         throw new Error('ID tác giả không hợp lệ');
       }
       
-      await apiClient.delete(`/Author/${id}`);
+      console.log('🔗 DELETE URL:', `/Author/${id}`);
       
-      console.log('✅ Author deleted successfully');
+      const response = await apiClient.delete(`/Author/${id}`);
+      
+      console.log('✅ Author deleted - Response:', response);
+      console.log('✅ Response status:', response.status);
       
       return id;
     } catch (error) {
-      console.error('❌ Delete failed:', {
+      console.error('❌ DELETE Error:', error);
+      console.error('❌ DELETE Error details:', {
         id,
         status: error.response?.status,
-        response: error.response?.data,
-        message: error.message
+        statusText: error.response?.statusText,
+        responseData: error.response?.data,
+        message: error.message,
+        url: error.config?.url
       });
       
       if (error.response?.data?.message) {

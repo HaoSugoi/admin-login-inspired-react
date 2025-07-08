@@ -34,58 +34,91 @@ export const useAuthorsManagement = () => {
     console.log('Logging out...');
   };
 
-  // Wrapper functions để xử lý API calls - FIXED: Đảm bảo format dữ liệu đúng
+  // Wrapper functions để xử lý API calls với logging chi tiết
   const handleAddAuthor = async (authorData) => {
-    console.log("handleAddAuthor received:", authorData);
+    console.log("🔄 handleAddAuthor received:", authorData);
     
-    // Đảm bảo dữ liệu được format đúng trước khi gửi
+    // Validate dữ liệu đầu vào
+    if (!authorData || !authorData.Name || !authorData.Name.trim()) {
+      console.error("❌ Invalid author data:", authorData);
+      throw new Error('Tên tác giả không được để trống');
+    }
+    
+    // Format dữ liệu đúng theo yêu cầu API
     const formattedData = {
-      Name: authorData.Name?.trim() || '',
-      Description: authorData.Description?.trim() || ''
+      Name: authorData.Name.trim(),
+      Description: authorData.Description ? authorData.Description.trim() : ""
     };
     
-    console.log("Formatted data being sent:", formattedData);
+    console.log("📤 Formatted create data:", formattedData);
     
     try {
-      await createAuthor(formattedData);
-      console.log("Author created successfully");
+      const result = await createAuthor(formattedData);
+      console.log("✅ Author created successfully:", result);
+      return result;
     } catch (error) {
-      console.error("Error in handleAddAuthor:", error);
-      throw error; // Ném lại lỗi để dialog có thể xử lý
+      console.error("❌ Error in handleAddAuthor:", error);
+      throw error;
     }
   };
 
   const handleUpdateAuthor = async (AuthorId, authorData) => {
-    console.log("handleUpdateAuthor received:", { AuthorId, authorData });
+    console.log("🔄 handleUpdateAuthor received:", { AuthorId, authorData });
     
-    // Đảm bảo dữ liệu được format đúng
+    // Validate dữ liệu
+    if (!AuthorId) {
+      console.error("❌ Missing AuthorId");
+      throw new Error('ID tác giả không hợp lệ');
+    }
+    
+    if (!authorData || !authorData.Name || !authorData.Name.trim()) {
+      console.error("❌ Invalid author data:", authorData);
+      throw new Error('Tên tác giả không được để trống');
+    }
+    
+    // Format dữ liệu đúng theo yêu cầu API
     const formattedData = {
-      Name: authorData.Name?.trim() || '',
-      Description: authorData.Description?.trim() || ''
+      Name: authorData.Name.trim(),
+      Description: authorData.Description ? authorData.Description.trim() : ""
     };
     
-    console.log("Formatted update data:", formattedData);
+    console.log("📤 Formatted update data:", { id: AuthorId, data: formattedData });
     
     try {
-      await updateAuthor({ 
+      const result = await updateAuthor({ 
         id: AuthorId, 
         data: formattedData
       });
-      console.log("Author updated successfully");
+      console.log("✅ Author updated successfully:", result);
+      return result;
     } catch (error) {
-      console.error("Error in handleUpdateAuthor:", error);
+      console.error("❌ Error in handleUpdateAuthor:", error);
+      console.error("❌ Error details:", {
+        AuthorId,
+        authorData,
+        formattedData,
+        errorMessage: error.message,
+        errorResponse: error.response?.data
+      });
       throw error;
     }
   };
 
   const handleDeleteAuthor = async (authorId) => {
-    console.log("handleDeleteAuthor received:", authorId);
+    console.log("🔄 handleDeleteAuthor received:", authorId);
+    
+    if (!authorId) {
+      console.error("❌ Missing authorId");
+      throw new Error('ID tác giả không hợp lệ');
+    }
+    
     if (window.confirm('Bạn có chắc chắn muốn xóa tác giả này? Tất cả sách của tác giả sẽ bị ảnh hưởng.')) {
       try {
-        await deleteAuthor(authorId);
-        console.log("Author deleted successfully");
+        const result = await deleteAuthor(authorId);
+        console.log("✅ Author deleted successfully:", result);
+        return result;
       } catch (error) {
-        console.error("Error in handleDeleteAuthor:", error);
+        console.error("❌ Error in handleDeleteAuthor:", error);
         throw error;
       }
     }

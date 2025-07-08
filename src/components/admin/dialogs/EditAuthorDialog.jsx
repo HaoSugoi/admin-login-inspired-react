@@ -1,3 +1,4 @@
+
 import React from 'react';
 import {
   Dialog,
@@ -23,58 +24,65 @@ const EditAuthorDialog = ({
     Description: ''
   });
   const [error, setError] = React.useState('');
+  const [apiError, setApiError] = React.useState('');
 
   // Cập nhật form data khi author thay đổi
   useEffect(() => {
-  if (!author?.AuthorId) {
-    console.error('Invalid author prop:', author);
-    return;
-  }
-  setFormData({
-    Name: author.Name || '',
-    Description: author.Description || ''
-  });
-}, [author]);
+    if (!author?.AuthorId) {
+      console.error('Invalid author prop:', author);
+      return;
+    }
+    
+    console.log('Setting form data for author:', author);
+    setFormData({
+      Name: author.Name || '',
+      Description: author.Description || ''
+    });
+    setError('');
+    setApiError('');
+  }, [author]);
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  
-  if (!author?.AuthorId) {
-    setError('Không tìm thấy ID tác giả');
-    console.error('Missing author ID when submitting:', author);
-    return;
-  }
-
-  if (!formData.Name?.trim()) {
-    setError('Vui lòng nhập tên tác giả');
-    return;
-  }
-
-  try {
-    console.log('Submitting author update:', {
-      authorId: author.AuthorId,
-      data: {
-        Name: formData.Name.trim(),
-        Description: formData.Description.trim()
-      }
-    });
+    e.preventDefault();
+    setError('');
+    setApiError('');
     
-    await onUpdateAuthor(
-      author.AuthorId,
-      {
-        Name: formData.Name.trim(),
-        Description: formData.Description.trim()
-      }
-    );
-    onClose();
-  } catch (err) {
-    console.error('Update error details:', {
-      error: err,
-      response: err.response?.data
-    });
-    setError(err.response?.data?.message || 'Cập nhật thất bại');
-  }
-};
+    if (!author?.AuthorId) {
+      setError('Không tìm thấy ID tác giả');
+      console.error('Missing author ID when submitting:', author);
+      return;
+    }
+
+    if (!formData.Name?.trim()) {
+      setError('Vui lòng nhập tên tác giả');
+      return;
+    }
+
+    try {
+      console.log('🔄 EditAuthorDialog submitting update:', {
+        authorId: author.AuthorId,
+        formData: {
+          Name: formData.Name.trim(),
+          Description: formData.Description.trim()
+        }
+      });
+      
+      await onUpdateAuthor(
+        author.AuthorId,
+        {
+          Name: formData.Name.trim(),
+          Description: formData.Description.trim()
+        }
+      );
+      
+      console.log('✅ Update successful in dialog');
+      onClose();
+    } catch (err) {
+      console.error('❌ Update error in dialog:', err);
+      const errorMessage = err.message || 'Cập nhật thất bại. Vui lòng thử lại.';
+      setApiError(errorMessage);
+    }
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -82,7 +90,20 @@ const EditAuthorDialog = ({
       ...prev, 
       [name]: value 
     }));
-    if (name === 'Name' && value.trim()) setError('');
+    
+    // Clear errors when user starts typing
+    if (name === 'Name' && value.trim()) {
+      setError('');
+      setApiError('');
+    }
+  };
+
+  const handleClose = () => {
+    if (!isUpdating) {
+      onClose();
+      setError('');
+      setApiError('');
+    }
   };
 
   if (!author) {
@@ -91,15 +112,17 @@ const EditAuthorDialog = ({
   }
 
   return (
-    <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-md">
+    <Dialog open={open} onOpenChange={handleClose}>
+      <DialogContent className="max-w-md max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-center">Chỉnh Sửa Tác Giả</DialogTitle>
         </DialogHeader>
         
         <form onSubmit={handleSubmit} className="space-y-4 pt-2">
-          {error && (
-            <div className="text-red-500 text-center text-sm mb-3">{error}</div>
+          {(error || apiError) && (
+            <div className="alert alert-danger p-2 mb-3 text-center">
+              {error || apiError}
+            </div>
           )}
           
           <div>
@@ -114,6 +137,7 @@ const EditAuthorDialog = ({
               placeholder="Nhập tên tác giả"
               className="mt-1"
               disabled={isUpdating}
+              required
             />
           </div>
           
@@ -135,7 +159,7 @@ const EditAuthorDialog = ({
             <Button 
               type="button" 
               variant="outline" 
-              onClick={onClose}
+              onClick={handleClose}
               disabled={isUpdating}
             >
               Hủy
@@ -144,7 +168,14 @@ const EditAuthorDialog = ({
               type="submit"
               disabled={isUpdating || !formData.Name.trim()}
             >
-              {isUpdating ? 'Đang lưu...' : 'Lưu Thay Đổi'}
+              {isUpdating ? (
+                <>
+                  <span className="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                  Đang lưu...
+                </>
+              ) : (
+                'Lưu Thay Đổi'
+              )}
             </Button>
           </div>
         </form>
