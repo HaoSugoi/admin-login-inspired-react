@@ -1,6 +1,6 @@
-
 import React, { useState } from "react";
 import AddAuthorDialog from "../dialogs/AddAuthorDialog";
+import EditAuthorDialog from "../dialogs/EditAuthorDialog";
 import { Edit, Trash2, User } from "lucide-react";
 
 const AuthorsListSection = ({
@@ -15,10 +15,9 @@ const AuthorsListSection = ({
   isDeleting,
 }) => {
   const [editingAuthor, setEditingAuthor] = useState(null);
-  const [editData, setEditData] = useState({});
+  const [showEditDialog, setShowEditDialog] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Hàm lọc tác giả
   const filterAuthors = (authors, term) => {
     if (!term) return authors;
     return authors.filter(author => 
@@ -27,41 +26,29 @@ const AuthorsListSection = ({
     );
   };
 
-  // Áp dụng bộ lọc
   const filteredAuthors = filterAuthors(authors, searchTerm);
   const safeAuthors = filteredAuthors || [];
 
-  const handleEditStart = (author) => {
-    setEditingAuthor(author.AuthorId);
-    setEditData({
-      Name: author.Name,
-      Description: author.Description,
-    });
-  };
+ const handleEditAuthor = async (author) => {
+  // Thêm await và kiểm tra kỹ
+  if (!author?.AuthorId) {
+    console.error('Invalid author data:', author);
+    return;
+  }
 
-  const handleEditSave = (authorId) => {
-    onUpdateAuthor(authorId, {
-      Name: editData.Name,
-      Description: editData.Description,
-    });
-    setEditingAuthor(null);
-    setEditData({});
-  };
+  await setEditingAuthor({
+    AuthorId: author.AuthorId,
+    Name: author.Name,
+    Description: author.Description || ''
+  });
+  
+  setShowEditDialog(true);
+};
 
-  const handleEditCancel = () => {
-    setEditingAuthor(null);
-    setEditData({});
-  };
-
-  const handleDeleteAuthor = (authorId) => {
-    onDeleteAuthor(authorId);
-  };
-
-  const handleInputChange = (field, value) => {
-    setEditData({
-      ...editData,
-      [field]: value,
-    });
+  const handleDeleteAuthor = (id) => {
+    if (window.confirm("Bạn có chắc chắn muốn xóa tác giả này?")) {
+      onDeleteAuthor(id);
+    }
   };
 
   return (
@@ -134,94 +121,58 @@ const AuthorsListSection = ({
                     </div>
                   </div>
 
-                  {editingAuthor === author.AuthorId ? (
-                    <div className="edit-form">
-                      <div className="mb-2">
-                        <label className="form-label small">Tên tác giả:</label>
-                        <input
-                          type="text"
-                          className="form-control form-control-sm"
-                          value={editData.Name || ""}
-                          onChange={(e) =>
-                            handleInputChange("Name", e.target.value)
-                          }
-                          disabled={isUpdating}
-                        />
-                      </div>
-                      <div className="mb-3">
-                        <label className="form-label small">Mô tả:</label>
-                        <textarea
-                          className="form-control form-control-sm"
-                          rows="2"
-                          value={editData.Description || ""}
-                          onChange={(e) =>
-                            handleInputChange("Description", e.target.value)
-                          }
-                          disabled={isUpdating}
-                        />
-                      </div>
-                      <div className="d-flex gap-2 justify-content-center">
-                        <button
-                          className="btn btn-sm btn-success"
-                          onClick={() => handleEditSave(author.AuthorId)}
-                          disabled={isUpdating}
-                        >
-                          {isUpdating ? (
-                            <span
-                              className="spinner-border spinner-border-sm me-1"
-                              role="status"
-                            ></span>
-                          ) : null}
-                          Lưu
-                        </button>
-                        <button
-                          className="btn btn-sm btn-secondary"
-                          onClick={handleEditCancel}
-                          disabled={isUpdating}
-                        >
-                          Hủy
-                        </button>
-                      </div>
-                    </div>
-                  ) : (
-                    <>
-                      <h6 className="card-title text-center mb-2">{author.Name}</h6>
-                      <p className="card-text text-muted text-center small mb-3">
-                        {author.Description || "Chưa có mô tả"}
-                      </p>
-                      <div className="d-flex gap-2 justify-content-center">
-                        <button
-                          className="btn btn-sm btn-outline-primary"
-                          onClick={() => handleEditStart(author)}
-                          disabled={isUpdating || isDeleting}
-                        >
-                          <Edit size={14} className="me-1" />
-                          Sửa
-                        </button>
-                        <button
-                          className="btn btn-sm btn-outline-danger"
-                          onClick={() => handleDeleteAuthor(author.AuthorId)}
-                          disabled={isUpdating || isDeleting}
-                        >
-                          {isDeleting ? (
-                            <span
-                              className="spinner-border spinner-border-sm me-1"
-                              role="status"
-                            ></span>
-                          ) : (
-                            <Trash2 size={14} className="me-1" />
-                          )}
-                          Xóa
-                        </button>
-                      </div>
-                    </>
-                  )}
+                  <h6 className="card-title text-center mb-2">{author.Name}</h6>
+                  <p className="card-text text-muted text-center small mb-3">
+                    {author.Description || "Chưa có mô tả"}
+                  </p>
+                  <div className="d-flex gap-2 justify-content-center">
+                    <button
+                      className="btn btn-sm btn-outline-primary"
+                      onClick={() => handleEditAuthor(author)}
+                      disabled={isUpdating || isDeleting}
+                    >
+                      <Edit size={14} className="me-1" />
+                      Sửa
+                    </button>
+                    <button
+                      className="btn btn-sm btn-outline-danger"
+                      onClick={() => handleDeleteAuthor(author.AuthorId)}
+                      disabled={isUpdating || isDeleting}
+                    >
+                      {isDeleting ? (
+                        <span
+                          className="spinner-border spinner-border-sm me-1"
+                          role="status"
+                        ></span>
+                      ) : (
+                        <Trash2 size={14} className="me-1" />
+                      )}
+                      Xóa
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
           ))}
         </div>
       )}
+
+      {editingAuthor && (
+  // Đảm bảo truyền đúng hàm callback
+<EditAuthorDialog
+  author={editingAuthor}
+  open={showEditDialog}
+  onClose={() => setShowEditDialog(false)}
+  onUpdateAuthor={async (authorId, data) => {
+    try {
+      await onUpdateAuthor(authorId, data); // Truyền riêng ID và data
+    } catch (error) {
+      console.error('Error updating author:', error);
+    }
+  }}
+  isUpdating={isUpdating}
+/>
+)}
     </div>
   );
 };

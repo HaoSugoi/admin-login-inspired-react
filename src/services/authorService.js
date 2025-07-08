@@ -39,23 +39,28 @@ export const authorService = {
   },
 
   updateAuthor: async (id, authorData) => {
-    try {
-      const payload = {
-        Name: authorData.Name,
-        Description: authorData.Description
-      };
-      const response = await apiClient.put(`/Author/${id}`, payload);
-      return {
-        AuthorId: response.data.AuthorId,
-        Name: response.data.Name,
-        Description: response.data.Description,
-        // BooksCount: response.data.BooksCount || 0
-      };
-    } catch (error) {
-      console.error('Error updating author:', error);
-      throw error;
-    }
-  },
+  console.log('Service received:', { id, authorData }); // Thêm dòng này
+  
+  try {
+    const payload = {
+      Name: authorData.Name,
+      Description: authorData.Description
+    };
+    console.log('Making PUT request to:', `/Author/${id}`, 'with:', payload);
+    
+    const response = await apiClient.put(`/Author/${id}`, payload);
+    console.log('Update successful:', response.data);
+    
+    return response.data;
+  } catch (error) {
+    console.error('Update failed:', {
+      url: error.config?.url,
+      data: error.config?.data,
+      response: error.response?.data
+    });
+    throw error;
+  }
+},
 
   deleteAuthor: async (id) => {
     try {

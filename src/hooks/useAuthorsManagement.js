@@ -43,10 +43,10 @@ export const useAuthorsManagement = () => {
     });
   };
 
-  const handleUpdateAuthor = (authorId, authorData) => {
-    console.log("handleUpdateAuthor received:", { authorId, authorData });
+  const handleUpdateAuthor = (AuthorId, authorData) => {
+    console.log("handleUpdateAuthor received:", { AuthorId, authorData });
     updateAuthor({ 
-      id: authorId, 
+      id: AuthorId, 
       data: {
         Name: authorData.Name,
         Description: authorData.Description
