@@ -57,7 +57,7 @@ const AddBookDialog = ({ onAddBook, promotions = [] }) => {
       fd.append("Translator", formData.Translator || "");
       fd.append("Size", formData.PackagingSize || "");
       fd.append("Pages", String(parseInt(formData.PageCount || 0)));
-      fd.append("Price", String(parseFloat(formData.Price || 0).toFixed(2)));
+      fd.append('Price', parseFloat(formData.Price));
       fd.append("Quantity", String(parseInt(formData.Quantity || 0)));
 
       fd.append("IsHidden", formData.IsHidden ? "true" : "false");
@@ -124,7 +124,7 @@ const AddBookDialog = ({ onAddBook, promotions = [] }) => {
               className="form-control"
               value={formData.Price}
               onChange={(e) =>
-                setFormData({ ...formData, Price: parseFloat(e.target.value) })
+                setFormData({ ...formData, Price: parseInt(e.target.value) })
               }
               required
             />

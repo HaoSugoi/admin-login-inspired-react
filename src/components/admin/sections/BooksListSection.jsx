@@ -77,8 +77,8 @@ const BooksListSection = ({
                       />
                     </td>
                     <td><strong>{book.Title ?? 'Không rõ'}</strong></td>
-                    <td><span className="text-primary">{(book.Price ?? 0).toLocaleString()} đ</span></td>
-                    <td><span className="text-danger">{(book.FinalPrice ?? 0).toLocaleString()} đ</span></td>
+                    <td><span className="text-primary">{(book.Price ?? 0)} đ</span></td>
+                    <td><span className="text-danger">{(book.FinalPrice ?? 0)} đ</span></td>
                     <td><span className="badge bg-info">{book.PromotionName ?? 'Không có'}</span></td>
 <td>{book.Quantity ?? 0}</td>
                     <td>{getStatusBadge(book.IsHidden)}</td>

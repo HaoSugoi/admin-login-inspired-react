@@ -74,7 +74,7 @@ const EditBookDialog = ({
       fd.append('Translator', formData.Translator || '');
       fd.append('Size', formData.PackagingSize || '');
       fd.append('Pages', formData.PageCount.toString());
-      fd.append('Price', formData.Price.toString());
+      fd.append('Price', formData.Price);
       fd.append('Quantity', formData.Quantity.toString());
       fd.append('IsHidden', formData.IsHidden ? 'true' : 'false');
 
