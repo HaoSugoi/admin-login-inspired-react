@@ -128,7 +128,7 @@ const AddEditSlideDialog = ({ isOpen, onClose, onSubmit, slide = null, isEdit = 
             </Button>
             <Button
               type="submit"
-              className="flex items-center gap-2 bg-green-600 hover:bg-green-700"
+          
             >
               <Save className="w-4 h-4" />
               {isEdit ? 'Cập Nhật' : 'Thêm Slide'}

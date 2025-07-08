@@ -52,7 +52,7 @@ const EditAuthorDialog = ({
 
   try {
     console.log('Submitting author update:', {
-      authorId: author.AuthorId,
+      authorId: author.AuthorId.trim(),
       data: {
         Name: formData.Name.trim(),
         Description: formData.Description.trim()
@@ -60,7 +60,7 @@ const EditAuthorDialog = ({
     });
     
     await onUpdateAuthor(
-      author.AuthorId,
+      author.AuthorId.trim(),
       {
         Name: formData.Name.trim(),
         Description: formData.Description.trim()

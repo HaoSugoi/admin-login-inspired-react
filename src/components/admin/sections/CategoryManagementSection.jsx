@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import AddCategoryDialog from "../dialogs/AddCategoryDialog";
-// import EditCategoryDialog from '../dialogs/EditCategoryDialog';
+import EditCategoryDialog from '../dialogs/EditCategoryDialog';
 import { useCategoryManagement } from "../../../hooks/useCategoryManagement";
 
 const CategoryManagementSection = () => {
@@ -134,16 +134,16 @@ const CategoryManagementSection = () => {
       </div>
 
       {/* Dialog chỉnh sửa */}
-      {editingCategory && (
-        <EditCategoryDialog
-          category={editingCategory}
-          onClose={() => setEditingCategory(null)}
-          onUpdate={(updatedCategory) => 
-            handleUpdateCategory(updatedCategory.id, updatedCategory)
-          }
-          isUpdating={isUpdating}
-        />
-      )}
+     {editingCategory && (
+  <EditCategoryDialog
+    category={editingCategory}
+    onClose={() => setEditingCategory(null)}
+    onUpdate={(updatedCategory) => 
+      handleUpdateCategory(updatedCategory.id, updatedCategory)
+    }
+    isUpdating={isUpdating}
+  />
+)}
     </div>
   );
 };

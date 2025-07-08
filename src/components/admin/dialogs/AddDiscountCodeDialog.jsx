@@ -207,7 +207,7 @@ const AddDiscountCodeDialog = ({ onAddDiscountCode }) => {
               </Button>
               <Button
                 type="submit"
-                className="flex items-center gap-2 bg-green-600 hover:bg-green-700"
+                
               >
                 <Save className="w-4 h-4" />
                 Thêm Mã Giảm Giá

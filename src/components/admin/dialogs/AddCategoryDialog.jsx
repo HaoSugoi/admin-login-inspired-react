@@ -118,11 +118,11 @@ const AddCategoryDialog = ({ onAddCategory, isCreating }) => {
               </Button>
               <Button
                 type="submit"
-                className="flex items-center gap-2 bg-green-600 hover:bg-green-700"
+                
                 disabled={isCreating}
               >
                 {isCreating ? (
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  <div />
                 ) : (
                   <Save className="w-4 h-4" />
                 )}
