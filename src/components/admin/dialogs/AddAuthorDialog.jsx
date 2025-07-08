@@ -24,8 +24,6 @@ const AddAuthorDialog = ({ onAddAuthor, isCreating }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    setApiError('');
     
     // Validate input
     if (!formData.Name.trim()) {
@@ -34,28 +32,28 @@ const AddAuthorDialog = ({ onAddAuthor, isCreating }) => {
     }
 
     try {
-      console.log("🔄 AddAuthorDialog submitting:", formData);
-      
-      // Gọi hàm callback và đợi kết quả
-      await onAddAuthor({
+      // Chuẩn bị dữ liệu gửi đi với đúng format
+      const payload = {
         Name: formData.Name.trim(),
         Description: formData.Description.trim()
-      });
+      };
       
-      console.log("✅ Author added successfully from dialog");
+      console.log("Payload gửi từ AddAuthorDialog:", payload);
       
-      // Reset form và đóng dialog chỉ khi thành công
+      // Gọi hàm callback
+      await onAddAuthor(payload);
+      
+      // Reset form và đóng dialog
       setFormData({ Name: '', Description: '' });
       setError('');
       setApiError('');
       setOpen(false);
-      
     } catch (err) {
-      console.error('❌ Failed to add author in dialog:', err);
-      
-      // Hiển thị lỗi từ API
-      const errorMessage = err.message || 'Thêm tác giả thất bại. Vui lòng thử lại.';
+      // Xử lý lỗi từ API
+      const errorMessage = err.response?.data?.message || 
+                          'Thêm tác giả thất bại. Vui lòng thử lại.';
       setApiError(errorMessage);
+      console.error('Failed to add author:', err);
     }
   };
 
@@ -66,21 +64,11 @@ const AddAuthorDialog = ({ onAddAuthor, isCreating }) => {
     // Clear error khi người dùng bắt đầu nhập
     if (name === 'Name' && value.trim()) {
       setError('');
-      setApiError('');
-    }
-  };
-
-  const handleClose = () => {
-    if (!isCreating) {
-      setOpen(false);
-      setError('');
-      setApiError('');
-      setFormData({ Name: '', Description: '' });
     }
   };
 
   return (
-    <Dialog open={open} onOpenChange={handleClose}>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button 
           size="sm" 
@@ -95,16 +83,14 @@ const AddAuthorDialog = ({ onAddAuthor, isCreating }) => {
           Thêm Tác Giả
         </Button>
       </DialogTrigger>
-      
       <DialogContent className="max-w-md max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-center">Thêm Tác Giả Mới</DialogTitle>
         </DialogHeader>
-        
         <form onSubmit={handleSubmit} className="space-y-4 pt-2">
-          {(error || apiError) && (
+          {apiError && (
             <div className="alert alert-danger p-2 mb-3 text-center">
-              {error || apiError}
+              {apiError}
             </div>
           )}
           
@@ -120,8 +106,10 @@ const AddAuthorDialog = ({ onAddAuthor, isCreating }) => {
               placeholder="Nhập tên tác giả"
               className="mt-1"
               disabled={isCreating}
-              required
             />
+            {error && (
+              <p className="mt-1 text-sm text-red-500">{error}</p>
+            )}
           </div>
           
           <div>
@@ -129,7 +117,7 @@ const AddAuthorDialog = ({ onAddAuthor, isCreating }) => {
             <Textarea
               id="description"
               name="Description"
-              rows="3"
+              rows="2"
               value={formData.Description}
               onChange={handleInputChange}
               placeholder="Mô tả về tác giả (tùy chọn)"
@@ -142,14 +130,18 @@ const AddAuthorDialog = ({ onAddAuthor, isCreating }) => {
             <Button 
               type="button" 
               variant="outline" 
-              onClick={handleClose}
+              onClick={() => {
+                setOpen(false);
+                setError('');
+                setApiError('');
+              }}
               disabled={isCreating}
             >
               Hủy
             </Button>
             <Button 
               type="submit"
-              disabled={isCreating || !formData.Name.trim()}
+              disabled={isCreating}
             >
               {isCreating ? (
                 <>

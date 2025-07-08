@@ -7,7 +7,7 @@ export const useAuthorsManagement = () => {
   const [activeSection, setActiveSection] = useState('authors');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   
-  // Sử dụng API hook cho tác giả
+  // Sử dụng API hook cho tác giả - THÊM CÁC TRẠNG THÁI LOADING
   const {
     authors,
     statistics: authorStats,
@@ -17,7 +17,7 @@ export const useAuthorsManagement = () => {
     updateAuthor,
     deleteAuthor,
     refetchAuthors,
-    filterAuthors,
+    filterAuthors, // LẤY HÀM LỌC TỪ useAuthorApi
     isCreating,
     isUpdating,
     isDeleting
@@ -34,96 +34,34 @@ export const useAuthorsManagement = () => {
     console.log('Logging out...');
   };
 
-  // Wrapper functions để xử lý API calls với logging chi tiết
-  const handleAddAuthor = async (authorData) => {
-    console.log("🔄 handleAddAuthor received:", authorData);
-    
-    // Validate dữ liệu đầu vào
-    if (!authorData || !authorData.Name || !authorData.Name.trim()) {
-      console.error("❌ Invalid author data:", authorData);
-      throw new Error('Tên tác giả không được để trống');
-    }
-    
-    // Format dữ liệu đúng theo yêu cầu API
-    const formattedData = {
-      Name: authorData.Name.trim(),
-      Description: authorData.Description ? authorData.Description.trim() : ""
-    };
-    
-    console.log("📤 Formatted create data:", formattedData);
-    
-    try {
-      const result = await createAuthor(formattedData);
-      console.log("✅ Author created successfully:", result);
-      return result;
-    } catch (error) {
-      console.error("❌ Error in handleAddAuthor:", error);
-      throw error;
-    }
+  // Wrapper functions để xử lý API calls
+  const handleAddAuthor = (authorData) => {
+    console.log("handleAddAuthor received:", authorData);
+    createAuthor({
+      Name: authorData.Name,
+      Description: authorData.Description
+    });
   };
 
-  const handleUpdateAuthor = async (AuthorId, authorData) => {
-    console.log("🔄 handleUpdateAuthor received:", { AuthorId, authorData });
-    
-    // Validate dữ liệu
-    if (!AuthorId) {
-      console.error("❌ Missing AuthorId");
-      throw new Error('ID tác giả không hợp lệ');
-    }
-    
-    if (!authorData || !authorData.Name || !authorData.Name.trim()) {
-      console.error("❌ Invalid author data:", authorData);
-      throw new Error('Tên tác giả không được để trống');
-    }
-    
-    // Format dữ liệu đúng theo yêu cầu API
-    const formattedData = {
-      Name: authorData.Name.trim(),
-      Description: authorData.Description ? authorData.Description.trim() : ""
-    };
-    
-    console.log("📤 Formatted update data:", { id: AuthorId, data: formattedData });
-    
-    try {
-      const result = await updateAuthor({ 
-        id: AuthorId, 
-        data: formattedData
-      });
-      console.log("✅ Author updated successfully:", result);
-      return result;
-    } catch (error) {
-      console.error("❌ Error in handleUpdateAuthor:", error);
-      console.error("❌ Error details:", {
-        AuthorId,
-        authorData,
-        formattedData,
-        errorMessage: error.message,
-        errorResponse: error.response?.data
-      });
-      throw error;
-    }
-  };
-
-  const handleDeleteAuthor = async (authorId) => {
-    console.log("🔄 handleDeleteAuthor received:", authorId);
-    
-    if (!authorId) {
-      console.error("❌ Missing authorId");
-      throw new Error('ID tác giả không hợp lệ');
-    }
-    
-    if (window.confirm('Bạn có chắc chắn muốn xóa tác giả này? Tất cả sách của tác giả sẽ bị ảnh hưởng.')) {
-      try {
-        const result = await deleteAuthor(authorId);
-        console.log("✅ Author deleted successfully:", result);
-        return result;
-      } catch (error) {
-        console.error("❌ Error in handleDeleteAuthor:", error);
-        throw error;
+  const handleUpdateAuthor = (AuthorId, authorData) => {
+    console.log("handleUpdateAuthor received:", { AuthorId, authorData });
+    updateAuthor({ 
+      id: AuthorId, 
+      data: {
+        Name: authorData.Name,
+        Description: authorData.Description
       }
+    });
+  };
+
+  const handleDeleteAuthor = (authorId) => {
+    console.log("handleDeleteAuthor received:", authorId);
+    if (window.confirm('Bạn có chắc chắn muốn xóa tác giả này? Tất cả sách của tác giả sẽ bị ảnh hưởng.')) {
+      deleteAuthor(authorId);
     }
   };
 
+  // SỬA LẠI RETURN - LOẠI BỎ TRÙNG LẶP
   return {
     // State for UI
     activeSection,
@@ -134,7 +72,7 @@ export const useAuthorsManagement = () => {
 
     // Data from API
     authors: safeAuthors,
-    statistics: authorStats,
+    statistics: authorStats, // SỬ DỤNG THỐNG KÊ TỪ useAuthorApi
     isLoadingAuthors,
     authorsError,
     
@@ -150,6 +88,6 @@ export const useAuthorsManagement = () => {
     refetchAuthors,
     
     // Utility functions
-    filterAuthors: (searchTerm) => filterAuthors(searchTerm)
+    filterAuthors: (searchTerm) => filterAuthors(searchTerm) // SỬ DỤNG HÀM TỪ useAuthorApi
   };
 };

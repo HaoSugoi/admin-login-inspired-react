@@ -3,9 +3,9 @@ import AdminTopbar from './AdminTopbar';
 import BooksListSection from './sections/BooksListSection';
 import BookStatisticsSection from './sections/BookStatisticsSection';
 import { useSaleBooksApi } from '../../hooks/useSaleBooksApi';
-import { promotionService } from '../../services/PromotionService';
-import { authorService } from '../../services/authorService';
-import { categoryService } from '../../services/categoryService';
+import { promotionService } from '@/services/promotionService';
+import { authorService } from '@/services/authorService';
+import { categoryService } from '@/services/categoryService';
 
 const BooksManagementContent = (props) => {
   const {
