@@ -11,10 +11,12 @@ export const useStatsManagement = () => {
     totalBooks: 567,
     totalUsers: 245,
     monthlyData: [
-      { month: "Tháng 1", revenue: 8500000, orders: 95 },
-      { month: "Tháng 2", revenue: 9200000, orders: 108 },
-      { month: "Tháng 3", revenue: 7800000, orders: 89 },
-      { month: "Tháng 4", revenue: 10500000, orders: 125 }
+      { period: "Tháng 1", value: 850 },
+      { period: "Tháng 2", value: 1200 },
+      { period: "Tháng 3", value: 780 },
+      { period: "Tháng 4", value: 1050 },
+      { period: "Tháng 5", value: 1380 },
+      { period: "Tháng 6", value: 950 }
     ]
   });
 
