@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { ChevronLeft, ChevronRight, Home, Book, Users, ShoppingCart, Truck, FileText, Settings, BarChart3, Users2, Shield, Gift, Percent, LogOut, Star, CreditCard, BookOpen, ClipboardList, Activity, Images } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Home, Book, Users, ShoppingCart, Truck, FileText, Settings, BarChart3, Users2, Shield, Gift, Percent, LogOut, Star, CreditCard, BookOpen, ClipboardList, Activity, Images, BoxIcon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const AdminSidebar = ({ activeSection, setActiveSection, sidebarCollapsed, toggleSidebar, handleLogout }) => {
@@ -20,7 +20,8 @@ const AdminSidebar = ({ activeSection, setActiveSection, sidebarCollapsed, toggl
     { id: 'slides', icon: Images, label: 'Quản Lý Slide', path: '/admin/slides' },
     { id: 'promotions', icon: Gift, label: 'Quản Lý Khuyến Mãi', path: '/admin/promotions' },
     { id: 'discount-codes', icon: Percent, label: 'Quản Lý Mã Giảm Giá', path: '/admin/discount-codes' },
-    { id: 'stats', icon: BarChart3, label: 'Thống Kê', path: '/admin/stats' }
+    { id: 'stats', icon: BarChart3, label: 'Thống Kê', path: '/admin/stats' },
+    { id: 'comments', icon: BoxIcon, label: 'Bình luận', path: '/admin/comments'}
   ];
 
   const handleMenuClick = (item) => {

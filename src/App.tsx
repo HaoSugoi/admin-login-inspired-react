@@ -22,6 +22,7 @@ import DiscountCodesManagement from './pages/DiscountCodesManagement';
 import ReportsManagement from './pages/ReportsManagement';
 import StatsManagement from './pages/StatsManagement';
 import NotFound from './pages/NotFound';
+import CommentsManagement from "./pages/CommentsManagement"
 import ProtectedRoute from './components/ProtectedRoute';
 import './App.css';
 
@@ -52,6 +53,7 @@ function App() {
             <Route path="/admin/promotions" element={<ProtectedRoute><PromotionsManagement /></ProtectedRoute>} />
             <Route path="/admin/discount-codes" element={<ProtectedRoute><DiscountCodesManagement /></ProtectedRoute>} />
             <Route path="/admin/stats" element={<ProtectedRoute><StatsManagement /></ProtectedRoute>} />
+            <Route path='/admin/comments' element={<ProtectedRoute><CommentsManagement/></ProtectedRoute>}/>
             {/* Route NotFound để cuối */}
             <Route path="*" element={<NotFound />} />
           </Routes>
