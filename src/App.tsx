@@ -19,7 +19,7 @@ import EmployeeActivitiesManagement from './pages/EmployeeActivitiesManagement';
 import SlidesManagement from './pages/SlidesManagement';
 import PromotionsManagement from './pages/PromotionsManagement';
 import DiscountCodesManagement from './pages/DiscountCodesManagement';
-import ReportsManagement from './pages/ReportsManagement';
+import CategoryManagement from './pages/CategoryManagement';
 import StatsManagement from './pages/StatsManagement';
 import NotFound from './pages/NotFound';
 import CommentsManagement from "./pages/CommentsManagement"
@@ -41,7 +41,7 @@ function App() {
             <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
             <Route path="/admin/customers" element={<ProtectedRoute><CustomersManagement /></ProtectedRoute>} />
             <Route path="/admin/employees" element={<ProtectedRoute><EmployeesManagement /></ProtectedRoute>} />
-            <Route path="/admin/reports" element={<ProtectedRoute><ReportsManagement /></ProtectedRoute>} />
+            <Route path="/admin/reports" element={<ProtectedRoute><CategoryManagement /></ProtectedRoute>} />
             <Route path="/admin/books" element={<ProtectedRoute><BooksManagement /></ProtectedRoute>} />
             <Route path="/admin/rent-books" element={<ProtectedRoute><RentBooksManagement /></ProtectedRoute>} />
             <Route path="/admin/rental-orders" element={<ProtectedRoute><RentalOrdersManagement /></ProtectedRoute>} />

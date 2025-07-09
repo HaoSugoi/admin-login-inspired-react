@@ -5,7 +5,7 @@ import CategoryStatisticsSection from './sections/CategoryStatisticsSection';
 import CategoryManagementSection from './sections/CategoryManagementSection';
 import { useCategoryManagement } from '../../hooks/useCategoryManagement';
 
-const ReportsManagementContent = (props) => {
+const CategoryManagementContent = (props) => {
   const { statistics, handleAddCategory } = useCategoryManagement();
 
   return (
