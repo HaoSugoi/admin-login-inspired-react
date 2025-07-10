@@ -3,13 +3,13 @@ import apiClient  from './api';
 export const userService = {
   // GET: Lấy danh sách tất cả người dùng (khách hàng)
   getUsers: async () => {
-    const res = await apiClient.get('/Staff/users');
+    const res = await apiClient.get('/Staff');
     return res.data.map(users => ({
       Id: users.Id,
       UserName: users.UserName,
       Email: users.Email,
       PhoneNumber: users.PhoneNumber ?? '(Chưa có)',
-      Address: users.Address,
+      Address: users.Address, 
       Role: users.Role,
       points: users.Points,
       DateOfBirth: new Date(users.DateOfBirth).toLocaleDateString('vi-VN'),
@@ -19,7 +19,7 @@ export const userService = {
 
   // POST: Tạo người dùng mới
   createUser: async (data) => {
-    const res = await apiClient.post('/Staff/users', data);
+    const res = await apiClient.post('/Staff', data);
     return res.data;
   },
 

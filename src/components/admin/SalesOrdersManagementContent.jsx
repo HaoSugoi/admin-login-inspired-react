@@ -1,82 +1,119 @@
-
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import AdminTopbar from './AdminTopbar';
 import SalesOrdersListSection from './sections/SalesOrdersListSection';
 import SalesOrdersStatisticsSection from './sections/SalesOrdersStatisticsSection';
+import { orderService } from '../../services/orderService';
+import { toast } from 'react-toastify';
 
 const SalesOrdersManagementContent = (props) => {
-  // Mock data cho đơn hàng bán
-  const mockSalesOrders = [
-    {
-      id: 1,
-      orderNumber: 'DH001',
-      customerName: 'Nguyễn Văn A',
-      customerPhone: '0901234567',
-      customerEmail: 'nguyenvana@email.com',
-      shippingAddress: '123 Đường ABC, Quận 1, TP.HCM',
-      orderDate: '2024-01-15',
-      totalAmount: 450000,
-      shippingFee: 50000,
-      status: 'Đã giao',
-      paymentMethod: 'Tiền mặt',
-      books: [
-        { title: 'Những Ngày Thơ Bé', quantity: 2, price: 120000, subtotal: 240000 },
-        { title: 'Tôi Thấy Hoa Vàng Trên Cỏ Xanh', quantity: 1, price: 160000, subtotal: 160000 }
-      ]
-    },
-    {
-      id: 2,
-      orderNumber: 'DH002',
-      customerName: 'Trần Thị B',
-      customerPhone: '0907654321',
-      customerEmail: 'tranthib@email.com',
-      shippingAddress: '456 Đường DEF, Quận 3, TP.HCM',
-      orderDate: '2024-01-16',
-      totalAmount: 370000,
-      shippingFee: 50000,
-      status: 'Đang xử lý',
-      paymentMethod: 'Chuyển khoản',
-      books: [
-        { title: 'Cho Tôi Xin Một Vé Đi Tuổi Thơ', quantity: 2, price: 160000, subtotal: 320000 }
-      ]
+  const [orders, setOrders] = useState([]);
+  const [statistics, setStatistics] = useState({
+    totalOrders: 0,
+    pendingOrders: 0,
+    processingOrders: 0,
+    completedOrders: 0,
+    cancelledOrders: 0,
+    totalRevenue: 0,
+  });
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const fetchOrders = async () => {
+    setIsLoading(true);
+    try {
+      const data = await orderService.getAllOrders();
+
+      const transformedOrders = data.map((o) => ({
+        id: o.OrderId,
+        orderNumber: o.OrderId.slice(0, 8).toUpperCase(),
+        customerName: o.UserName || 'Chưa rõ',
+        customerPhone: o.Phone || '---',
+        shippingAddress: o.Address,
+        orderDate: o.OrderDate.split('T')[0],
+        totalAmount: o.TotalAmount,
+        shippingFee: o.HasShippingFee ? o.ShippingFee : 0,
+        status: o.Status,
+        discountAmount: o.DiscountAmount,
+        books: [], // nếu có chi tiết đơn hàng thì map thêm
+      }));
+
+      setOrders(transformedOrders);
+
+      const stats = {
+        totalOrders: transformedOrders.length,
+        pendingOrders: transformedOrders.filter((o) => o.status === 0).length,
+        processingOrders: transformedOrders.filter((o) => o.status === 1 || o.status === 2).length,
+        completedOrders: transformedOrders.filter((o) => o.status === 3).length,
+        cancelledOrders: transformedOrders.filter((o) => o.status === 4 || o.status === 5).length,
+        totalRevenue: transformedOrders
+          .filter((o) => o.status === 3)
+          .reduce((sum, o) => sum + (o.totalAmount || 0), 0),
+      };
+
+      setStatistics(stats);
+      setError(null);
+    } catch (err) {
+      setError('Lỗi khi tải dữ liệu đơn hàng');
+      console.error(err);
+    } finally {
+      setIsLoading(false);
     }
-  ];
-
-  // Statistics for mock data
-  const statistics = {
-    totalOrders: mockSalesOrders.length,
-    pendingOrders: mockSalesOrders.filter(o => o.status === 'Chờ xử lý').length,
-    processingOrders: mockSalesOrders.filter(o => o.status === 'Đang xử lý').length,
-    completedOrders: mockSalesOrders.filter(o => o.status === 'Đã giao').length,
-    cancelledOrders: mockSalesOrders.filter(o => o.status === 'Đã hủy').length,
-    totalRevenue: mockSalesOrders
-      .filter(o => o.status === 'Đã giao')
-      .reduce((sum, order) => sum + (order.totalAmount || 0), 0)
   };
 
-  // Handler functions for sales orders
-  const handleCreateOrder = (data) => {
-    console.log('Creating sales order:', data);
+  useEffect(() => {
+    fetchOrders();
+  }, []);
+
+  const handleCreateOrder = async (data) => {
+    try {
+      await orderService.createOrder(data);
+      toast.success('✅ Tạo đơn hàng thành công');
+      fetchOrders();
+    } catch (err) {
+      console.error(err);
+      toast.error('❌ Không thể tạo đơn hàng');
+    }
   };
 
-  const handleUpdateOrder = (id, data) => {
-    console.log('Updating sales order:', id, data);
+  const handleUpdateOrder = async (id, data) => {
+    try {
+      await orderService.updateOrder(id, data);
+      toast.success('✅ Cập nhật đơn hàng thành công');
+      fetchOrders();
+    } catch (err) {
+      console.error(err);
+      toast.error('❌ Không thể cập nhật đơn hàng');
+    }
   };
 
-  const handleDeleteOrder = (id) => {
+  const handleDeleteOrder = async (id) => {
     if (window.confirm('Bạn có chắc chắn muốn xóa đơn hàng này?')) {
-      console.log('Deleting sales order:', id);
+      try {
+        await orderService.deleteOrder(id);
+        toast.success('🗑️ Đã xóa đơn hàng');
+        fetchOrders();
+      } catch (err) {
+        console.error(err);
+        toast.error('❌ Không thể xóa đơn hàng');
+      }
     }
   };
 
-  const handleUpdateOrderStatus = (id, status) => {
-    console.log('Updating order status:', id, status);
+  const handleUpdateOrderStatus = async (id, newStatus) => {
+    try {
+      await orderService.updateOrderStatus(id, newStatus);
+      toast.success('✅ Cập nhật trạng thái thành công');
+      fetchOrders();
+    } catch (err) {
+      console.error(err);
+      toast.error('❌ Không thể cập nhật trạng thái');
+    }
   };
 
   return (
     <div className="col-md-9 col-lg-10 main-content">
       <AdminTopbar {...props} />
-      
+
       <div className="content-section">
         <div className="row">
           <div className="col-12 mb-4">
@@ -84,19 +121,26 @@ const SalesOrdersManagementContent = (props) => {
           </div>
         </div>
 
-        <div className="row">
-          <SalesOrdersStatisticsSection statistics={statistics} />
-        </div>
-
-        <div className="row">
-          <SalesOrdersListSection 
-            orders={mockSalesOrders} 
-            onAdd={handleCreateOrder}
-            onUpdate={handleUpdateOrder}
-            onDelete={handleDeleteOrder}
-            onUpdateStatus={handleUpdateOrderStatus}
-          />
-        </div>
+        {isLoading ? (
+          <p>Đang tải dữ liệu...</p>
+        ) : error ? (
+          <p className="text-danger">{error}</p>
+        ) : (
+          <>
+            <div className="row">
+              <SalesOrdersStatisticsSection statistics={statistics} />
+            </div>
+            <div className="row">
+              <SalesOrdersListSection
+                orders={orders}
+                onAdd={handleCreateOrder}
+                onUpdate={handleUpdateOrder}
+                onDelete={handleDeleteOrder}
+                onUpdateStatus={handleUpdateOrderStatus}
+              />
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

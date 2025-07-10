@@ -1,79 +1,110 @@
-
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import AdminTopbar from './AdminTopbar';
 import RentalStatisticsSection from './sections/RentalStatisticsSection';
 import RentalOrdersListSection from './sections/RentalOrdersListSection';
 import OverdueSection from './sections/OverdueSection';
+import { rentalService } from '@/services/rentalService';
+import { toast } from 'react-toastify';
 
 const RentalOrdersManagementContent = (props) => {
-  // Mock data cho đơn thuê sách
-  const mockRentals = [
-    {
-      id: 1,
-      rentalNumber: 'TH001',
-      readerName: 'Nguyễn Văn A',
-      readerPhone: '0901234567',
-      readerEmail: 'nguyenvana@email.com',
-      readerAddress: '123 Đường ABC, Quận 1, TP.HCM',
-      rentalDate: '2024-01-15',
-      expectedReturnDate: '2024-01-22',
-      rentalDays: 7,
-      deposit: 150000,
-      status: 'Đã giao',
-      totalAmount: 150000,
-      books: [
-        { bookCode: 'B001', title: 'Những Ngày Thơ Bé', rentalPrice: 5000 }
-      ]
-    },
-    {
-      id: 2,
-      rentalNumber: 'TH002',
-      readerName: 'Trần Thị B',
-      readerPhone: '0907654321',
-      readerEmail: 'tranthib@email.com',
-      readerAddress: '456 Đường DEF, Quận 3, TP.HCM',
-      rentalDate: '2024-01-16',
-      expectedReturnDate: '2024-01-30',
-      rentalDays: 14,
-      deposit: 200000,
-      status: 'Chờ xác nhận',
-      totalAmount: 200000
-    }
-  ];
-  
-  // Handler functions for rental orders
-  const handleAddRental = (data) => {
-    console.log('Adding rental order:', data);
-  };
+  const [rentals, setRentals] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleUpdateRental = (id, data) => {
-    console.log('Updating rental order:', id, data);
-  };
-
-  const handleDeleteRental = (id) => {
-    if (window.confirm('Bạn có chắc chắn muốn xóa đơn thuê này?')) {
-      console.log('Deleting rental order:', id);
+  const fetchRentals = async () => {
+    try {
+      setIsLoading(true);
+      const data = await rentalService.getAllRentals();
+      setRentals(data);
+    } catch (error) {
+      toast.error('Lỗi khi tải danh sách đơn thuê');
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const handleApproveRental = (id) => {
-    console.log('Approving rental order:', id);
+  useEffect(() => {
+    fetchRentals();
+  }, []);
+
+  const handleAddRental = async (data) => {
+    try {
+      // TODO: Implement createRental when available
+      toast.success('Tạo đơn thuê thành công');
+      fetchRentals();
+    } catch (error) {
+      toast.error('Không thể tạo đơn thuê');
+    }
+  };
+// const handleCompleteRental = async (orderId, actualReturnDate, updatedConditions) => {
+//   try {
+//     await rentalService.completeRental(orderId, {
+//       actualReturnDate,
+//       updatedConditions
+//     });
+//     toast.success('Hoàn tất đơn thuê thành công');
+//     fetchRentals();
+//   } catch (error) {
+//     toast.error('Không thể hoàn tất đơn thuê');
+//     console.error('API Error:', error);
+//   }
+// };
+
+  const handleUpdateRental = async (id, data) => {
+    try {
+      await rentalService.updateRental(id, data);
+      toast.success('Cập nhật đơn thuê thành công');
+      fetchRentals();
+    } catch (error) {
+      toast.error('Không thể cập nhật đơn thuê');
+    }
   };
 
-  const handleMarkDelivered = (id) => {
-    console.log('Marking as delivered:', id);
+  const handleDeleteRental = async (id) => {
+    if (!window.confirm('Bạn có chắc chắn muốn xóa đơn thuê này?')) return;
+    try {
+      await rentalService.deleteRental(id);
+      toast.success('Xóa đơn thuê thành công');
+      fetchRentals();
+    } catch (error) {
+      toast.error('Không thể xóa đơn thuê');
+    }
   };
 
-  const handleMarkReturned = (id) => {
-    console.log('Marking as returned:', id);
+  const handleApproveRental = async (id) => {
+    try {
+      await rentalService.updateRentalStatus(id, 1); // 1 = Đã xác nhận
+      toast.success('Đơn thuê đã được xác nhận');
+      fetchRentals();
+    } catch (error) {
+      toast.error('Không thể xác nhận đơn thuê');
+    }
   };
-  
-  // Statistics for mock data
+
+  const handleMarkDelivered = async (id) => {
+    try {
+      await rentalService.updateRentalStatus(id, 2); // 2 = Đã giao
+      toast.success('Đã đánh dấu đơn là đã giao');
+      fetchRentals();
+    } catch (error) {
+      toast.error('Không thể đánh dấu là đã giao');
+    }
+  };
+
+  const handleMarkReturned = async (id) => {
+    try {
+      await rentalService.updateRentalStatus(id, 3); // 3 = Đã trả
+      toast.success('Đã đánh dấu đơn là đã trả');
+      fetchRentals();
+    } catch (error) {
+      toast.error('Không thể đánh dấu là đã trả');
+    }
+  };
+
   const statistics = {
-    total: mockRentals.length,
-    rented: mockRentals.filter(r => r.status === 'Đã giao').length,
-    overdue: mockRentals.filter(r => r.status === 'Quá hạn').length,
-    returned: mockRentals.filter(r => r.status === 'Đã trả').length,
+    total: rentals.length,
+    rented: rentals.filter((r) => r.status === 2).length, // Đã giao
+    overdue: rentals.filter((r) => r.status === 6).length, // Quá hạn
+    returned: rentals.filter((r) => r.status === 3).length, // Đã trả
   };
 
   return (
@@ -92,16 +123,22 @@ const RentalOrdersManagementContent = (props) => {
         </div>
 
         <div className="row">
-          <RentalOrdersListSection
-            rentals={mockRentals}
-            onAdd={handleAddRental}
-            onUpdate={handleUpdateRental}
-            onDelete={handleDeleteRental}
-            onApprove={handleApproveRental}
-            onMarkDelivered={handleMarkDelivered}
-            onMarkReturned={handleMarkReturned}
-          />
-          <OverdueSection rentals={mockRentals} />
+         <RentalOrdersListSection
+  rentals={rentals}
+  onAdd={handleAddRental}
+  onUpdate={handleUpdateRental}
+  onDelete={handleDeleteRental}
+  onApprove={handleApproveRental}
+  onMarkDelivered={handleMarkDelivered}
+  onMarkReturned={handleMarkReturned}
+  // onComplete={handleUpdateRental} // 💡 thêm dòng này
+  onCompleted={fetchRentals}
+  isLoading={isLoading}
+/>
+
+
+
+          <OverdueSection rentals={rentals} />
         </div>
       </div>
     </div>

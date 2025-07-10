@@ -1,104 +1,57 @@
+import apiClient from './api'; // Đảm bảo `apiClient` là một instance từ axios.create()
 
-import apiClient from './api';
-
-// Service cho quản lý đơn thuê sách
 export const rentalService = {
   // Lấy danh sách tất cả đơn thuê
   getAllRentals: async () => {
-    try {
-      const response = await apiClient.get('/RentBookItem');
-      return response.data;
-    } catch (error) {
-      console.error('Error fetching rentals:', error);
-      throw error;
-    }
+    const res = await apiClient.get('/admin/rentorders');
+    return res.data;
   },
 
-  // Lấy đơn thuê theo ID
-  getRentalById: async (id) => {
-    try {
-      const response = await apiClient.get(`/RentBookItem/${id}`);
-      return response.data;
-    } catch (error) {
-      console.error('Error fetching rental by id:', error);
-      throw error;
-    }
+  // Lọc đơn thuê theo trạng thái
+  getRentalsByStatus: async (status) => {
+    const res = await apiClient.get(`/admin/rentorders/status/${status}`);
+    return res.data;
   },
 
-  // Tạo đơn thuê mới
-  createRental: async (rentalData) => {
-    try {
-      const response = await apiClient.post('/RentBookItem', rentalData);
-      return response.data;
-    } catch (error) {
-      console.error('Error creating rental:', error);
-      throw error;
-    }
+  // Lấy thông tin đơn thuê theo ID
+  getRentalById: async (orderId) => {
+    const res = await apiClient.get(`/admin/rentorders/${orderId}`);
+    return res.data;
   },
 
-  // Cập nhật đơn thuê
-  updateRental: async (id, rentalData) => {
-    try {
-      const response = await apiClient.put(`/RentBookItem/${id}`, rentalData);
-      return response.data;
-    } catch (error) {
-      console.error('Error updating rental:', error);
-      throw error;
-    }
+  // Lấy chi tiết sách trong đơn thuê
+  getRentalDetailsById: async (orderId) => {
+    const res = await apiClient.get(`/admin/rentorders/${orderId}/details`);
+    return res.data;
   },
 
-  // Xóa đơn thuê
-  deleteRental: async (id) => {
-    try {
-      const response = await apiClient.delete(`/RentBookItem/${id}`);
-      return response.data;
-    } catch (error) {
-      console.error('Error deleting rental:', error);
-      throw error;
-    }
+  // Cập nhật trạng thái đơn thuê
+  updateRentalStatus: async (orderId, newStatus) => {
+    const res = await apiClient.put(
+      `/admin/rentorders/${orderId}/status`,
+      { status: newStatus }, // Cần bọc `status` thành object nếu API yêu cầu
+      { headers: { 'Content-Type': 'application/json' } }
+    );
+    return res.data;
   },
 
-  // Xác nhận đơn thuê
-  approveRental: async (id) => {
-    try {
-      const response = await apiClient.patch(`/RentBookItem/${id}/approve`);
-      return response.data;
-    } catch (error) {
-      console.error('Error approving rental:', error);
-      throw error;
-    }
-  },
+  // ✅ HOÀN TẤT ĐƠN THUÊ (gửi thời gian trả và tình trạng sách)
+// rentalService.js
+EditRentalOrderDialog : async (orderId, payload) => {
+  const res = await apiClient.put(
+    `/admin/rentorders/${orderId}/complete`,
+    payload,
+    { headers: { 'Content-Type': 'application/json' } }
+  );
+  return res.data;
+},
 
-  // Đánh dấu đã giao
-  markAsDelivered: async (id) => {
-    try {
-      const response = await apiClient.patch(`/RentBookItem/${id}/delivered`);
-      return response.data;
-    } catch (error) {
-      console.error('Error marking as delivered:', error);
-      throw error;
-    }
-  },
 
-  // Đánh dấu đã trả
-  markAsReturned: async (id) => {
-    try {
-      const response = await apiClient.patch(`/RentBookItem/${id}/returned`);
-      return response.data;
-    } catch (error) {
-      console.error('Error marking as returned:', error);
-      throw error;
-    }
+  // Tự động đánh dấu đơn thuê quá hạn
+  autoMarkOverdue: async () => {
+    const res = await apiClient.put('/admin/rentorders/auto-overdue');
+    return res.data;
   },
-
-  // Đánh dấu sách bị hỏng/mất
-  markAsDamaged: async (id, notes) => {
-    try {
-      const response = await apiClient.patch(`/RentBookItem/${id}/damaged`, { notes });
-      return response.data;
-    } catch (error) {
-      console.error('Error marking as damaged:', error);
-      throw error;
-    }
-  }
 };
+
+export default rentalService;

@@ -1,14 +1,24 @@
-
 import apiClient from './api';
 
 export const orderService = {
   // Lấy danh sách tất cả đơn hàng
   getAllOrders: async () => {
     try {
-      const response = await apiClient.get('/Orders');
+      const response = await apiClient.get('/admin/saleorders');
       return response.data;
     } catch (error) {
-      console.error('Error fetching orders:', error);
+      console.error('❌ Lỗi khi lấy danh sách đơn hàng:', error);
+      throw error;
+    }
+  },
+
+  // Lấy chi tiết đơn hàng theo ID
+  getOrderDetailsById: async (orderId) => {
+    try {
+      const response = await apiClient.get(`/admin/saleorders/${orderId}/details`);
+      return response.data;
+    } catch (error) {
+      console.error('❌ Lỗi khi lấy chi tiết đơn hàng:', error);
       throw error;
     }
   },
@@ -19,7 +29,7 @@ export const orderService = {
       const response = await apiClient.get(`/Orders/${id}`);
       return response.data;
     } catch (error) {
-      console.error('Error fetching order by id:', error);
+      console.error('❌ Lỗi khi lấy đơn hàng theo ID:', error);
       throw error;
     }
   },
@@ -30,7 +40,7 @@ export const orderService = {
       const response = await apiClient.post('/Orders', orderData);
       return response.data;
     } catch (error) {
-      console.error('Error creating order:', error);
+      console.error('❌ Lỗi khi tạo đơn hàng:', error);
       throw error;
     }
   },
@@ -41,7 +51,7 @@ export const orderService = {
       const response = await apiClient.put(`/Orders/${id}`, orderData);
       return response.data;
     } catch (error) {
-      console.error('Error updating order:', error);
+      console.error('❌ Lỗi khi cập nhật đơn hàng:', error);
       throw error;
     }
   },
@@ -52,19 +62,27 @@ export const orderService = {
       const response = await apiClient.delete(`/Orders/${id}`);
       return response.data;
     } catch (error) {
-      console.error('Error deleting order:', error);
+      console.error('❌ Lỗi khi xóa đơn hàng:', error);
       throw error;
     }
   },
 
-  // Cập nhật trạng thái đơn hàng
+  // ✅ Cập nhật trạng thái đơn hàng (truyền status là số nguyên trong body)
   updateOrderStatus: async (id, status) => {
     try {
-      const response = await apiClient.patch(`/Orders/${id}/status`, { status });
+      const response = await apiClient.put(
+        `/admin/saleorders/${id}/status`,
+        status,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
       return response.data;
     } catch (error) {
-      console.error('Error updating order status:', error);
+      console.error('❌ Lỗi khi cập nhật trạng thái đơn hàng:', error);
       throw error;
     }
-  }
+  },
 };
