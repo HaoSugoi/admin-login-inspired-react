@@ -32,4 +32,4 @@ const CategoryManagementContent = (props) => {
   );
 };
 
-export default ReportsManagementContent;
+export default CategoryManagementContent;
