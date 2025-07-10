@@ -1,25 +1,11 @@
 
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { reportService } from '../services/reportService';
 
 export const useReportApi = () => {
-  // Query để lấy tất cả thống kê
-  const {
-    data: bookStatistics,
-    isLoading: isLoadingBookStats,
-    error: bookStatsError,
-    refetch: refetchBookStats
-  } = useQuery({
-    queryKey: ['bookStatistics'],
-    queryFn: reportService.getBookStatistics,
-    staleTime: 5 * 60 * 1000, // 5 phút
-    retry: 2,
-    onError: (error) => {
-      console.error('🔥 Book Statistics Query Error:', error);
-    }
-  });
+  const queryClient = useQueryClient();
 
-  // Query riêng cho từng loại thống kê (optional - có thể dùng khi cần)
+  // ===== 1. Overview Statistics =====
   const {
     data: overviewStats,
     isLoading: isLoadingOverview,
@@ -28,90 +14,209 @@ export const useReportApi = () => {
   } = useQuery({
     queryKey: ['overviewStatistics'],
     queryFn: reportService.getOverviewStatistics,
-    staleTime: 5 * 60 * 1000,
-    enabled: false // Chỉ gọi khi cần thiết
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    retry: 2
+  });
+
+  // ===== 2. Sale Statistics =====
+  const {
+    data: dailySaleStats,
+    isLoading: isLoadingDailySale,
+    error: dailySaleError,
+    refetch: refetchDailySale
+  } = useQuery({
+    queryKey: ['dailySaleStatistics'],
+    queryFn: reportService.getDailySaleStatistics,
+    staleTime: 60 * 1000, // 1 minute
+    retry: 2
   });
 
   const {
-    data: dailyStats,
-    isLoading: isLoadingDaily,
-    error: dailyError,
-    refetch: refetchDaily
+    data: monthlySaleStats,
+    isLoading: isLoadingMonthlySale,
+    error: monthlySaleError,
+    refetch: refetchMonthlySale
   } = useQuery({
-    queryKey: ['dailyStatistics'],
-    queryFn: reportService.getDailyStatistics,
-    staleTime: 60 * 1000, // 1 phút (cập nhật thường xuyên hơn)
-    enabled: false
+    queryKey: ['monthlySaleStatistics'],
+    queryFn: reportService.getMonthlySaleStatistics,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    retry: 2
   });
 
   const {
-    data: weeklyStats,
-    isLoading: isLoadingWeekly,
-    error: weeklyError,
-    refetch: refetchWeekly
+    data: yearlySaleStats,
+    isLoading: isLoadingYearlySale,
+    error: yearlySaleError,
+    refetch: refetchYearlySale
   } = useQuery({
-    queryKey: ['weeklyStatistics'],
-    queryFn: reportService.getWeeklyStatistics,
-    staleTime: 5 * 60 * 1000,
-    enabled: false
+    queryKey: ['yearlySaleStatistics'],
+    queryFn: reportService.getYearlySaleStatistics,
+    staleTime: 10 * 60 * 1000, // 10 minutes
+    retry: 2
+  });
+
+  // ===== 3. Rent Statistics =====
+  const {
+    data: dailyRentStats,
+    isLoading: isLoadingDailyRent,
+    error: dailyRentError,
+    refetch: refetchDailyRent
+  } = useQuery({
+    queryKey: ['dailyRentStatistics'],
+    queryFn: reportService.getDailyRentStatistics,
+    staleTime: 60 * 1000, // 1 minute
+    retry: 2
   });
 
   const {
-    data: monthlyStats,
-    isLoading: isLoadingMonthly,
-    error: monthlyError,
-    refetch: refetchMonthly
+    data: monthlyRentStats,
+    isLoading: isLoadingMonthlyRent,
+    error: monthlyRentError,
+    refetch: refetchMonthlyRent
   } = useQuery({
-    queryKey: ['monthlyStatistics'],
-    queryFn: reportService.getMonthlyStatistics,
-    staleTime: 10 * 60 * 1000, // 10 phút
-    enabled: false
+    queryKey: ['monthlyRentStatistics'],
+    queryFn: reportService.getMonthlyRentStatistics,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    retry: 2
   });
 
-  // Log để debug
+  const {
+    data: yearlyRentStats,
+    isLoading: isLoadingYearlyRent,
+    error: yearlyRentError,
+    refetch: refetchYearlyRent
+  } = useQuery({
+    queryKey: ['yearlyRentStatistics'],
+    queryFn: reportService.getYearlyRentStatistics,
+    staleTime: 10 * 60 * 1000, // 10 minutes
+    retry: 2
+  });
+
+  // ===== 4. Mutations để set date =====
+  const setDailySaleDateMutation = useMutation({
+    mutationFn: reportService.setDailySaleDate,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['dailySaleStatistics'] });
+    }
+  });
+
+  const setMonthlySaleDateMutation = useMutation({
+    mutationFn: ({ year, month }) => reportService.setMonthlySaleDate(year, month),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['monthlySaleStatistics'] });
+    }
+  });
+
+  const setYearlySaleDateMutation = useMutation({
+    mutationFn: reportService.setYearlySaleDate,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['yearlySaleStatistics'] });
+    }
+  });
+
+  const setDailyRentDateMutation = useMutation({
+    mutationFn: reportService.setDailyRentDate,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['dailyRentStatistics'] });
+    }
+  });
+
+  const setMonthlyRentDateMutation = useMutation({
+    mutationFn: ({ year, month }) => reportService.setMonthlyRentDate(year, month),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['monthlyRentStatistics'] });
+    }
+  });
+
+  const setYearlyRentDateMutation = useMutation({
+    mutationFn: reportService.setYearlyRentDate,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['yearlyRentStatistics'] });
+    }
+  });
+
+  // ===== 5. Helper functions =====
+  const refetchAllStats = () => {
+    refetchOverview();
+    refetchDailySale();
+    refetchMonthlySale();
+    refetchYearlySale();
+    refetchDailyRent();
+    refetchMonthlyRent();
+    refetchYearlyRent();
+  };
+
+  const isLoadingAny = isLoadingOverview || isLoadingDailySale || isLoadingMonthlySale || 
+                      isLoadingYearlySale || isLoadingDailyRent || isLoadingMonthlyRent || 
+                      isLoadingYearlyRent;
+
+  const hasError = !!(overviewError || dailySaleError || monthlySaleError || yearlySaleError ||
+                     dailyRentError || monthlyRentError || yearlyRentError);
+
+  // Debug log
   console.log('🔍 Report API Hook Status:', {
-    bookStatistics,
-    isLoadingBookStats,
-    bookStatsError: bookStatsError?.message,
     overviewStats,
-    dailyStats,
-    weeklyStats,
-    monthlyStats
+    dailySaleStats,
+    monthlySaleStats,
+    yearlySaleStats,
+    dailyRentStats,
+    monthlyRentStats,
+    yearlyRentStats,
+    isLoadingAny,
+    hasError
   });
 
   return {
-    // Dữ liệu chính (gộp tất cả)
-    bookStatistics,
-    isLoadingBookStats,
-    bookStatsError,
-    refetchBookStats,
-    
-    // Dữ liệu riêng lẻ
+    // Data
     overviewStats,
-    dailyStats,
-    weeklyStats,
-    monthlyStats,
+    dailySaleStats,
+    monthlySaleStats,
+    yearlySaleStats,
+    dailyRentStats,
+    monthlyRentStats,
+    yearlyRentStats,
     
     // Loading states
     isLoadingOverview,
-    isLoadingDaily,
-    isLoadingWeekly,
-    isLoadingMonthly,
+    isLoadingDailySale,
+    isLoadingMonthlySale,
+    isLoadingYearlySale,
+    isLoadingDailyRent,
+    isLoadingMonthlyRent,
+    isLoadingYearlyRent,
+    isLoadingAny,
     
     // Errors
     overviewError,
-    dailyError,
-    weeklyError,
-    monthlyError,
+    dailySaleError,
+    monthlySaleError,
+    yearlySaleError,
+    dailyRentError,
+    monthlyRentError,
+    yearlyRentError,
+    hasError,
     
     // Refetch functions
     refetchOverview,
-    refetchDaily,
-    refetchWeekly,
-    refetchMonthly,
+    refetchDailySale,
+    refetchMonthlySale,
+    refetchYearlySale,
+    refetchDailyRent,
+    refetchMonthlyRent,
+    refetchYearlyRent,
+    refetchAllStats,
     
-    // Tiện ích
-    isLoadingAny: isLoadingBookStats || isLoadingOverview || isLoadingDaily || isLoadingWeekly || isLoadingMonthly,
-    hasError: !!(bookStatsError || overviewError || dailyError || weeklyError || monthlyError)
+    // Mutations để set date
+    setDailySaleDate: setDailySaleDateMutation.mutate,
+    setMonthlySaleDate: setMonthlySaleDateMutation.mutate,
+    setYearlySaleDate: setYearlySaleDateMutation.mutate,
+    setDailyRentDate: setDailyRentDateMutation.mutate,
+    setMonthlyRentDate: setMonthlyRentDateMutation.mutate,
+    setYearlyRentDate: setYearlyRentDateMutation.mutate,
+    
+    // Mutation states
+    isSettingDate: setDailySaleDateMutation.isPending || setMonthlySaleDateMutation.isPending ||
+                   setYearlySaleDateMutation.isPending || setDailyRentDateMutation.isPending ||
+                   setMonthlyRentDateMutation.isPending || setYearlyRentDateMutation.isPending
   };
 };
