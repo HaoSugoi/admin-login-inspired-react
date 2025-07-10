@@ -2,7 +2,7 @@
 import api from './api';
 
 export const reportService = {
-  // ===== 1. Tổng quan =====
+  // ===== 1. Tổng quan - GET /api/Report =====
   getOverviewStatistics: async () => {
     try {
       const response = await api.get('/api/Report');
@@ -14,8 +14,8 @@ export const reportService = {
     }
   },
 
-  // ===== 2. Thống kê Sale Book =====
-  // Theo ngày
+  // ===== 2. Sale Statistics =====
+  // GET /api/Report/sale/daily
   getDailySaleStatistics: async () => {
     try {
       const response = await api.get('/api/Report/sale/daily');
@@ -27,7 +27,7 @@ export const reportService = {
     }
   },
 
-  // Set ngày cho daily sale
+  // POST /api/Report/sale/daily/set-date
   setDailySaleDate: async (date) => {
     try {
       const response = await api.post('/api/Report/sale/daily/set-date', { date });
@@ -39,7 +39,7 @@ export const reportService = {
     }
   },
 
-  // Theo tháng
+  // GET /api/Report/sale/monthly
   getMonthlySaleStatistics: async () => {
     try {
       const response = await api.get('/api/Report/sale/monthly');
@@ -51,7 +51,7 @@ export const reportService = {
     }
   },
 
-  // Set tháng cho monthly sale
+  // POST /api/Report/sale/monthly/set-date
   setMonthlySaleDate: async (year, month) => {
     try {
       const response = await api.post('/api/Report/sale/monthly/set-date', { year, month });
@@ -63,7 +63,7 @@ export const reportService = {
     }
   },
 
-  // Theo năm
+  // GET /api/Report/sale/yearly
   getYearlySaleStatistics: async () => {
     try {
       const response = await api.get('/api/Report/sale/yearly');
@@ -75,7 +75,7 @@ export const reportService = {
     }
   },
 
-  // Set năm cho yearly sale
+  // POST /api/Report/sale/yearly/set-date
   setYearlySaleDate: async (year) => {
     try {
       const response = await api.post('/api/Report/sale/yearly/set-date', { year });
@@ -87,8 +87,8 @@ export const reportService = {
     }
   },
 
-  // ===== 3. Thống kê Rent Book =====
-  // Theo ngày
+  // ===== 3. Rent Statistics =====
+  // GET /api/Report/rent/daily
   getDailyRentStatistics: async () => {
     try {
       const response = await api.get('/api/Report/rent/daily');
@@ -100,7 +100,7 @@ export const reportService = {
     }
   },
 
-  // Set ngày cho daily rent
+  // POST /api/Report/rent/daily/set-date
   setDailyRentDate: async (date) => {
     try {
       const response = await api.post('/api/Report/rent/daily/set-date', { date });
@@ -112,7 +112,7 @@ export const reportService = {
     }
   },
 
-  // Theo tháng
+  // GET /api/Report/rent/monthly
   getMonthlyRentStatistics: async () => {
     try {
       const response = await api.get('/api/Report/rent/monthly');
@@ -124,7 +124,7 @@ export const reportService = {
     }
   },
 
-  // Set tháng cho monthly rent
+  // POST /api/Report/rent/monthly/set-date
   setMonthlyRentDate: async (year, month) => {
     try {
       const response = await api.post('/api/Report/rent/monthly/set-date', { year, month });
@@ -136,7 +136,7 @@ export const reportService = {
     }
   },
 
-  // Theo năm
+  // GET /api/Report/rent/yearly
   getYearlyRentStatistics: async () => {
     try {
       const response = await api.get('/api/Report/rent/yearly');
@@ -148,7 +148,7 @@ export const reportService = {
     }
   },
 
-  // Set năm cho yearly rent
+  // POST /api/Report/rent/yearly/set-date
   setYearlyRentDate: async (year) => {
     try {
       const response = await api.post('/api/Report/rent/yearly/set-date', { year });
@@ -160,3 +160,5 @@ export const reportService = {
     }
   }
 };
+
+export default reportService;
