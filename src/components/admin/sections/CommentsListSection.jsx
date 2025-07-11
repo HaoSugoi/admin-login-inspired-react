@@ -1,21 +1,8 @@
-
 import React, { useState } from "react";
-import AddCommentDialog from "../dialogs/AddCommentDialog";
-import EditCommentDialog from "../dialogs/EditCommentDialog";
-import ReplyCommentDialog from "../dialogs/ReplyCommentDialog";
-import { Edit, Trash2, Check, X, MessageSquare, Star } from "lucide-react";
+import { Trash2, MessageSquare } from "lucide-react";
 
-const CommentsListSection = ({ comments, onAdd, onUpdate, onDelete, onApprove, onReject, onReply }) => {
-  const [editingComment, setEditingComment] = useState(null);
-  const [replyingComment, setReplyingComment] = useState(null);
-
-  const handleEditComment = (comment) => {
-    setEditingComment(comment);
-  };
-
-  const handleReplyComment = (comment) => {
-    setReplyingComment(comment);
-  };
+const CommentsListSection = ({ comments, bookId, commentId, onDelete }) => {
+  const [selectedComment, setSelectedComment] = useState(null);
 
   const handleDeleteComment = (id) => {
     if (window.confirm("Bạn có chắc chắn muốn xóa bình luận này?")) {
@@ -23,29 +10,12 @@ const CommentsListSection = ({ comments, onAdd, onUpdate, onDelete, onApprove, o
     }
   };
 
-  const getStatusBadge = (status) => {
-    switch (status) {
-      case 'approved':
-        return <span className="badge bg-success">Đã duyệt</span>;
-      case 'pending':
-        return <span className="badge bg-warning">Chờ duyệt</span>;
-      case 'rejected':
-        return <span className="badge bg-danger">Từ chối</span>;
-      default:
-        return <span className="badge bg-secondary">Không xác định</span>;
-    }
-  };
-
-  const renderStars = (rating) => {
-    return Array.from({ length: 5 }, (_, index) => (
-      <Star
-        key={index}
-        size={14}
-        className={index < rating ? "text-warning" : "text-muted"}
-        fill={index < rating ? "currentColor" : "none"}
-      />
-    ));
-  };
+  // ⚠️ Lọc theo điều kiện tìm kiếm
+  const filteredComments = comments.filter((comment) => {
+    const matchBookId = bookId ? comment.bookId?.toLowerCase().includes(bookId.toLowerCase()) : true;
+    const matchCommentId = commentId ? comment.id?.toLowerCase().includes(commentId.toLowerCase()) : true;
+    return matchBookId && matchCommentId;
+  });
 
   return (
     <div className="col-12 mb-4">
@@ -55,7 +25,6 @@ const CommentsListSection = ({ comments, onAdd, onUpdate, onDelete, onApprove, o
             <MessageSquare className="text-primary" size={20} />
             Danh Sách Bình Luận
           </span>
-          <AddCommentDialog onAdd={onAdd} />
         </div>
 
         <div className="table-responsive">
@@ -66,108 +35,121 @@ const CommentsListSection = ({ comments, onAdd, onUpdate, onDelete, onApprove, o
                 <th>Tên Sách</th>
                 <th>Khách Hàng</th>
                 <th>Nội Dung</th>
-                <th>Đánh Giá</th>
-                <th>Trạng Thái</th>
                 <th>Ngày Tạo</th>
                 <th>Thao Tác</th>
               </tr>
             </thead>
             <tbody>
-              {comments?.map((comment) => (
-                <tr key={comment.id}>
-                  <td className="fw-bold text-primary">#{comment.id}</td>
-                  <td>
-                    <span className="fw-medium">{comment.bookTitle}</span>
-                  </td>
-                  <td>{comment.customerName}</td>
-                  <td>
-                    <div className="comment-content">
-                      <p className="mb-1">{comment.content}</p>
-                      {comment.reply && (
-                        <div className="mt-2 p-2 bg-light rounded">
-                          <small className="text-muted d-block">Phản hồi của admin:</small>
-                          <span className="text-primary">{comment.reply}</span>
-                        </div>
-                      )}
-                    </div>
-                  </td>
-                  <td>
-                    <div className="d-flex align-items-center gap-1">
-                      {renderStars(comment.rating)}
-                      <span className="ms-1">({comment.rating})</span>
-                    </div>
-                  </td>
-                  <td>{getStatusBadge(comment.status)}</td>
-                  <td className="text-muted">
-                    {new Date(comment.createdAt).toLocaleDateString('vi-VN')}
-                  </td>
-                  <td>
-                    <div className="d-flex gap-1 flex-wrap">
-                      <button
-                        className="btn btn-sm btn-primary"
-                        onClick={() => handleEditComment(comment)}
-                        title="Sửa"
-                      >
-                        <Edit size={12} />
-                      </button>
-                      
-                      {comment.status === 'pending' && (
-                        <>
-                          <button
-                            className="btn btn-sm btn-success"
-                            onClick={() => onApprove(comment.id)}
-                            title="Duyệt"
-                          >
-                            <Check size={12} />
-                          </button>
-                          <button
-                            className="btn btn-sm btn-warning"
-                            onClick={() => onReject(comment.id)}
-                            title="Từ chối"
-                          >
-                            <X size={12} />
-                          </button>
-                        </>
-                      )}
-                      
-                      <button
-                        className="btn btn-sm btn-info"
-                        onClick={() => handleReplyComment(comment)}
-                        title="Trả lời"
-                      >
-                        <MessageSquare size={12} />
-                      </button>
-                      
-                      <button
-                        className="btn btn-sm btn-danger"
-                        onClick={() => handleDeleteComment(comment.id)}
-                        title="Xóa"
-                      >
-                        <Trash2 size={12} />
-                      </button>
-                    </div>
+              {filteredComments.length > 0 ? (
+                filteredComments.map((comment) => (
+                  <tr key={comment.id}>
+                    <td className="fw-bold text-primary">
+                      #{comment.id?.substring(0, 6)}...
+                    </td>
+                    <td>{comment.bookTitle}</td>
+                    <td>{comment.customerName}</td>
+
+                    <td>
+                      <div className="comment-content">
+                        <p className="mb-1">{comment.content}</p>
+                        {comment.reply && (
+                          <div className="mt-2 p-2 bg-light rounded">
+                            <small className="text-muted d-block">
+                              Phản hồi của admin:
+                            </small>
+                            <span className="text-primary">{comment.reply}</span>
+                          </div>
+                        )}
+                      </div>
+                    </td>
+                    <td className="text-muted">
+                      {new Date(comment.createdAt).toLocaleDateString("vi-VN")}
+                    </td>
+                    <td>
+                      <div className="d-flex gap-1">
+                        <button
+                          className="btn btn-sm btn-outline-primary"
+                          onClick={() => setSelectedComment(comment)}
+                        >
+                          Xem
+</button>
+                        <button
+                          className="btn btn-sm btn-outline-danger"
+                          onClick={() => handleDeleteComment(comment.id)}
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="6" className="text-center text-muted">
+                    Không có bình luận nào phù hợp.
                   </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>
       </div>
 
-      {editingComment && (
-        <EditCommentDialog
-          comment={editingComment}
-          onUpdate={onUpdate}
-          onClose={() => setEditingComment(null)}
-        />
-      )}
-
-      {replyingComment && (
-        <ReplyCommentDialog
-          comment={replyingComment}
-          onReply={onReply}
-          onClose={() => setReplyingComment(null)}
-        />
+      {/* Modal xem chi tiết */}
+      {selectedComment && (
+        <div
+          className="modal d-block"
+          tabIndex="-1"
+          role="dialog"
+          style={{ backgroundColor: "rgba(0,0,0,0.3)" }}
+        >
+          <div className="modal-dialog modal-dialog-centered" role="document">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Chi tiết bình luận</h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  onClick={() => setSelectedComment(null)}
+                ></button>
+              </div>
+              <div className="modal-body">
+                <p>
+                  <strong>ID:</strong> {selectedComment.id}
+                </p>
+                <p>
+                  <strong>Sách:</strong> {selectedComment.bookId}
+                </p>
+                <p>
+                  <strong>Người dùng:</strong> {selectedComment.customerId}
+                </p>
+                <p>
+                  <strong>Nội dung:</strong> {selectedComment.content}
+                </p>
+                <p>
+                  <strong>Ngày tạo:</strong>{" "}
+                  {new Date(selectedComment.createdAt).toLocaleString("vi-VN")}
+                </p>
+                {selectedComment.reply && (
+                  <>
+                    <hr />
+                    <p>
+                      <strong>Phản hồi:</strong> {selectedComment.reply}
+                    </p>
+                  </>
+                )}
+              </div>
+              <div className="modal-footer">
+                <button
+                  className="btn btn-secondary"
+                  onClick={() => setSelectedComment(null)}
+                >
+                  Đóng
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

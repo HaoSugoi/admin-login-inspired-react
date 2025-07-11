@@ -161,7 +161,7 @@ const EditPromotionDialog = ({ promotion, categories, onUpdate, onClose }) => {
             </Button>
             <Button
               type="submit"
-              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700"
+              
             >
               <Save className="w-4 h-4" />
               Cập Nhật
