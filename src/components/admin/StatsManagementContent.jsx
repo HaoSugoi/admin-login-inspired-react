@@ -23,7 +23,7 @@ const StatsManagementContent = (props) => {
         <div className="row">
           <div className="col-12 mb-4">
             <div className="d-flex justify-content-between align-items-center">
-              <h4 className="text-success fw-bold">Báo Cáo Thống Kê (API Mới)</h4>
+              <h4 className="text-success fw-bold">Báo Cáo Thống Kê</h4>
               <div className="d-flex gap-2">
                 <button 
                   className="btn btn-outline-primary btn-sm"
@@ -50,7 +50,7 @@ const StatsManagementContent = (props) => {
         </div>
 
         {/* API Status */}
-        <div className="row">
+        {/* <div className="row">
           <div className="col-12 mb-3">
             <div className="alert alert-info d-flex justify-content-between align-items-center">
               <div>
@@ -63,7 +63,7 @@ const StatsManagementContent = (props) => {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
 
         <div className="row">
           <OverallStatsSection 

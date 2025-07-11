@@ -89,7 +89,7 @@ const RevenueStatsSection = ({
     <div className="col-12 mb-4">
       <div className="section-card">
         <div className="section-title">
-          <span>Báo Cáo Doanh Thu (API Mới)</span>
+          <span>Báo Cáo Doanh Thu </span>
           <div className="d-flex gap-2 align-items-center">
             <input
               type="date"
@@ -162,7 +162,7 @@ const RevenueStatsSection = ({
           </div>
         </div>
 
-        {/* Raw Data Debug (Development only) */}
+        {/* Raw Data Debug (Development only)
         {process.env.NODE_ENV === 'development' && (
           <div className="mt-3">
             <details>
@@ -179,7 +179,7 @@ const RevenueStatsSection = ({
               </div>
             </details>
           </div>
-        )}
+        )} */}
       </div>
     </div>
   );

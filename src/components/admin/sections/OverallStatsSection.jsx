@@ -89,7 +89,7 @@ const OverallStatsSection = ({ statistics, isLoading, error, rawStats }) => {
       </div>
 
       {/* Debug info (chỉ hiện trong development) */}
-      {process.env.NODE_ENV === 'development' && (
+      {/* {process.env.NODE_ENV === 'development' && (
         <div className="row mt-3">
           <div className="col-12">
             <div className="card">
@@ -121,7 +121,7 @@ const OverallStatsSection = ({ statistics, isLoading, error, rawStats }) => {
             </div>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 };
