@@ -1,28 +1,55 @@
-
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Edit, Trash2, ExternalLink, Eye } from 'lucide-react';
+import { Plus, Trash2, ExternalLink, Eye } from 'lucide-react';
+import { slideService } from '@/services/slideService';
 
-const SlidesSection = ({ 
-  slides, 
-  isLoading, 
-  onAddSlide, 
-  onEditSlide, 
-  onDeleteSlide 
-}) => {
-  if (isLoading) {
-    return (
-      <div className="col-12">
-        <div className="text-center py-4">
-          <div className="spinner-border text-success" role="status">
-            <span className="visually-hidden">Đang tải...</span>
-          </div>
-        </div>
-      </div>
-    );
-  }
+const SlidesSection = () => {
+  const [slides, setSlides] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [linkUrl, setLinkUrl] = useState('');
+
+  const fetchSlides = async () => {
+    try {
+      setIsLoading(true);
+      const data = await slideService.getAllSlides();
+      setSlides(data);
+    } catch (err) {
+      console.error('Lỗi khi lấy danh sách slides:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchSlides();
+  }, []);
+
+  const handleAddSlide = async () => {
+    try {
+      if (!selectedFile || !linkUrl) {
+        return alert('Vui lòng chọn ảnh và nhập LinkUrl');
+      }
+      await slideService.createSlide({ imageFile: selectedFile, linkUrl });
+      setLinkUrl('');
+      setSelectedFile(null);
+      await fetchSlides();
+    } catch (error) {
+      console.error('Lỗi khi thêm slide:', error);
+    }
+  };
+
+  const handleDeleteSlide = async (slide) => {
+    if (!window.confirm('Bạn có chắc chắn muốn xóa slide này?')) return;
+    try {
+      await slideService.deleteSlide(slide.slideId);
+      await fetchSlides();
+    } catch (error) {
+      console.error('Lỗi khi xóa slide:', error);
+    }
+  };
 
   return (
     <div className="col-12">
@@ -30,81 +57,91 @@ const SlidesSection = ({
         <CardHeader>
           <div className="d-flex justify-content-between align-items-center">
             <CardTitle>Danh Sách Slide</CardTitle>
-            <Button onClick={onAddSlide} className="btn-success">
+          </div>
+        </CardHeader>
+        <CardContent>
+          {/* Form thêm slide */}
+          <div className="mb-4">
+            <input
+              type="file"
+              onChange={(e) => setSelectedFile(e.target.files[0])}
+              className="form-control mb-2"
+            />
+            <input
+              type="text"
+              placeholder="Nhập LinkUrl"
+              value={linkUrl}
+              onChange={(e) => setLinkUrl(e.target.value)}
+              className="form-control mb-2"
+            />
+            <Button onClick={handleAddSlide} className="btn-success">
               <Plus className="w-4 h-4 me-2" />
               Thêm Slide
             </Button>
           </div>
-        </CardHeader>
-        <CardContent>
-          {slides.length === 0 ? (
+
+          {/* Danh sách slide */}
+          {isLoading ? (
+            <div className="text-center py-4">
+              <div className="spinner-border text-success" role="status">
+                <span className="visually-hidden">Đang tải...</span>
+              </div>
+            </div>
+          ) : slides.length === 0 ? (
             <div className="text-center py-4">
               <p className="text-muted">Chưa có slide nào</p>
             </div>
-          ) : (
+) : (
             <div className="row">
               {slides.map((slide) => (
-                <div key={slide.id} className="col-md-6 col-lg-4 mb-4">
+                <div key={slide.SlideId} className="col-md-6 col-lg-4 mb-4">
                   <Card className="h-100">
                     <div className="position-relative">
-                      {slide.imageUrl ? (
-                        <img 
-                          src={slide.imageUrl} 
+                      {slide.ImageUrl ? (
+                        <img
+                          src={`https://localhost:7003${slide.ImageUrl}`}
                           alt="Slide"
                           className="card-img-top"
                           style={{ height: '200px', objectFit: 'cover' }}
                         />
                       ) : (
-                        <div 
+                        <div
                           className="bg-light d-flex align-items-center justify-content-center"
                           style={{ height: '200px' }}
                         >
                           <Eye className="text-muted" size={48} />
                         </div>
                       )}
-                      
+
                       <div className="position-absolute top-0 end-0 m-2">
-                        <Badge variant={slide.isActive ? "default" : "secondary"}>
-                          {slide.isActive ? 'Hoạt động' : 'Không hoạt động'}
-                        </Badge>
+                        <Badge variant="default">Slide</Badge>
                       </div>
                     </div>
-                    
+
                     <CardContent className="p-3">
                       <div className="mb-2">
-                        <small className="text-muted">ID: {slide.id}</small>
+                        <small className="text-muted">link: {slide.LinkUrl}</small>
                       </div>
-                      
-                      {slide.linkUrl && (
+
+                      {slide.LinkUrl && (
                         <div className="mb-2">
-                          <a 
-                            href={slide.linkUrl} 
-                            target="_blank" 
+                          <a
+                            href={slide.LinkUrl}
+                            target="_blank"
                             rel="noopener noreferrer"
                             className="text-primary text-decoration-none d-flex align-items-center"
                           >
                             <ExternalLink className="w-4 h-4 me-1" />
-                            <small className="text-truncate">
-                              {slide.linkUrl}
-                            </small>
+                            <small className="text-truncate">{slide.LinkUrl}</small>
                           </a>
                         </div>
                       )}
-                      
+
                       <div className="d-flex gap-2 mt-3">
                         <Button
                           size="sm"
-                          variant="outline"
-                          onClick={() => onEditSlide(slide)}
-                          className="flex-1"
-                        >
-                          <Edit className="w-4 h-4 me-1" />
-                          Sửa
-                        </Button>
-                        <Button
-                          size="sm"
                           variant="destructive"
-                          onClick={() => onDeleteSlide(slide)}
+                          onClick={() => handleDeleteSlide(slide)}
                           className="flex-1"
                         >
                           <Trash2 className="w-4 h-4 me-1" />

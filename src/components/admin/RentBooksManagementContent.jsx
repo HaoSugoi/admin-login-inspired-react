@@ -1,4 +1,3 @@
-
 import React from 'react';
 import AdminTopbar from './AdminTopbar';
 import RentalListSection from './sections/RentalListSection';
@@ -32,12 +31,11 @@ const RentBooksManagementContent = (props) => {
       deleteRentBooks(id);
     }
   };
-
+ 
   const handleToggleVisibility = (id, isHidden) => {
-    console.log('Toggling visibility:', id, isHidden);
-    toggleVisibility({ id, isHidden: !isHidden });
+    toggleVisibility({ id, isHidden: isHidden ? 0 : 1 });
   };
-
+  
   if (isLoadingRentBookss) return <div>Đang tải dữ liệu sách thuê...</div>;
   if (rentbookssError) return <div>Lỗi khi tải dữ liệu: {rentbookssError.message}</div>;
 

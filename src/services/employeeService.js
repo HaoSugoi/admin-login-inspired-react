@@ -9,7 +9,7 @@ export const userService = {
       UserName: users.UserName,
       Email: users.Email,
       PhoneNumber: users.PhoneNumber ?? '(Chưa có)',
-      Address: users.Address, 
+      Address: users.Address,
       Role: users.Role,
       points: users.Points,
       DateOfBirth: new Date(users.DateOfBirth).toLocaleDateString('vi-VN'),
@@ -19,7 +19,7 @@ export const userService = {
 
   // POST: Tạo người dùng mới
   createUser: async (data) => {
-    const res = await apiClient.post('/Staff', data);
+    const res = await apiClient.post('/Staff/users', data);
     return res.data;
   },
 

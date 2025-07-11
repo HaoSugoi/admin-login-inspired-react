@@ -119,18 +119,7 @@ const AddRentalBookDialog = ({ onClose, onAdd }) => {
               </div>
   
              {/* Dòng 2 */}
-              <div className="col-md-6">
-                <label className="form-label fw-semibold">Số lượng *</label>
-                <input
-                  type="number"
-                  className="form-control shadow-sm"
-                  value={formData.Quantity}
-                  onChange={(e) =>
-                    setFormData({ ...formData, Quantity: parseInt(e.target.value) })
-                  }
-                  required
-                />
-              </div>
+              
             
               <div className="col-md-6">
                 <label className="form-label fw-semibold">Kích thước</label>
