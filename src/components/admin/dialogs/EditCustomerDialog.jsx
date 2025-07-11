@@ -121,7 +121,17 @@ const EditCustomerDialog = ({ customer, open, onClose, onUpdateCustomer }) => {
               onChange={handleInputChange}
             />
           </div>
-
+          <div>
+            <Label htmlFor="Role">Role</Label>
+            <textarea
+              id="Role"
+              name="Role"
+              rows="3"
+              value={formData.Role}
+              onChange={handleInputChange}
+              className="form-control w-full"
+            />
+          </div>
           <div>
             <Label htmlFor="Address">Địa Chỉ</Label>
             <textarea
