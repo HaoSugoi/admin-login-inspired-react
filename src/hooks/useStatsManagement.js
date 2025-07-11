@@ -27,9 +27,9 @@ export const useStatsManagement = () => {
     isSettingDate
   } = useReportApi();
 
-  // Xử lý dữ liệu từ API mới với cấu trúc response thực tế
+  // Xử lý dữ liệu từ API với cấu trúc response thực tế
   const processedStatistics = {
-    // Tổng quan (từ /api/Report)
+    // === TỔNG QUAN (từ /api/Report) ===
     totalRevenue: overviewStats?.GrandTotalAmount || 0,
     totalOrders: overviewStats?.TotalOrders || 0,
     totalSaleAmount: overviewStats?.TotalSaleAmount || 0,
@@ -37,85 +37,146 @@ export const useStatsManagement = () => {
     totalSaleOrders: overviewStats?.TotalSaleOrders || 0,
     totalRentOrders: overviewStats?.TotalRentOrders || 0,
     
-    // Dữ liệu hôm nay
+    // === DOANH THU BÁN SÁCH ===
+    // Daily Sale
+    dailySale: {
+      createdDate: dailySaleStats?.CreatedDate || null,
+      ordersToday: dailySaleStats?.OrdersToday || 0,
+      totalValueToday: dailySaleStats?.TotalValueToday || 0
+    },
+    
+    // Monthly Sale
+    monthlySale: {
+      createdDates: dailySaleStats?.CreatedDates || [],
+      ordersThisMonth: monthlySaleStats?.OrdersThisMonth || 0,
+      totalValueThisMonth: monthlySaleStats?.TotalValueThisMonth || 0
+    },
+    
+    // Yearly Sale
+    yearlySale: {
+      createdDates: yearlySaleStats?.CreatedDates || [],
+      ordersThisYear: yearlySaleStats?.OrdersThisYear || 0,
+      totalValueThisYear: yearlySaleStats?.TotalValueThisYear || 0
+    },
+    
+    // === DOANH THU CHO THUÊ SÁCH ===
+    // Daily Rent
+    dailyRent: {
+      createdDate: dailyRentStats?.CreatedDate || null,
+      ordersToday: dailyRentStats?.OrdersToday || 0,
+      totalValueToday: dailyRentStats?.TotalValueToday || 0
+    },
+    
+    // Monthly Rent
+    monthlyRent: {
+      createdDates: monthlyRentStats?.CreatedDates || [],
+      ordersThisMonth: monthlyRentStats?.OrdersThisMonth || 0,
+      totalValueThisMonth: monthlyRentStats?.TotalValueThisMonth || 0
+    },
+    
+    // Yearly Rent
+    yearlyRent: {
+      createdDates: yearlyRentStats?.CreatedDates || [],
+      ordersThisYear: yearlyRentStats?.OrdersThisYear || 0,
+      totalValueThisYear: yearlyRentStats?.TotalValueThisYear || 0
+    },
+    
+    // === TÍNH TOÁN TỔNG HỢP ===
+    // Hôm nay (Sale + Rent)
     todayRevenue: (dailySaleStats?.TotalValueToday || 0) + (dailyRentStats?.TotalValueToday || 0),
     todayOrders: (dailySaleStats?.OrdersToday || 0) + (dailyRentStats?.OrdersToday || 0),
-    todaySaleRevenue: dailySaleStats?.TotalValueToday || 0,
-    todayRentRevenue: dailyRentStats?.TotalValueToday || 0,
     
-    // Dữ liệu tháng này
+    // Tháng này (Sale + Rent)
     monthRevenue: (monthlySaleStats?.TotalValueThisMonth || 0) + (monthlyRentStats?.TotalValueThisMonth || 0),
     monthOrders: (monthlySaleStats?.OrdersThisMonth || 0) + (monthlyRentStats?.OrdersThisMonth || 0),
     
-    // Dữ liệu năm này
+    // Năm này (Sale + Rent)  
     yearRevenue: (yearlySaleStats?.TotalValueThisYear || 0) + (yearlyRentStats?.TotalValueThisYear || 0),
     yearOrders: (yearlySaleStats?.OrdersThisYear || 0) + (yearlyRentStats?.OrdersThisYear || 0),
     
-    // Dữ liệu cho biểu đồ (sử dụng createdDates từ monthly stats)
-    monthlyChartData: generateChartData(monthlySaleStats, monthlyRentStats),
+    // Dữ liệu cho biểu đồ
+    monthlyChartData: generateMonthlyChartData(monthlySaleStats, monthlyRentStats),
     yearlyChartData: generateYearlyChartData(yearlySaleStats, yearlyRentStats)
   };
 
-  // Generate chart data từ monthly statistics
-  function generateChartData(saleStats, rentStats) {
-    if (!saleStats?.CreatedDates || !rentStats?.CreatedDates) {
+  // Generate monthly chart data từ CreatedDates
+  function generateMonthlyChartData(saleStats, rentStats) {
+    if (!saleStats?.CreatedDates && !rentStats?.CreatedDates) {
       return [
-        { period: "Ngày 1", sales: 0, rent: 0, total: 0 },
-        { period: "Ngày 7", sales: 0, rent: 0, total: 0 },
-        { period: "Ngày 14", sales: 0, rent: 0, total: 0 },
-        { period: "Ngày 21", sales: 0, rent: 0, total: 0 },
-        { period: "Ngày 28", sales: 0, rent: 0, total: 0 }
+        { period: "Tuần 1", sales: 0, rent: 0, total: 0 },
+        { period: "Tuần 2", sales: 0, rent: 0, total: 0 },
+        { period: "Tuần 3", sales: 0, rent: 0, total: 0 },
+        { period: "Tuần 4", sales: 0, rent: 0, total: 0 }
       ];
     }
 
-    // Tạo chart data từ createdDates thực tế
-    const allDates = [...new Set([
-      ...(saleStats.CreatedDates || []), 
-      ...(rentStats.CreatedDates || [])
-    ])].sort();
+    // Phân chia dữ liệu theo tuần trong tháng
+    const saleValue = saleStats?.TotalValueThisMonth || 0;
+    const rentValue = rentStats?.TotalValueThisMonth || 0;
+    const totalDays = Math.max(
+      (saleStats?.CreatedDates || []).length, 
+      (rentStats?.CreatedDates || []).length
+    );
     
-    return allDates.slice(0, 5).map((date, index) => {
-      const dateObj = new Date(date);
-      const salesValue = Math.floor((saleStats?.TotalValueThisMonth || 0) / allDates.length);
-      const rentValue = Math.floor((rentStats?.TotalValueThisMonth || 0) / allDates.length);
-      
-      return {
-        period: `Ngày ${dateObj.getDate()}`,
-        sales: salesValue,
-        rent: rentValue,
-        total: salesValue + rentValue
-      };
-    });
+    return [
+      { 
+        period: "Tuần 1", 
+        sales: Math.floor(saleValue / 4), 
+        rent: Math.floor(rentValue / 4), 
+        total: Math.floor((saleValue + rentValue) / 4) 
+      },
+      { 
+        period: "Tuần 2", 
+        sales: Math.floor(saleValue / 4), 
+        rent: Math.floor(rentValue / 4), 
+        total: Math.floor((saleValue + rentValue) / 4) 
+      },
+      { 
+        period: "Tuần 3", 
+        sales: Math.floor(saleValue / 4), 
+        rent: Math.floor(rentValue / 4), 
+        total: Math.floor((saleValue + rentValue) / 4) 
+      },
+      { 
+        period: "Tuần 4", 
+        sales: Math.floor(saleValue / 4), 
+        rent: Math.floor(rentValue / 4), 
+        total: Math.floor((saleValue + rentValue) / 4) 
+      }
+    ];
   }
 
   function generateYearlyChartData(saleStats, rentStats) {
-    // Tương tự cho yearly data
     const months = ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6'];
-    return months.slice(0, 4).map((month, index) => {
-      const salesValue = Math.floor((saleStats?.TotalValueThisYear || 0) / 12);
-      const rentValue = Math.floor((rentStats?.TotalValueThisYear || 0) / 12);
+    const saleValue = saleStats?.TotalValueThisYear || 0;
+    const rentValue = rentStats?.TotalValueThisYear || 0;
+    
+    return months.slice(0, 6).map((month, index) => {
+      const salesMonthly = Math.floor(saleValue / 12);
+      const rentMonthly = Math.floor(rentValue / 12);
       
       return {
         period: month,
-        sales: salesValue,
-        rent: rentValue,
-        total: salesValue + rentValue
+        sales: salesMonthly,
+        rent: rentMonthly,
+        total: salesMonthly + rentMonthly
       };
     });
   }
 
-  // Log để debug với cấu trúc dữ liệu mới
-  console.log('📋 Stats Management Data (Updated API):', {
-    overviewStats,
-    dailySaleStats,
-    monthlySaleStats,
-    yearlySaleStats,
-    dailyRentStats,
-    monthlyRentStats,
-    yearlyRentStats,
-    processedStatistics,
-    isLoadingAny,
-    hasError
+  // Debug log với cấu trúc dữ liệu chi tiết
+  console.log('📊 Stats Management - Detailed Data:', {
+    '🔍 Raw API Data': {
+      overviewStats,
+      dailySaleStats,
+      monthlySaleStats, 
+      yearlySaleStats,
+      dailyRentStats,
+      monthlyRentStats,
+      yearlyRentStats
+    },
+    '📋 Processed Statistics': processedStatistics,
+    '⚡ Status': { isLoadingAny, hasError }
   });
 
   const toggleSidebar = () => {
@@ -131,9 +192,10 @@ export const useStatsManagement = () => {
     refetchAllStats();
   };
 
-  // Date setting functions
+  // Date setting functions cho từng loại API
   const handleSetSaleDate = (period, date) => {
     const dateObj = new Date(date);
+    console.log(`📅 Setting Sale Date - Period: ${period}, Date: ${date}`);
     
     switch (period) {
       case 'day':
@@ -148,11 +210,14 @@ export const useStatsManagement = () => {
       case 'year':
         setYearlySaleDate(dateObj.getFullYear());
         break;
+      default:
+        console.warn('Unknown period:', period);
     }
   };
 
   const handleSetRentDate = (period, date) => {
     const dateObj = new Date(date);
+    console.log(`📅 Setting Rent Date - Period: ${period}, Date: ${date}`);
     
     switch (period) {
       case 'day':
@@ -167,6 +232,8 @@ export const useStatsManagement = () => {
       case 'year':
         setYearlyRentDate(dateObj.getFullYear());
         break;
+      default:
+        console.warn('Unknown period:', period);
     }
   };
 
@@ -176,10 +243,10 @@ export const useStatsManagement = () => {
     sidebarCollapsed,
     toggleSidebar,
     
-    // Dữ liệu thống kê đã xử lý
+    // Dữ liệu thống kê đã xử lý chi tiết
     statistics: processedStatistics,
     
-    // Raw data từ API mới
+    // Raw data từ API cho debugging
     rawStats: {
       overview: overviewStats,
       dailySale: dailySaleStats,
