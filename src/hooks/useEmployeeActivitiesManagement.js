@@ -1,158 +1,122 @@
-
-import { useState } from 'react';
+// src/hooks/useEmployeeActivitiesManagement.js
+import { useEffect, useState } from "react";
+import apiClient from "../services/api";
+import { jwtDecode } from "jwt-decode";
 
 export const useEmployeeActivitiesManagement = () => {
-  const [activeSection, setActiveSection] = useState('employee-activities');
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [searchStaffId, setSearchStaffId] = useState('');
+  const [activities, setActivities] = useState([]);
+  const [filteredActivities, setFilteredActivities] = useState([]);
+  const [statistics, setStatistics] = useState({});
+  const [searchStaffId, setSearchStaffId] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  // Mock data theo cấu trúc API mới
-  const [mockActivities] = useState([
-    {
-      notificationId: "NOT001",
-      staffId: "STAFF001",
-      description: "Nhân viên đã đăng nhập vào hệ thống",
-      createdDate: "2024-01-15T08:30:15",
-      staff: {
-        id: "STAFF001",
-        name: "Nguyễn Văn A",
-        email: "nguyenvana@example.com",
-        phone: "0123456789"
-      }
-    },
-    {
-      notificationId: "NOT002",
-      staffId: "STAFF001",
-      description: "Tạo đơn hàng DH001 cho khách hàng KH001",
-      createdDate: "2024-01-15T09:15:30",
-      staff: {
-        id: "STAFF001",
-        name: "Nguyễn Văn A",
-        email: "nguyenvana@example.com",
-        phone: "0123456789"
-      }
-    },
-    {
-      notificationId: "NOT003",
-      staffId: "STAFF002",
-      description: "Cập nhật thông tin sách 'Lập trình React'",
-      createdDate: "2024-01-15T10:20:45",
-      staff: {
-        id: "STAFF002",
-        name: "Trần Thị B",
-        email: "tranthib@example.com",
-        phone: "0987654321"
-      }
-    },
-    {
-      notificationId: "NOT004",
-      staffId: "STAFF003",
-      description: "Xử lý thanh toán cho đơn hàng DH002",
-      createdDate: "2024-01-15T11:45:20",
-      staff: {
-        id: "STAFF003",
-        name: "Lê Văn C",
-        email: "levanc@example.com",
-        phone: "0111222333"
-      }
-    },
-    {
-      notificationId: "NOT005",
-      staffId: "STAFF002",
-      description: "Xóa đơn hàng DH003 theo yêu cầu khách hàng",
-      createdDate: "2024-01-15T14:30:10",
-      staff: {
-        id: "STAFF002",
-        name: "Trần Thị B",
-        email: "tranthib@example.com",
-        phone: "0987654321"
-      }
-    },
-    {
-      notificationId: "NOT006",
-      staffId: "STAFF001",
-      description: "Nhân viên đã đăng xuất khỏi hệ thống",
-      createdDate: "2024-01-15T17:00:00",
-      staff: {
-        id: "STAFF001",
-        name: "Nguyễn Văn A",
-        email: "nguyenvana@example.com",
-        phone: "0123456789"
-      }
+  useEffect(() => {
+    // ✅ Patch: nếu token không có nhưng accessToken có thì copy sang
+    if (!localStorage.getItem("token") && localStorage.getItem("accessToken")) {
+      localStorage.setItem("token", localStorage.getItem("accessToken"));
     }
-  ]);
 
-  const [filteredActivities, setFilteredActivities] = useState(mockActivities);
+    const token = localStorage.getItem("token");
+    if (token) {
+      fetchActivities(token);
+    } else {
+      console.warn("❌ Không tìm thấy token.");
+    }
+  }, []);
 
-  const mockStatistics = {
-    totalActivities: mockActivities.length,
-    activeStaff: [...new Set(mockActivities.map(a => a.staffId))].length,
-    todayActivities: mockActivities.filter(a => {
-      const today = new Date().toISOString().split('T')[0];
-      return a.createdDate.split('T')[0] === today;
-    }).length,
-    thisWeekActivities: mockActivities.filter(a => {
-      const oneWeekAgo = new Date();
-      oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-      return new Date(a.createdDate) >= oneWeekAgo;
-    }).length,
-    thisMonthActivities: mockActivities.filter(a => {
-      const oneMonthAgo = new Date();
-      oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
-      return new Date(a.createdDate) >= oneMonthAgo;
-    }).length,
-    recentActivities: mockActivities.filter(a => {
-      const oneHourAgo = new Date();
-      oneHourAgo.setHours(oneHourAgo.getHours() - 1);
-      return new Date(a.createdDate) >= oneHourAgo;
-    }).length
+  const fetchActivities = async (token) => {
+    setIsLoading(true);
+    try {
+      const decoded = jwtDecode(token);
+      console.log("🧩 Decoded:", decoded);
+
+      // 👉 Ưu tiên lấy role rõ ràng
+      const role =
+        decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] ||
+        decoded.role || decoded.Role || "";
+
+      const staffId =
+        decoded?.nameid || decoded?.UserId || decoded?.staffId || decoded?.StaffId;
+
+      console.log("Role:", role);
+      console.log("StaffId:", staffId);
+
+      let url;
+
+      // 👉 Chỉ cho Admin gọi /ActivityNotification (tổng)
+      if (role?.toLowerCase() === "admin") {
+        url = "/ActivityNotification";
+      } else {
+        if (!staffId) throw new Error("Không xác định được StaffId từ token");
+        url = `/ActivityNotification/staff/${staffId}`;
+      }
+
+      const res = await apiClient.get(url);
+
+      const formatted = res.data.map((n) => ({
+        notificationId: n.NotificationId,
+        description: n.Description,
+        createdDate: n.CreatedDate,
+        staffId: n.StaffId,
+        staffName: n.StaffName || "Unknown",
+      }));
+
+      setActivities(formatted);
+      setFilteredActivities(formatted);
+      setStatistics(calculateStatistics(formatted));
+    } catch (err) {
+      console.error("❌ Lỗi lấy dữ liệu hoạt động:", err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const toggleSidebar = () => {
-    setSidebarCollapsed(!sidebarCollapsed);
-  };
 
-  const handleLogout = () => {
-    console.log('Logging out...');
-  };
 
-  const handleSearchChange = (value) => {
-    setSearchStaffId(value);
+  const calculateStatistics = (data) => {
+    const todayStr = new Date().toLocaleDateString("vi-VN");
+    const now = new Date();
+    const oneWeekAgo = new Date(now);
+    oneWeekAgo.setDate(now.getDate() - 7);
+    const oneMonthAgo = new Date(now);
+    oneMonthAgo.setMonth(now.getMonth() - 1);
+    const oneHourAgo = new Date(now);
+    oneHourAgo.setHours(now.getHours() - 1);
+
+    return {
+      totalActivities: data.length,
+      activeStaff: [...new Set(data.map((a) => a.staffId))].length,
+      todayActivities: data.filter(
+        (a) => new Date(a.createdDate).toLocaleDateString("vi-VN") === todayStr
+      ).length,
+      thisWeekActivities: data.filter((a) => new Date(a.createdDate) >= oneWeekAgo).length,
+      thisMonthActivities: data.filter((a) => new Date(a.createdDate) >= oneMonthAgo).length,
+      recentActivities: data.filter((a) => new Date(a.createdDate) >= oneHourAgo).length,
+    };
   };
 
   const handleSearch = () => {
     setIsLoading(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      if (searchStaffId.trim() === '') {
-        setFilteredActivities(mockActivities);
-      } else {
-        const filtered = mockActivities.filter(activity => 
-          activity.staffId.toLowerCase().includes(searchStaffId.toLowerCase()) ||
-          activity.staff?.name.toLowerCase().includes(searchStaffId.toLowerCase()) ||
-          activity.staff?.email.toLowerCase().includes(searchStaffId.toLowerCase())
-        );
-        setFilteredActivities(filtered);
-      }
-      setIsLoading(false);
-    }, 1000);
+    const keyword = searchStaffId.trim().toLowerCase();
+
+    const filtered = !keyword
+      ? activities
+      : activities.filter(
+        (a) =>
+          a.staffId?.toLowerCase().includes(keyword) ||
+          a.staffName?.toLowerCase().includes(keyword)
+      );
+
+    setFilteredActivities(filtered);
+    setIsLoading(false);
   };
 
   return {
-    activeSection,
-    setActiveSection,
-    sidebarCollapsed,
-    toggleSidebar,
-    handleLogout,
-    
-    // Employee Activities specific data
     activities: filteredActivities,
-    statistics: mockStatistics,
+    statistics,
+    isLoading,
     searchStaffId,
-    handleSearchChange,
+    handleSearchChange: setSearchStaffId,
     handleSearch,
-    isLoading
   };
 };
