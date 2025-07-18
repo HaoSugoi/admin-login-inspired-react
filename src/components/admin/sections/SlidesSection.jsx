@@ -44,7 +44,7 @@ const SlidesSection = () => {
   const handleDeleteSlide = async (slide) => {
     if (!window.confirm('Bạn có chắc chắn muốn xóa slide này?')) return;
     try {
-      await slideService.deleteSlide(slide.slideId);
+      await slideService.deleteSlide(slide.SlideId);
       await fetchSlides();
     } catch (error) {
       console.error('Lỗi khi xóa slide:', error);

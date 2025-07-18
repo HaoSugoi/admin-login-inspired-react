@@ -25,7 +25,7 @@ const EditEmployeeDialog = ({ employee, open, onClose, onUpdateEmployee }) => {
         Address: employee.Address || "",
         PhoneNumber: employee.PhoneNumber || "",
         DateOfBirth: employee.DateOfBirth
-          ? new Date(employee.DateOfBirth).toISOString().split("T")[0]
+          ? new Date(employee.DateOfBirth)
           : "",
         Role: employee.Role || "Staff",
         Points: employee.points || 0,
@@ -48,7 +48,7 @@ const EditEmployeeDialog = ({ employee, open, onClose, onUpdateEmployee }) => {
       Address: formData.Address,
       Role: formData.Role,
       PhoneNumber: formData.PhoneNumber,
-      DateOfBirth: formData.DateOfBirth ? new Date(formData.DateOfBirth).toISOString() : "",
+      DateOfBirth: formData.DateOfBirth ? new Date(formData.DateOfBirth) : "",
       Points: parseInt(formData.Points) || 0,
     };
 

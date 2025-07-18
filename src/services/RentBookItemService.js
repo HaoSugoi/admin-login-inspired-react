@@ -29,6 +29,8 @@ export const rentBookItemService = {
   create: async (data) => {
     try {
       const response = await apiClient.post('/RentBookItem', data);
+      console.log('❌ Error creating RentBookItem:', data);
+      console.log('❌ creating RentBookItem:', response.data);
       return response.data;
     } catch (error) {
       console.error('❌ Error creating RentBookItem:', error);

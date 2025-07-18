@@ -12,6 +12,7 @@ const AddEditRentBookItemDialog = ({ onClose, onSave, mode = 'add', item = {}, r
     const payload = {
       ...formData,
       RentBookId: rentBookId,
+      IsHidden: true
     };
 
     await onSave(payload, mode === 'edit' ? item.RentBookItemId : null);
