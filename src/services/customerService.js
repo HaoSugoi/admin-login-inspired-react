@@ -26,6 +26,7 @@ export const userService = {
   // PUT: Cập nhật người dùng theo ID
  updateUser: async (id, data) => {
   const formData = new FormData();
+
   formData.append("Address", data.Address || "");
   formData.append("Role", data.Role);
   formData.append("PhoneNumber", data.PhoneNumber || "");
@@ -34,7 +35,8 @@ export const userService = {
   if (data.ImageFile) {
     formData.append("ImageFile", data.ImageFile);
   }
-
+console.log("cập nhât mmmmmmmmm",formData)
+console.log("cập nhât tttttttttttt",data)
   const res = await apiClient.put(`/UserManager/${id}`, formData, {
     
     headers: {

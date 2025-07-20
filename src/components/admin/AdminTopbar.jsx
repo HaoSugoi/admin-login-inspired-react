@@ -1,8 +1,33 @@
-
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Bell, Search, LogOut } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { authService } from '@/services/authService'; // điều chỉnh path nếu cần
 
-const AdminTopbar = ({ toggleSidebar, handleLogout }) => {
+const AdminTopbar = ({ toggleSidebar }) => {
+  const navigate = useNavigate();
+  const [userName, setUserName] = useState('');
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const data = await authService.getCurrentUser();
+        console.log("đâsdsadsa",data)
+        setUserName(data.userName || data.UserName || 'Người dùng'); 
+      } catch (error) {
+        console.error('Lỗi khi lấy thông tin người dùng:', error);
+        setUserName('Không xác định');
+      }
+    };
+
+    fetchUser();
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('accessToken');
+    navigate('/');
+  };
+
   return (
     <div className="top-navbar">
       <div className="row align-items-center">
@@ -10,27 +35,16 @@ const AdminTopbar = ({ toggleSidebar, handleLogout }) => {
           <button className="sidebar-toggle d-md-none" onClick={toggleSidebar}>
             ☰
           </button>
-          <h5 className="welcome-text">Hello Tanzir</h5>
-          <p className="date-text">May 10, 2023</p>
+          <h5 className="welcome-text">Xin chào, {userName}</h5>
+         
         </div>
-        
+
         <div className="col-md-6">
           <div className="profile-section justify-content-end">
-            <div className="search-container">
-              <input 
-                type="text" 
-                className="form-control search-input" 
-                placeholder="Tìm kiếm..."
-              />
-              <Search className="search-icon" size={16} />
-            </div>
             
-            <button className="notification-btn">
-              <Bell size={20} />
-            </button>
-            
-            <span className="text-muted">Tìm kiếm</span>
-            
+
+          
+
             <button className="logout-btn" onClick={handleLogout}>
               <LogOut size={16} className="me-1" />
               Đăng Xuất

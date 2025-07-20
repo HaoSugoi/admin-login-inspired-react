@@ -1,14 +1,34 @@
 
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import AdminTopbar from './AdminTopbar';
 import EmployeesListSection from './sections/EmployeesListSection';
 import EmployeeStatisticsSection from './sections/EmployeeStatisticsSection';
-
+import { userService } from '../../../src/services/employeeService';
 const EmployeesManagementContent = (props) => {
+  const [employees, setEmployees] = useState([]);
+
+  const fetchEmployees = async () => {
+    const res = await userService.getAllUsers();
+    setEmployees(res);
+  };
+
+  useEffect(() => {
+    fetchEmployees();
+  }, []);
+
+  const createEmployee = async (newEmployee) => {
+    await userService.createUser(newEmployee);
+    await fetchEmployees();
+  };
+
+  const deleteEmployee = async (id) => {
+    await userService.deleteUser(id);
+    await fetchEmployees();
+  };
   return (
     <div className="col-md-9 col-lg-10 main-content">
       <AdminTopbar {...props} />
-      
+
       <div className="content-section">
         <div className="row">
           <div className="col-12 mb-4">
@@ -21,12 +41,13 @@ const EmployeesManagementContent = (props) => {
         </div>
 
         <div className="row">
-          <EmployeesListSection 
-            employees={props.employees}
-            onAdd={props.createEmployee}
-            onUpdate={props.updateEmployee}
-            onDelete={props.deleteEmployee}
-          />
+        <EmployeesListSection
+  employees={employees}
+  onAdd={createEmployee}
+  onUpdate={fetchEmployees}
+  onDelete={deleteEmployee}
+/>
+
         </div>
       </div>
     </div>

@@ -6,7 +6,13 @@ import { Edit, Trash2 } from "lucide-react";
 const CustomersListSection = ({ customers = [], onAdd, onUpdate, onDelete }) => {
   const [editingCustomer, setEditingCustomer] = useState(null);
   const [showEditDialog, setShowEditDialog] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
+  const filteredCustomers = customers.filter((cus) =>
+    (cus.Email?.toLowerCase() || "").includes(searchTerm) ||
+    (cus.PhoneNumber || "").includes(searchTerm)
+  );
+  
   const handleEditCustomer = (customer) => {
     setEditingCustomer(customer);
     setShowEditDialog(true);
@@ -29,7 +35,14 @@ const CustomersListSection = ({ customers = [], onAdd, onUpdate, onDelete }) => 
       <div className="section-card">
         <div className="section-title d-flex justify-content-between align-items-center">
           <span>Danh Sách Khách Hàng</span>
-          <AddCustomerDialog onAddCustomer={onAdd} />
+       <input
+  type="text"
+  className="form-control w-25"
+  placeholder="Tìm theo email hoặc số điện thoại..."
+  value={searchTerm}
+  onChange={(e) => setSearchTerm(e.target.value.toLowerCase())}
+/>
+
         </div>
 
         <div className="table-responsive">
@@ -44,7 +57,6 @@ const CustomersListSection = ({ customers = [], onAdd, onUpdate, onDelete }) => 
                 <th>Địa Chỉ</th>
                 <th>Vai trò</th>
                 <th>Điểm đổi</th>
-                <th>Ngày Sinh</th>
                 <th>Thao Tác</th>
               </tr>
             </thead>
@@ -56,7 +68,7 @@ const CustomersListSection = ({ customers = [], onAdd, onUpdate, onDelete }) => 
                   </td>
                 </tr>
               ) : (
-                customers.map((customer, index) => (
+                filteredCustomers.map((customer, index) => (
                   <tr key={customer.Id || index}>
                     <td>#{customer.Id?.slice(0, 6).toUpperCase() || "N/A"}</td>
                     <td>{customer.UserName || "—"}</td>
@@ -78,7 +90,7 @@ const CustomersListSection = ({ customers = [], onAdd, onUpdate, onDelete }) => 
                     <td>{customer.Address || "—"}</td>
                     <td>{customer.Role || "—"}</td>
                     <td>{customer.Points}</td>
-                    <td>{customer.joinDate}</td>
+                  
                     <td>
                       <div className="d-flex gap-1">
                         <button

@@ -1,4 +1,4 @@
-import  { useState } from 'react';
+import { useState } from 'react';
 import DetailRentalBookDialog from '../dialogs/DetailRentalBookDialog';
 import DetailRentBookItemListDialog from '../dialogs/DetailRentBookItemListDialog';
 import AddRentalBookDialog from '../dialogs/AddRentalBookDialog';
@@ -9,6 +9,24 @@ const RentalListSection = ({ rentals = [], onAdd, onUpdate, onDelete, onMarkRetu
   const [showDetail, setShowDetail] = useState(false);
   const [selectedRentBookId, setSelectedRentBookId] = useState(null);
   const [showAddDialog, setShowAddDialog] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
+  const filteredRentals = rentals.filter((item) =>
+    item.Title?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  // Pagination logic
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredRentals.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredRentals.length / itemsPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
 
   return (
     <>
@@ -16,12 +34,26 @@ const RentalListSection = ({ rentals = [], onAdd, onUpdate, onDelete, onMarkRetu
         <div className="card shadow-sm p-4 mb-4 bg-white rounded">
           <div className="d-flex justify-content-between align-items-center mb-4">
             <h4 className="text-success fw-bold mb-0">📚 Danh Sách Sách Thuê</h4>
-            <button
-              className="btn btn-success d-flex align-items-center gap-1"
-              onClick={() => setShowAddDialog(true)}
-            >
-              <Plus size={16} /> Thêm Sách Thuê
-            </button>
+            <div className="d-flex gap-2">
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Tìm kiếm theo tên sách..."
+                value={searchTerm}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  setCurrentPage(1); // Reset về trang 1 khi tìm
+                }}
+                
+                style={{ width: '250px' }}
+              />
+              <button
+                className="btn btn-success d-flex align-items-center gap-1"
+                onClick={() => setShowAddDialog(true)}
+              >
+                <Plus size={16} /> Thêm Sách Thuê
+              </button>
+            </div>
           </div>
 
           <div className="table-responsive">
@@ -38,8 +70,9 @@ const RentalListSection = ({ rentals = [], onAdd, onUpdate, onDelete, onMarkRetu
                 </tr>
               </thead>
               <tbody>
-                {rentals.map((item, index) => (
+                {currentItems.map((item, index) => (
                   <tr key={item.RentBookId || index}>
+
                     <td>
                       <span className="badge bg-primary">
                         {item.RentBookId?.substring(0, 6).toUpperCase() || 'N/A'}
@@ -63,7 +96,7 @@ const RentalListSection = ({ rentals = [], onAdd, onUpdate, onDelete, onMarkRetu
                     <td>
                       <button
                         className={`btn btn-sm ${item.IsHidden ? 'btn-outline-secondary' : 'btn-outline-warning'}`}
-onClick={() => onToggleVisibility(item.RentBookId, item.IsHidden)}
+                        onClick={() => onToggleVisibility(item.RentBookId, item.IsHidden)}
                         title={item.IsHidden ? 'Hiện sách' : 'Ẩn sách'}
                       >
                         {item.IsHidden ? <EyeOff size={16} /> : <Eye size={16} />}
@@ -103,7 +136,7 @@ onClick={() => onToggleVisibility(item.RentBookId, item.IsHidden)}
                     </td>
                   </tr>
                 ))}
-                {rentals.length === 0 && (
+                {filteredRentals.length === 0 && (
                   <tr>
                     <td colSpan="7" className="text-center text-muted">
                       Không có dữ liệu sách thuê.
@@ -115,6 +148,25 @@ onClick={() => onToggleVisibility(item.RentBookId, item.IsHidden)}
           </div>
         </div>
       </div>
+      {totalPages > 1 && (
+        <nav className="mt-3">
+          <ul className="pagination justify-content-center">
+            <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
+              <button className="page-link" onClick={() => handlePageChange(currentPage - 1)}>Trước</button>
+            </li>
+            {Array.from({ length: totalPages }, (_, i) => (
+              <li key={i} className={`page-item ${currentPage === i + 1 ? "active" : ""}`}>
+                <button className="page-link" onClick={() => handlePageChange(i + 1)}>
+                  {i + 1}
+                </button>
+              </li>
+            ))}
+            <li className={`page-item ${currentPage === totalPages ? "disabled" : ""}`}>
+              <button className="page-link" onClick={() => handlePageChange(currentPage + 1)}>Tiếp</button>
+            </li>
+          </ul>
+        </nav>
+      )}
 
       {showDetail && (
         <DetailRentalBookDialog

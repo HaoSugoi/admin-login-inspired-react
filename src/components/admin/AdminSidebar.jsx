@@ -21,22 +21,27 @@ const AdminSidebar = ({ activeSection, setActiveSection, sidebarCollapsed, toggl
     { id: 'promotions', icon: Gift, label: 'Quản Lý Khuyến Mãi', path: '/admin/promotions' },
     { id: 'discount-codes', icon: Percent, label: 'Quản Lý Mã Giảm Giá', path: '/admin/discount-codes' },
     { id: 'stats', icon: BarChart3, label: 'Thống Kê', path: '/admin/stats' },
-    { id: 'comments', icon: BoxIcon, label: 'Bình luận', path: '/admin/comments'}
+    { id: 'comments', icon: BoxIcon, label: 'Bình luận', path: '/admin/comments' }
   ];
 
   const handleMenuClick = (item) => {
-  if (typeof setActiveSection === "function") {
-    setActiveSection(item.id); // ✅ Chỉ gọi nếu là hàm
-  }
-  navigate(item.path);
-};
-
+    if (typeof setActiveSection === "function") {
+      setActiveSection(item.id); // ✅ Chỉ gọi nếu là hàm
+    }
+    navigate(item.path);
+  };
+  const handleLogoutInternal = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('accessToken');
+    navigate('/');
+  };
+  
   return (
     <div className={`col-md-3 col-lg-2 sidebar ${sidebarCollapsed ? 'collapsed' : ''}`}>
       <div className="sidebar-header">
         <h5 className="sidebar-title">BookStore Admin</h5>
       </div>
-      
+
       <ul className="nav nav-pills flex-column">
         {menuItems.map((item) => {
           const Icon = item.icon;
@@ -52,9 +57,9 @@ const AdminSidebar = ({ activeSection, setActiveSection, sidebarCollapsed, toggl
             </li>
           );
         })}
-        
+
         <li className="nav-item mt-auto">
-          <button className="nav-link text-danger" onClick={handleLogout}>
+          <button className="nav-link text-danger" onClick={handleLogoutInternal}>
             <LogOut size={16} className="me-2" />
             {!sidebarCollapsed && 'Đăng Xuất'}
           </button>

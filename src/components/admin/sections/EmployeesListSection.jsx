@@ -2,30 +2,43 @@ import React, { useState } from "react";
 import AddEmployeeDialog from "../dialogs/AddEmployeeDialog";
 import EditEmployeeDialog from "../dialogs/EditEmployeeDialog";
 import { Edit, Trash2 } from "lucide-react";
-
+import { userService } from '../../../services/employeeService';
 const EmployeesListSection = ({ employees, onAdd, onUpdate, onDelete }) => {
   const [editingEmployee, setEditingEmployee] = useState(null);
   const [showEditDialog, setShowEditDialog] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const handleEditEmployee = (employee) => {
     setEditingEmployee(employee);
     setShowEditDialog(true);
   };
-
+  const filteredEmployees = employees.filter((employee) =>
+    employee.Email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    employee.PhoneNumber?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
   const handleDeleteEmployee = (id) => {
     if (window.confirm("Bạn có chắc chắn muốn xóa nhân viên này?")) {
       onDelete(id);
     }
   };
 
+
   return (
     <div className="col-12 mb-4">
       <div className="section-card">
         <div className="section-title d-flex justify-content-between align-items-center">
           <span>Danh Sách Nhân Viên</span>
-          <AddEmployeeDialog onAddEmployee={onAdd} />
+          <div className="mb-3">
+  <input
+    type="text"
+    placeholder="Tìm theo Email hoặc SĐT..."
+    className="form-control"  
+    value={searchTerm}
+    onChange={(e) => setSearchTerm(e.target.value)}
+  />
+</div>
         </div>
-
+       
         <div className="table-responsive">
           <table className="table order-table">
             <thead>
@@ -34,19 +47,17 @@ const EmployeesListSection = ({ employees, onAdd, onUpdate, onDelete }) => {
                 <th>Họ Tên</th>
                 <th>Img</th>
                 <th>Email</th>
+                <th>SĐT</th>
                 <th>Vai trò</th>
-                <th>Địa chỉ</th>
-                <th>Điểm đổi</th>
-                <th>Ngày sinh</th>
                 <th>Thao Tác</th>
               </tr>
             </thead>
             <tbody>
-              {employees.map((employee) => (
+            {filteredEmployees.map((employee) => (
                 <tr key={employee.Id}>
                   <td>#{employee.Id?.slice(0, 6).toUpperCase() || "N/A"}</td>
                   <td>{employee.UserName}</td>
-                  <td>   
+                  <td>
                     <img
                       src={
                         employee.ImageUser
@@ -57,14 +68,13 @@ const EmployeesListSection = ({ employees, onAdd, onUpdate, onDelete }) => {
                       width={20}
                       height={"auto"}
                       style={{ borderRadius: "10%", objectFit: "cover" }}
-                      onError={(e) => {}}
+                      onError={(e) => { }}
                     />
                   </td>
                   <td>{employee.Email}</td>
+                  <td>{employee.PhoneNumber}</td>
                   <td>{employee.Role}</td>
-                  <td>{employee.Address}</td>
-                  <td>{employee.points}</td>
-                  <td>{employee.DateOfBirth}</td>
+                  
                   <td>
                     <div className="d-flex gap-1">
                       <button

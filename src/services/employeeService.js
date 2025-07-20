@@ -1,8 +1,9 @@
 import apiClient  from './api';
 
+
 export const userService = {
   // GET: Lấy danh sách tất cả người dùng (khách hàng)
-  getUsers: async () => {
+  getUsers: async () => { 
     const res = await apiClient.get('/Staff');
     return res.data.map(users => ({
       Id: users.Id,
@@ -22,23 +23,36 @@ export const userService = {
     const res = await apiClient.post('/Staff/users', data);
     return res.data;
   },
+  getAllUsers: async()  => {
+    const res = await apiClient.get('/Staff');
+    return res.data;
+  },
 
  // PUT: Cập nhật người dùng theo ID
 // PUT: Cập nhật nhân viên theo ID (KHÔNG xử lý hình ảnh)
 updateUser: async (StaffId, data) => {
-  const payload = {
-    Address: data.Address || "",
-    Role: data.Role,
-    PhoneNumber: data.PhoneNumber || "",
-    DateOfBirth: data.DateOfBirth || "",
-    Points: data.Points ?? 0,
-  };
+  const formData = new FormData();
 
-  const res = await apiClient.put(`/Staff/${StaffId}`, payload);
-  console.log("Cập nhật xong, phản hồi từ server:", res.data);
+  formData.append("FullName", data.FullName || "");
+  formData.append("PhoneNumber", data.PhoneNumber || "");
+  formData.append("Address", data.Address || "");
+  formData.append("Password", data.Password || "string");
+  formData.append("DateOfBirth", data.DateOfBirth || "");
+  formData.append("Role", data.Role || "Staff");
+  formData.append("Points", data.Points || 0);
+
+  if (data.ImageFile) {
+    formData.append("ImageFile", data.ImageFile);
+  }
+
+  const res = await apiClient.put(`/Staff/${StaffId}`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+
   return res.data;
 },
-
 
   // DELETE: Xóa người dùng theo ID
   deleteUser: async (id) => {

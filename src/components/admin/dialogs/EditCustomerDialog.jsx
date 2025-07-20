@@ -12,6 +12,7 @@ import { Label } from "../../ui/label";
 
 const EditCustomerDialog = ({ customer, open, onClose, onUpdateCustomer }) => {
   const [formData, setFormData] = useState({
+  
     Address: "",
     PhoneNumber: "",
     DateOfBirth: "",
@@ -23,6 +24,7 @@ const EditCustomerDialog = ({ customer, open, onClose, onUpdateCustomer }) => {
   useEffect(() => {
     if (customer) {
       setFormData({
+     
         Address: customer.Address || "",
         PhoneNumber: customer.PhoneNumber || "",
         DateOfBirth: customer.DateOfBirth
@@ -54,6 +56,7 @@ const EditCustomerDialog = ({ customer, open, onClose, onUpdateCustomer }) => {
     e.preventDefault();
 
     const updatedCustomer = {
+     
       Address: formData.Address,
       Role: formData.Role,
       PhoneNumber: formData.PhoneNumber,
@@ -105,7 +108,7 @@ const EditCustomerDialog = ({ customer, open, onClose, onUpdateCustomer }) => {
             <Input
               id="PhoneNumber"
               name="PhoneNumber"
-              type="tel"
+              type="number"
               value={formData.PhoneNumber}
               onChange={handleInputChange}
             />
@@ -122,16 +125,20 @@ const EditCustomerDialog = ({ customer, open, onClose, onUpdateCustomer }) => {
             />
           </div>
           <div>
-            <Label htmlFor="Role">Role</Label>
-            <textarea
+            <label htmlFor="Role">Role</label>
+            <select
               id="Role"
               name="Role"
-              rows="3"
               value={formData.Role}
               onChange={handleInputChange}
               className="form-control w-full"
-            />
+            >
+              <option value="">-- Chọn vai trò --</option>
+              <option value="Staff">Staff</option>
+              <option value="Customer">Customer</option>
+            </select>
           </div>
+
           <div>
             <Label htmlFor="Address">Địa Chỉ</Label>
             <textarea

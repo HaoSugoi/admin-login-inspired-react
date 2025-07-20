@@ -30,7 +30,21 @@ const AddBookDialog = ({ onAddBook, promotions = [] }) => {
   const [imageFile, setImageFile] = useState(null);
   const [authorList, setAuthorList] = useState([]);
   const [categoryList, setCategoryList] = useState([]);
+  const [authorSearch, setAuthorSearch] = useState("");
+  const [categorySearch, setCategorySearch] = useState("");
 
+  const filteredCategories = categoryList.filter(
+    (c) =>
+      formData.CategoryIds.includes(String(c.id)) ||
+      c.name.toLowerCase().includes(categorySearch.toLowerCase())
+  );
+
+  const filteredAuthors = authorList.filter(
+    (a) =>
+      formData.AuthorIds.includes(String(a.AuthorId)) ||
+      a.Name.toLowerCase().includes(authorSearch.toLowerCase())
+  );
+  
   useEffect(() => {
     const fetchDropdownData = async () => {
       try {
@@ -172,67 +186,84 @@ const AddBookDialog = ({ onAddBook, promotions = [] }) => {
 
           {/* Tác giả - Thể loại */}
           <div className="col-md-6">
-            <label className="form-label fw-semibold">Tác giả *</label>
-            <select
-              multiple
-              className="form-select"
-              value={formData.AuthorIds}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  AuthorIds: [...e.target.selectedOptions].map((o) => o.value),
-                })
-              }
-            >
-              {authorList.map((a) => (
-                <option key={a.AuthorId} value={String(a.AuthorId)}>
-                  {a.Name}
-                </option>
-              ))}
-            </select>
-            <div className="form-text">
-              Đã chọn:{" "}
-              {formData.AuthorIds.map(
-                (id) =>
-                  authorList.find((a) => String(a.AuthorId) === String(id))
-                    ?.Name
-              )
-                .filter(Boolean)
-                .join(", ") || "Chưa chọn"}
-            </div>
-          </div>
+  <label className="form-label fw-semibold">Tác giả *</label>
+
+  <input
+    type="text"
+    className="form-control mb-2"
+    placeholder="🔍 Tìm tác giả..."
+    value={authorSearch}
+    onChange={(e) => setAuthorSearch(e.target.value)}
+  />
+
+  <select
+    multiple
+    className="form-select"
+    value={formData.AuthorIds}
+    onChange={(e) =>
+      setFormData({
+        ...formData,
+        AuthorIds: [...e.target.selectedOptions].map((o) => o.value),
+      })
+    }
+  >
+    {filteredAuthors.map((a) => (
+      <option key={a.AuthorId} value={String(a.AuthorId)}>
+        {a.Name}
+      </option>
+    ))}
+  </select>
+
+  <div className="form-text">
+    Đã chọn:{" "}
+    {formData.AuthorIds
+      .map(
+        (id) =>
+          authorList.find((a) => String(a.AuthorId) === String(id))?.Name
+      )
+      .filter(Boolean)
+      .join(", ") || "Chưa chọn"}
+  </div>
+</div>
 
           <div className="col-md-6">
-            <label className="form-label fw-semibold">Thể loại *</label>
-            <select
-              multiple
-              className="form-select"
-              value={formData.CategoryIds}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  CategoryIds: [...e.target.selectedOptions].map(
-                    (o) => o.value
-                  ),
-                })
-              }
-            >
-              {categoryList.map((c) => (
-                <option key={c.id} value={String(c.id)}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
-            <div className="form-text">
-              Đã chọn:{" "}
-              {formData.CategoryIds.map(
-                (id) =>
-                  categoryList.find((c) => String(c.id) === String(id))?.name
-              )
-                .filter(Boolean)
-                .join(", ") || "Chưa chọn"}
-            </div>
-          </div>
+  <label className="form-label fw-semibold">Thể loại *</label>
+
+  <input
+    type="text"
+    className="form-control mb-2"
+    placeholder="🔍 Tìm thể loại..."
+    value={categorySearch}
+    onChange={(e) => setCategorySearch(e.target.value)}
+  />
+
+  <select
+    multiple
+    className="form-select"
+    value={formData.CategoryIds}
+    onChange={(e) =>
+      setFormData({
+        ...formData,
+        CategoryIds: [...e.target.selectedOptions].map((o) => o.value),
+      })
+    }
+  >
+    {filteredCategories.map((c) => (
+      <option key={c.id} value={String(c.id)}>
+        {c.name}
+      </option>
+    ))}
+  </select>
+
+  <div className="form-text">
+    Đã chọn:{" "}
+    {formData.CategoryIds
+      .map((id) => categoryList.find((c) => String(c.id) === String(id))?.name)
+      .filter(Boolean)
+      .join(", ") || "Chưa chọn"}
+  </div>
+</div>
+
 
           {/* Thông tin phụ */}
           <div className="col-md-6">
@@ -286,7 +317,7 @@ const AddBookDialog = ({ onAddBook, promotions = [] }) => {
             <label className="form-label fw-semibold">Ẩn sách?</label>
             <select
               className="form-select"
-              value={formData.IsHidden ? "1" : "0"}
+              value={formData.IsHidden ? "0" : "1"}
               onChange={(e) =>
                 setFormData({ ...formData, IsHidden: e.target.value === "1" })
               }

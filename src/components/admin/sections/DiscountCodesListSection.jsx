@@ -30,14 +30,14 @@ const DiscountCodesListSection = ({ discountCodes, onAdd, onUpdateDiscountCode, 
           <span>Danh Sách Mã Giảm Giá</span>
           <AddDiscountCodeDialog onAddDiscountCode={onAdd} />
         </div>
-        
+
         <div className="table-responsive">
           <table className="table order-table">
             <thead>
               <tr>
                 <th>Mã</th>
                 <th>Tên Mã</th>
-              
+
                 <th>Giá Trị</th>
                 <th>Sử Dụng</th>
                 <th>Số lượng</th>
@@ -47,53 +47,54 @@ const DiscountCodesListSection = ({ discountCodes, onAdd, onUpdateDiscountCode, 
               </tr>
             </thead>
             <tbody>
-            {discountCodes.map((code) => (
-  <tr key={code.DiscountCodeId}>
-    <td>
-      <code className="bg-light px-2 py-1 rounded">{code.DiscountCodeId}</code>
-    </td>
-    <td>{code.DiscountCodeName}</td>
-   
-    <td>{code.DiscountValue }%</td>
-    <td>{code.RequiredPoints}</td>
-    
-    <td>{code.AvailableQuantity}</td>
-    
-    <td>{code.RequiredPoints}</td>
-    <td>
-          <small>
-              <div>{new Date(code.StartDate).toLocaleDateString()}</div>
-              <div>đến {new Date(code.EndDate).toLocaleDateString()}</div>
-          </small>
-   </td>
+              {discountCodes.map((code) => (
+                <tr key={code.DiscountCodeId}>
+                  <td>
                 
-    <td>
-      <div className="d-flex gap-1">
-        <button
-          className="btn btn-sm btn-outline-primary"
-          onClick={() => handleEditCode(code)}
-          title="Sửa"
-        >
-          <Edit size={14} />
-        </button>
-        <button
-          className="btn btn-sm btn-outline-warning"
-          onClick={() => handleToggleStatus(code)}
-          title="Tạm dừng"
-        >
-          <ToggleRight size={14} />
-        </button>
-        <button
-          className="btn btn-sm btn-outline-danger"
-          onClick={() => handleDeleteCode(code.DiscountCodeId)}
-          title="Xóa"
-        >
-<Trash2 size={14} />
-        </button>
-      </div>
-    </td>
-  </tr>
-))}
+                    <code className="bg-light px-2 py-1 rounded">#{code.DiscountCodeId?.slice(0, 6).toUpperCase() || "N/A"}</code>
+                  </td>
+                  <td>{code.DiscountCodeName}</td>
+
+                  <td>{code.DiscountValue}%</td>
+                  <td>{code.RequiredPoints}</td>
+
+                  <td>{code.AvailableQuantity}</td>
+
+                  <td>{code.RequiredPoints}</td>
+                  <td>
+                    <small>
+                      <div>{new Date(code.StartDate).toLocaleDateString()}</div>
+                      <div>đến {new Date(code.EndDate).toLocaleDateString()}</div>
+                    </small>
+                  </td>
+
+                  <td>
+                    <div className="d-flex gap-1">
+                      <button
+                        className="btn btn-sm btn-outline-primary"
+                        onClick={() => handleEditCode(code)}
+                        title="Sửa"
+                      >
+                        <Edit size={14} />
+                      </button>
+                      <button
+                        className="btn btn-sm btn-outline-warning"
+                        onClick={() => handleToggleStatus(code)}
+                        title="Tạm dừng"
+                      >
+                        <ToggleRight size={14} />
+                      </button>
+                      <button
+                        className="btn btn-sm btn-outline-danger"
+                        onClick={() => handleDeleteCode(code.DiscountCodeId)}
+                        title="Xóa"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
 
 
             </tbody>
@@ -102,21 +103,21 @@ const DiscountCodesListSection = ({ discountCodes, onAdd, onUpdateDiscountCode, 
       </div>
 
       {editingCode && (
-  <EditDiscountCodeDialog
-  discountCode={editingCode}
-  open={showEditDialog}
-  onClose={() => {
-    setShowEditDialog(false);
-    setEditingCode(null);
-  }}
-  
-  onUpdate={(id, data) => {
-    onUpdateDiscountCode({ id, data }); // truyền đúng function xử lý từ cha
-  }}
-/>
-)}
+        <EditDiscountCodeDialog
+          discountCode={editingCode}
+          open={showEditDialog}
+          onClose={() => {
+            setShowEditDialog(false);
+            setEditingCode(null);
+          }}
 
-    
+          onUpdate={(id, data) => {
+            onUpdateDiscountCode({ id, data }); // truyền đúng function xử lý từ cha
+          }}
+        />
+      )}
+
+
     </div>
   );
 };

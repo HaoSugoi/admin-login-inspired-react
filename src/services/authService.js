@@ -132,7 +132,7 @@ export const authService = {
   // Lấy thông tin user hiện tại
   getCurrentUser: async () => {
     try {
-      const response = await apiClient.get('/Auth/current-user');
+      const response = await apiClient.get('/User/profile');
       return response.data;
     } catch (error) {
       console.error('Get current user error:', error);

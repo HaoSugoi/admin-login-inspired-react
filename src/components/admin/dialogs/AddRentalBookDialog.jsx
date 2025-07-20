@@ -19,6 +19,19 @@ const AddRentalBookDialog = ({ onClose, onAdd }) => {
   const [imageFile, setImageFile] = useState(null);
   const [authors, setAuthors] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [categorySearch, setCategorySearch] = useState("");
+
+  const filteredAuthors = authors.filter(
+    (a) =>
+      formData.AuthorIds.includes(a.AuthorId) ||
+      a.Name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+const filteredCategories = categories.filter(
+  (c) =>
+    formData.CategoryIds.includes(c.id) || // giữ lại những cái đã chọn
+    c.name.toLowerCase().includes(categorySearch.toLowerCase()) // lọc theo tên
+);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -40,25 +53,25 @@ const AddRentalBookDialog = ({ onClose, onAdd }) => {
     e.preventDefault();
 
     try {
-        const payload = formData;
+      const payload = formData;
 
-    
-        const fd = new FormData();
 
-        fd.append('Title', payload.Title);
-        fd.append('Description', payload.Description);
-        fd.append('Publisher', payload.Publisher);
-        fd.append('Translator', payload.Translator);
-        fd.append('Size', payload.PackagingSize);
-        fd.append('Pages', payload.PageCount);
-        fd.append('Price', payload.Price);
-        fd.append('Quantity', payload.Quantity);
-        fd.append('IsHidden', payload.IsHidden ? 'true' : 'false');
+      const fd = new FormData();
 
-        payload.AuthorIds?.forEach((id) => fd.append('AuthorIds', id));
-        payload.CategoryIds?.forEach((id) => fd.append('CategoryIds', id));
+      fd.append('Title', payload.Title);
+      fd.append('Description', payload.Description);
+      fd.append('Publisher', payload.Publisher);
+      fd.append('Translator', payload.Translator);
+      fd.append('Size', payload.PackagingSize);
+      fd.append('Pages', payload.PageCount);
+      fd.append('Price', payload.Price);
+      fd.append('Quantity', payload.Quantity);
+      fd.append('IsHidden', payload.IsHidden ? 'true' : 'false');
 
-        fd.append('ImageFile', imageFile);
+      payload.AuthorIds?.forEach((id) => fd.append('AuthorIds', id));
+      payload.CategoryIds?.forEach((id) => fd.append('CategoryIds', id));
+
+      fd.append('ImageFile', imageFile);
 
       await onAdd(fd);
       alert('✅ Thêm sách thuê thành công!');
@@ -90,11 +103,11 @@ const AddRentalBookDialog = ({ onClose, onAdd }) => {
                 onClick={onClose}
               ></button>
             </div>
-  
+
             <div className="modal-body row g-4 px-4 py-3">
               {/* Dòng 1 */}
               <div className="col-md-6">
-<label className="form-label fw-semibold">Tên sách *</label>
+                <label className="form-label fw-semibold">Tên sách *</label>
                 <input
                   type="text"
                   className="form-control shadow-sm"
@@ -117,10 +130,10 @@ const AddRentalBookDialog = ({ onClose, onAdd }) => {
                   required
                 />
               </div>
-  
-             {/* Dòng 2 */}
-              
-            
+
+              {/* Dòng 2 */}
+
+
               <div className="col-md-6">
                 <label className="form-label fw-semibold">Kích thước</label>
                 <input
@@ -132,7 +145,7 @@ const AddRentalBookDialog = ({ onClose, onAdd }) => {
                   }
                 />
               </div>
-  
+
               {/* Dòng 3 */}
               <div className="col-md-6">
                 <label className="form-label fw-semibold">Số trang</label>
@@ -146,7 +159,18 @@ const AddRentalBookDialog = ({ onClose, onAdd }) => {
                 />
               </div>
               <div className="col-md-6">
-                <label className="form-label fw-semibold">Tác giả *(Ctrl để chọn nhiều)</label>
+                <label className="form-label fw-semibold">
+                  Tác giả *(Ctrl để chọn nhiều)
+                </label>
+
+                <input
+                  type="text"
+                  className="form-control mb-2"
+                  placeholder="🔍 Tìm tác giả..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+
                 <select
                   multiple
                   className="form-select shadow-sm"
@@ -158,24 +182,35 @@ const AddRentalBookDialog = ({ onClose, onAdd }) => {
                     }))
                   }
                 >
-                  {authors.map((a) => (
+                  {filteredAuthors.map((a) => (
                     <option key={a.AuthorId} value={a.AuthorId}>
                       {a.Name}
                     </option>
                   ))}
                 </select>
+
                 <div className="form-text">
-                  Đã chọn:{' '}
+                  Đã chọn:{" "}
                   {formData.AuthorIds
                     .map((id) => authors.find((a) => a.AuthorId === id)?.Name)
                     .filter(Boolean)
-                    .join(', ') || 'Chưa chọn'}
+                    .join(", ") || "Chưa chọn"}
                 </div>
               </div>
-  
+
+
               {/* Dòng 4 */}
-<div className="col-md-6">
+              <div className="col-md-6">
                 <label className="form-label fw-semibold">Thể loại *(Ctrl để chọn nhiều)</label>
+
+                <input
+                  type="text"
+                  className="form-control mb-2"
+                  placeholder="🔍 Tìm thể loại..."
+                  value={categorySearch}
+                  onChange={(e) => setCategorySearch(e.target.value)}
+                />
+
                 <select
                   multiple
                   className="form-select shadow-sm"
@@ -187,12 +222,13 @@ const AddRentalBookDialog = ({ onClose, onAdd }) => {
                     }))
                   }
                 >
-                  {categories.map((c) => (
+                  {filteredCategories.map((c) => (
                     <option key={c.id} value={c.id}>
                       {c.name}
                     </option>
                   ))}
                 </select>
+
                 <div className="form-text">
                   Đã chọn:{' '}
                   {formData.CategoryIds
@@ -201,7 +237,8 @@ const AddRentalBookDialog = ({ onClose, onAdd }) => {
                     .join(', ') || 'Chưa chọn'}
                 </div>
               </div>
-  <div className="col-md-6">
+
+              <div className="col-md-6">
                 <label className="form-label fw-semibold">Mô tả</label>
                 <input
                   type="text"
@@ -236,7 +273,7 @@ const AddRentalBookDialog = ({ onClose, onAdd }) => {
                   }
                 />
               </div>
-  
+
               {/* Dòng 6 */}
               <div className="col-md-6">
                 <label className="form-label fw-semibold">Hình ảnh</label>
@@ -261,7 +298,7 @@ const AddRentalBookDialog = ({ onClose, onAdd }) => {
                 </select>
               </div>
             </div>
-<div className="modal-footer border-0 px-4 pb-4">
+            <div className="modal-footer border-0 px-4 pb-4">
               <button type="submit" className="btn btn-success px-4">
                 ✅ Thêm sách
               </button>
@@ -274,7 +311,7 @@ const AddRentalBookDialog = ({ onClose, onAdd }) => {
       </div>
     </div>
   );
-  
+
 };
 
 export default AddRentalBookDialog;

@@ -47,7 +47,8 @@ const PromotionsListSection = ({
               {promotions.map((promotion) => (
                 <tr key={promotion.PromotionId}>
                   <td>
-                    <strong className="text-primary">{promotion.PromotionId}</strong>
+                
+                    <strong className="text-primary">#{promotion.PromotionId?.slice(0, 6).toUpperCase() || "N/A"}</strong>
                   </td>
                   <td>
                     <div>

@@ -1,123 +1,104 @@
+import React, { useState,useEffect  } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { userService } from '../../../services/employeeService';
 
-import React, { useState, useEffect } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "../../ui/dialog";
-import { Button } from "../../ui/button";
-import { Input } from "../../ui/input";
-import { Label } from "../../ui/label";
-
-const EditEmployeeDialog = ({ employee, open, onClose, onUpdateEmployee }) => {
+const EditEmployeeDialog = ({ open, onClose, employee, onUpdateEmployee }) => {
   const [formData, setFormData] = useState({
-    Address: "",
-    PhoneNumber: "",
-    DateOfBirth: "",
-    Role: "",
-    Points: 0,
+    FullName: employee.FullName || "", 
+    PhoneNumber: employee.PhoneNumber || "",
+    Address: employee.Address || "",
+   
+   
+    DateOfBirth: employee.DateOfBirth ? employee.DateOfBirth.slice(0, 10) : "",
+    ImageFile: null,
   });
-
+ 
+  
   useEffect(() => {
     if (employee) {
       setFormData({
-        Address: employee.Address || "",
+        FullName: employee.UserName || "",  // hoặc employee.FullName nếu backend dùng vậy
         PhoneNumber: employee.PhoneNumber || "",
+        Address: employee.Address || "",
+     
         DateOfBirth: employee.DateOfBirth
-          ? new Date(employee.DateOfBirth)
-          : "",
-        Role: employee.Role || "Staff",
-        Points: employee.points || 0,
+        ? new Date(employee.DateOfBirth).toISOString().slice(0, 10)
+        : "",
+      
+       
       });
+      console.log("Ngày sinh từ backend:", employee.DateOfBirth);
+
     }
   }, [employee]);
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setFormData((prevData) => ({ ...prevData, ImageFile: file }));
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const updatedEmployee = {
+    const updatedCustomer = {
+      FullName: formData.FullName,
       Address: formData.Address,
-      Role: formData.Role,
+     
       PhoneNumber: formData.PhoneNumber,
-      DateOfBirth: formData.DateOfBirth ? new Date(formData.DateOfBirth) : "",
-      Points: parseInt(formData.Points) || 0,
+      DateOfBirth: formData.DateOfBirth || "",
+    
+      ImageFile: formData.imageFile,
     };
 
-    onUpdateEmployee({ StaffId: employee.Id, data: updatedEmployee });
-    onClose();
+    try {
+      await userService.updateUser(employee.Id, updatedCustomer);
+      onClose(); // đóng dialog sau khi cập nhật thành công
+      onUpdateEmployee();
+    } catch (error) {
+      console.error("Lỗi khi cập nhật người dùng:", error);
+    }
   };
-
-  if (!employee) return null;
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-lg mx-auto min-h-[500px]">
+      <DialogContent>
         <DialogHeader>
-          <DialogTitle className="text-center">
-            Cập Nhật Thông Tin Nhân Viên
-          </DialogTitle>
+          <DialogTitle>Chỉnh sửa nhân viên</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} encType="multipart/form-data">
           <div>
-            <Label htmlFor="Email">Email *</Label>
+            <Label htmlFor="FullName">Họ tên</Label>
             <Input
-              id="Email"
-              name="Email"
-              type="email"
-              value={employee.Email}
-              readOnly
-              className="bg-gray-100"
+              id="FullName"
+              name="FullName"
+              value={formData.FullName}
+              onChange={handleInputChange}
+              className="form-control w-full"
             />
           </div>
-
           <div>
-            <Label htmlFor="UserName">Họ Tên *</Label>
-            <Input
-              id="UserName"
-              name="UserName"
-              value={employee.UserName}
-              readOnly
-              className="bg-gray-100"
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="PhoneNumber">Số Điện Thoại</Label>
+            <Label htmlFor="PhoneNumber">Số điện thoại</Label>
             <Input
               id="PhoneNumber"
               name="PhoneNumber"
-              type="tel"
               value={formData.PhoneNumber}
               onChange={handleInputChange}
+              className="form-control w-full"
             />
           </div>
 
           <div>
-            <Label htmlFor="DateOfBirth">Ngày Sinh</Label>
+            <Label htmlFor="Address">Địa chỉ</Label>
             <Input
-              id="DateOfBirth"
-              name="DateOfBirth"
-              type="date"
-              value={formData.DateOfBirth}
-              onChange={handleInputChange}
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="Address">Địa Chỉ</Label>
-            <textarea
               id="Address"
               name="Address"
-              rows="3"
               value={formData.Address}
               onChange={handleInputChange}
               className="form-control w-full"
@@ -125,36 +106,23 @@ const EditEmployeeDialog = ({ employee, open, onClose, onUpdateEmployee }) => {
           </div>
 
           <div>
-            <Label htmlFor="Role">Vai trò</Label>
-            <select
-              id="Role"
-              name="Role"
-              value={formData.Role}
-              onChange={handleInputChange}
-              className="form-select w-full"
-            >
-              <option value="Staff">Staff</option>
-              <option value="Admin">Admin</option>
-            </select>
-          </div>
-
-          <div>
-            <Label htmlFor="Points">Điểm</Label>
+            <Label htmlFor="DateOfBirth">Ngày sinh</Label>
             <Input
-              id="Points"
-              name="Points"
-              type="number"
-              value={formData.Points}
+              type="date"
+              id="DateOfBirth"
+              name="DateOfBirth"
+              value={formData.DateOfBirth}
               onChange={handleInputChange}
-              min="0"
+              className="form-control w-full"
             />
           </div>
 
-          <div className="flex justify-end space-x-2 pt-6">
-            <Button type="button" variant="outline" onClick={onClose}>
-              Hủy
-            </Button>
-            <Button type="submit">Cập Nhật</Button>
+
+       
+
+
+          <div className="flex justify-end mt-4">
+            <Button type="submit">Lưu</Button>
           </div>
         </form>
       </DialogContent>
