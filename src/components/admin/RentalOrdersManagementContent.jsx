@@ -21,7 +21,11 @@ const RentalOrdersManagementContent = (props) => {
       setIsLoading(false);
     }
   };
-
+  const handleReloadWithToast = () => {
+    toast.success("Cập nhật trạng thái thành công");
+    fetchRentals();
+  };
+  
   useEffect(() => {
     fetchRentals();
   }, []);
@@ -130,6 +134,7 @@ const RentalOrdersManagementContent = (props) => {
   onDelete={handleDeleteRental}
   onApprove={handleApproveRental}
   onMarkDelivered={handleMarkDelivered}
+  onReload={handleReloadWithToast}
   onMarkReturned={handleMarkReturned}
   // onComplete={handleUpdateRental} // 💡 thêm dòng này
   onCompleted={fetchRentals}

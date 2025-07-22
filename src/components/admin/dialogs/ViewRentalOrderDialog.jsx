@@ -10,36 +10,17 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { rentalService } from "@/services/rentalService";
 
+
 const RENTAL_STATUSES = {
-  0: 'Quá hạn',
+  0: 'Chờ xác nhân',
   1: 'Đã xác nhận',
-  2: 'Đã giao',
-  3: 'Đã trả',
-  4: 'Thất bại',
-  5: 'Đã hủy',
-  6: 'Chờ xác nhận'
+  2: 'Đang giao',
+  3: 'Hoàn thành',
+  4: 'Đang thuê',
+  5: 'Quá hạn',
+  6: 'Đã hủy'
 };
 
-const getStatusColor = (status) => {
-  switch (status) {
-    case 0:
-      return "bg-yellow-100 text-yellow-800";
-    case 1:
-      return "bg-blue-100 text-blue-800";
-    case 2:
-      return "bg-green-100 text-green-800";
-    case 3:
-      return "bg-purple-100 text-purple-800";
-    case 4:
-      return "bg-red-200 text-red-800";
-    case 5:
-      return "bg-gray-300 text-gray-700";
-    case 6:
-      return "bg-red-100 text-red-800";
-    default:
-      return "bg-gray-100 text-gray-800";
-  }
-};
 
 const formatCurrency = (amount) =>
   new Intl.NumberFormat("vi-VN", {
@@ -106,10 +87,12 @@ const ViewRentalOrderDialog = ({ isOpen, onClose, rental }) => {
               </div>
               <div>
                 <p className="text-sm text-gray-600">Trạng thái</p>
-                <Badge className={getStatusColor(rental.Status)}>
+                <span className={`px-2 py-1 text-sm rounded inline-block`}>
                   {RENTAL_STATUSES[rental.Status]}
-                </Badge>
+                </span>
               </div>
+
+
             </div>
           </section>
 
@@ -148,23 +131,23 @@ const ViewRentalOrderDialog = ({ isOpen, onClose, rental }) => {
           <section>
             <h3 className="text-lg font-semibold mb-3">📚 Danh Sách Sách</h3>
             {rentalDetails?.length > 0 ? (
-  <div className="space-y-2">
-    {rentalDetails.map((item, idx) => (
-      <div key={idx} className="flex justify-between items-center p-2 bg-gray-50 rounded">
-        <div>
-          <p className="font-medium">{item.BookTitle || 'Tên sách'}</p>
-          <p className="text-sm text-gray-600">Mã sách: {item.Id || '--'}</p>
-        </div>
-        <div className="text-right">
-          <p className="font-medium">{formatCurrency(item.BookPrice)}</p>
-          <p className="text-sm text-gray-600">{formatCurrency(item.RentalFee)} /ngày</p>
-        </div>
-      </div>
-    ))}
-  </div>
-) : (
-  <p className="text-gray-500">Không có sách nào trong đơn thuê này.</p>
-)}
+              <div className="space-y-2">
+                {rentalDetails.map((item, idx) => (
+                  <div key={idx} className="flex justify-between items-center p-2 bg-gray-50 rounded">
+                    <div>
+                      <p className="font-medium">{item.BookTitle || 'Tên sách'}</p>
+                      <p className="text-sm text-gray-600">Mã sách: {item.Id || '--'}</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-medium">{formatCurrency(item.BookPrice)}</p>
+                      <p className="text-sm text-gray-600">{formatCurrency(item.RentalFee)} /ngày</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-gray-500">Không có sách nào trong đơn thuê này.</p>
+            )}
 
           </section>
 
@@ -202,8 +185,8 @@ const ViewRentalOrderDialog = ({ isOpen, onClose, rental }) => {
                 <span className="text-primary">
                   {formatCurrency(
                     (rentalDetails?.[0]?.RentalFee || 0) +
-                      (rental.TotalDeposit || 0) +
-                      (rental.ShippingFee || 0)
+                    (rental.TotalDeposit || 0) +
+                    (rental.ShippingFee || 0)
                   )}
                 </span>
               </div>

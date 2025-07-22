@@ -8,14 +8,16 @@ import EditRentalOrderDialog from '../dialogs/EditRentalOrderDialog';
 import ViewRentalOrderDialog from '../dialogs/ViewRentalOrderDialog';
 import { rentalService } from '@/services/rentalService';
 import { toast } from 'react-toastify';
+import apiClient from '../../../services/api';
 
-const RentalOrdersListSection = ({ 
-  rentals = [], 
-  onAdd, 
-  onUpdate, 
-  onDelete, 
-  onApprove, 
-  onMarkDelivered, 
+const RentalOrdersListSection = ({
+  rentals = [],
+  onAdd,
+  onUpdate,
+  onDelete,
+  onApprove,
+  onMarkDelivered,
+  onReload,
   onMarkReturned,
   onCompleted
 }) => {
@@ -25,14 +27,15 @@ const RentalOrdersListSection = ({
   const [selectedRental, setSelectedRental] = useState(null);
 
   const RENTAL_STATUSES = {
-    0: 'Quá hạn',
+    0: 'Chờ xác nhân',
     1: 'Đã xác nhận',
-    2: 'Đã giao',
-    3: 'Đã trả',
-    4: 'Thất bại',
-    5: 'Đã hủy',
-    6: 'Chờ xác nhận'
+    2: 'Đang giao',
+    3: 'Hoàn thành',
+    4: 'Đang thuê',
+    5: 'Quá hạn',
+    6: 'Đã hủy'
   };
+
 
   const getStatusLabel = (value) => RENTAL_STATUSES[value] || 'Không xác định';
 
@@ -80,6 +83,33 @@ const RentalOrdersListSection = ({
       toast.error("Không thể tải chi tiết đơn thuê");
     }
   };
+  const UpdateStatus = async (rental, status) => {
+    try {
+      const response = await apiClient.put(`/admin/rentorders/${rental.OrderId}/status`, status);
+
+      onReload(); // Gọi reload
+      return response.data;
+    } catch (error) {
+      toast.error("Cập nhật trạng thái thất bại");
+    }
+  };
+  const AutoOverdue = async () => {
+    try {
+      const response = await apiClient.put(`/admin/rentorders/auto-overdue`);
+      const { totalUpdated } = response.data;
+
+      if (totalUpdated > 0) {
+        alert(`Đã cập nhật ${totalUpdated} đơn hàng quá hạn`);
+      } else {
+        alert("Không có đơn hàng nào quá hạn");
+      }
+
+      onReload();
+      return totalUpdated;
+    } catch (error) {
+      toast.error("Cập nhật thất bại");
+    }
+  };
 
   return (
     <>
@@ -87,10 +117,10 @@ const RentalOrdersListSection = ({
         <Card>
           <CardHeader className="d-flex flex-row align-items-center justify-content-between">
             <CardTitle>📚 Danh Sách Đơn Thuê Sách</CardTitle>
-            <Button onClick={() => setShowAddDialog(true)}>
-              <BookOpen className="me-2" size={16} />
-              Tạo Đơn Thuê
+            <Button onClick={AutoOverdue}>
+              Xét Quá Hạn
             </Button>
+
           </CardHeader>
           <CardContent>
             <div className="table-responsive">
@@ -102,6 +132,7 @@ const RentalOrdersListSection = ({
                     <th>Ngày Thuê</th>
                     <th>Ngày Trả DK</th>
                     <th>Tiền Cọc</th>
+                    <th>Phương thức</th>
                     <th>Trạng Thái</th>
                     <th>Thao Tác</th>
                   </tr>
@@ -126,66 +157,57 @@ const RentalOrdersListSection = ({
                         <td>{formatDate(rental.StartDate)}</td>
                         <td>{formatDate(rental.EndDate)}</td>
                         <td className="fw-bold text-success">{formatCurrency(rental.TotalDeposit)}</td>
+                        <td>{rental.Payment === "VNPAY" ? "Chuyển khoản" : "Tiền mặt"}</td>
+
                         <td>
-                          <Badge className={`${getStatusColor(rental.Status)} px-3 py-1 rounded`}>
-                            {getStatusLabel(rental.Status)}
-                          </Badge>
+                          <select
+                            value={rental.Status}
+                            onChange={(e) => UpdateStatus(rental, parseInt(e.target.value))}
+                            className="form-select py-1 px-2 rounded text-sm"
+                            disabled={rental.Status === 5} // 🔒 Vô hiệu hóa nếu quá hạn
+                          >
+                            {rental.Status === 3 ? (
+                              <option value="3">{RENTAL_STATUSES[3]}</option>
+                            ) : (
+                              Object.entries(RENTAL_STATUSES).map(([key, label]) => {
+                                const keyInt = parseInt(key);
+                                const isDisabled =
+                                  keyInt === 3 || // Không cho chọn Hoàn thành
+                                  keyInt === 5 || // Không cho chọn Quá hạn
+                                  keyInt < rental.Status; // Không cho quay về trạng thái trước
+
+                                return (
+                                  <option key={key} value={key} disabled={isDisabled}>
+                                    {label}
+                                  </option>
+                                );
+                              })
+                            )}
+                          </select>
                         </td>
+
+
+
+
+
                         <td>
                           <div className="d-flex gap-1 justify-content-center flex-wrap">
                             <Button variant="outline" size="sm" onClick={() => handleView(rental)}>
                               <Eye size={14} />
                             </Button>
 
-                            {rental.Status === 6 && (
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => onApprove(rental.OrderId)}
-                                className="text-success"
-                              >
-                                <CheckCircle size={14} />
-                              </Button>
-                            )}
-
-                            {rental.Status === 1 && (
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => onMarkDelivered(rental.OrderId)}
-                                className="text-primary"
-                              >
-                                <Package size={14} />
-                              </Button>
-                            )}
-
-                            {rental.Status === 2 && (
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => onMarkReturned(rental.OrderId)}
-                                className="text-purple-600"
-                              >
-                                <BookOpen size={14} />
-                              </Button>
-                            )}
-
+                        
                             <Button
                               variant="outline"
                               size="sm"
+                              disabled={rental.Status !== 4 && rental.Status !== 5}
                               onClick={() => handleEdit(rental)}
                             >
                               <Edit size={14} />
                             </Button>
 
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => onDelete(rental.OrderId)}
-                              className="text-danger"
-                            >
-                              <Trash2 size={14} />
-                            </Button>
+
+                          
                           </div>
                         </td>
                       </tr>

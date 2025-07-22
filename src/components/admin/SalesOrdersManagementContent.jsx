@@ -26,7 +26,7 @@ const SalesOrdersManagementContent = (props) => {
       const transformedOrders = data.map((o) => ({
         id: o.OrderId,
         orderNumber: o.OrderId.slice(0, 8).toUpperCase(),
-        customerName: o.UserName || 'Chưa rõ',
+        customerName: o.Username || 'Chưa rõ',
         customerPhone: o.Phone || '---',
         shippingAddress: o.Address,
         orderDate: o.OrderDate.split('T')[0],
