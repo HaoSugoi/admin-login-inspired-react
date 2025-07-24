@@ -8,7 +8,7 @@ const AdminLogin = () => {
   return (
     <div className="min-vh-100 d-flex align-items-center justify-content-center p-4" 
          style={{ 
-           background: 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)' 
+           background: 'linear-gradient(135deg, #46a162ff 0%, #c1f7d4ff 100%)' 
          }}>
       <div className="w-100" style={{ maxWidth: '400px' }}>
         {/* Logo Section */}
