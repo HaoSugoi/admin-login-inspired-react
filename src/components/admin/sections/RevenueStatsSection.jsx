@@ -244,7 +244,7 @@ const RevenueStatsSection = ({
         </div>
       </div>
 
-      <style jsx>{`
+      <style>{`
         .section-card {
           background: white;
           border-radius: 8px;
