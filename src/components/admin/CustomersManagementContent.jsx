@@ -16,9 +16,9 @@ const CustomersManagementContent = (props) => {
           </div>
         </div>
 
-        <div className="row">
+        {/* <div className="row">
           <CustomerStatisticsSection statistics={props.statistics} />
-        </div>
+        </div> */}
 
         <div className="row">
           <CustomersListSection 

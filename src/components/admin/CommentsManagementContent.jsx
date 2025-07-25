@@ -52,9 +52,9 @@ const CommentsManagementContent = (props) => {
           </div>
         </div>
 
-        <div className="row mb-3">
+        {/* <div className="row mb-3">
           <CommentsStatisticsSection statistics={props.statistics} />
-        </div>
+        </div> */}
 
         <div className="row mb-3">
           <CommentsListSection

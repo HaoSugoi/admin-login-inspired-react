@@ -127,9 +127,9 @@ const SalesOrdersManagementContent = (props) => {
           <p className="text-danger">{error}</p>
         ) : (
           <>
-            <div className="row">
+            {/* <div className="row">
               <SalesOrdersStatisticsSection statistics={statistics} />
-            </div>
+            </div> */}
             <div className="row">
               <SalesOrdersListSection
                 orders={orders}

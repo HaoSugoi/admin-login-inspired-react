@@ -16,9 +16,9 @@ const SlidesManagementContent = (props) => {
           </div>
         </div>
 
-        <div className="row">
+        {/* <div className="row">
           <SlidesStatisticsSection statistics={props.statistics} />
-        </div>
+        </div> */}
 
         <div className="row">
           <SlidesSection 

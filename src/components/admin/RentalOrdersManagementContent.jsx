@@ -122,9 +122,9 @@ const RentalOrdersManagementContent = (props) => {
           </div>
         </div>
 
-        <div className="row">
+        {/* <div className="row">
           <RentalStatisticsSection statistics={statistics} />
-        </div>
+        </div> */}
 
         <div className="row">
          <RentalOrdersListSection
@@ -140,10 +140,7 @@ const RentalOrdersManagementContent = (props) => {
   onCompleted={fetchRentals}
   isLoading={isLoading}
 />
-
-
-
-          <OverdueSection rentals={rentals} />
+          {/* <OverdueSection rentals={rentals} /> */}
         </div>
       </div>
     </div>

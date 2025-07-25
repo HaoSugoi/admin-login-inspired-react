@@ -49,9 +49,9 @@ const handleUpdateDiscountCode = ({ id, data }) => {
           </div>
         </div>
 
-        <div className="row">
+        {/* <div className="row">
           <DiscountCodesStatisticsSection statistics={statistics} />
-        </div>
+        </div> */}
 
         <div className="row">
           {isLoadingDiscountCodes ? (

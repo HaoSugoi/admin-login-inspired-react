@@ -18,9 +18,9 @@ const CategoryManagementContent = (props) => {
           </div>
         </div>
 
-        <div className="row">
+        {/* <div className="row">
           <CategoryStatisticsSection statistics={statistics} />
-        </div>
+        </div> */}
 
         <div className="row">
           <CategoryManagementSection

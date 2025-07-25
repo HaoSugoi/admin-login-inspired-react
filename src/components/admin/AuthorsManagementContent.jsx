@@ -16,9 +16,9 @@ const AuthorsManagementContent = (props) => {
           </div>
         </div>
 
-        <div className="row">
+        {/* <div className="row">
           <AuthorStatisticsSection statistics={props.statistics} />
-        </div>
+        </div> */}
 
         <div className="row">
           <div className="col-12">

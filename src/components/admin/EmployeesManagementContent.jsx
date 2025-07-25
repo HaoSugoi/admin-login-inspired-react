@@ -36,9 +36,9 @@ const EmployeesManagementContent = (props) => {
           </div>
         </div>
 
-        <div className="row">
+        {/* <div className="row">
           <EmployeeStatisticsSection statistics={props.statistics} />
-        </div>
+        </div> */}
 
         <div className="row">
         <EmployeesListSection

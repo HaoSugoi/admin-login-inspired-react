@@ -16,9 +16,9 @@ const PromotionsManagementContent = (props) => {
           </div>
         </div>
 
-        <div className="row">
+        {/* <div className="row">
           <PromotionsStatisticsSection statistics={props.statistics} />
-        </div>
+        </div> */}
 
         <div className="row">
           <PromotionsListSection 
