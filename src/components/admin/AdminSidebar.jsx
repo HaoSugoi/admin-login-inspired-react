@@ -38,9 +38,9 @@ const AdminSidebar = ({ activeSection, setActiveSection, sidebarCollapsed, toggl
   
   return (
     <div className={`col-md-3 col-lg-2 sidebar ${sidebarCollapsed ? 'collapsed' : ''}`}>
-      <div className="sidebar-header">
+      {/* <div className="sidebar-header">
         <h5 className="sidebar-title">BookStore Admin</h5>
-      </div>
+      </div> */}
 
       <ul className="nav nav-pills flex-column">
         {menuItems.map((item) => {

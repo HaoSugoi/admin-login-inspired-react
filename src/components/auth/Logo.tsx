@@ -9,7 +9,7 @@ const Logo = () => {
           src="\Untitled_design-removebg-preview.png" 
           alt="Có & Lá Logo"
           style={{
-            width: '128px', // Giữ nguyên kích thước như logo cũ
+            width: '140px', // Giữ nguyên kích thước như logo cũ
             height: 'auto', // Giữ tỷ lệ
             objectFit: 'contain'
           }}
