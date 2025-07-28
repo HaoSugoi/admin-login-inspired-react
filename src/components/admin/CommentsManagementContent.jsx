@@ -25,36 +25,11 @@ const CommentsManagementContent = (props) => {
           </div>
         </div>
 
-        <div className="row mb-3">
-          <div className="col-md-3 mb-2">
-            <input
-              className="form-control"
-              placeholder="Nhập BookId"
-              value={bookId}
-              onChange={(e) => setBookId(e.target.value)}
-            />
-          </div>
-          <div className="col-md-3 mb-2">
-            <input
-              className="form-control"
-              placeholder="Tìm theo CommentId"
-              value={commentId}
-              onChange={(e) => setCommentId(e.target.value)}
-            />
-          </div>
-          <div className="col-md-3 mb-2">
-            {/* Optional space for future elements */}
-          </div>
-          <div className="col-md-3 mb-2">
-            <button className="btn btn-success w-100" onClick={handleAddComment}>
-              ➕ Thêm bình luận
-            </button>
-          </div>
-        </div>
+        
 
-        {/* <div className="row mb-3">
+        <div className="row mb-3">
           <CommentsStatisticsSection statistics={props.statistics} />
-        </div> */}
+        </div>
 
         <div className="row mb-3">
           <CommentsListSection

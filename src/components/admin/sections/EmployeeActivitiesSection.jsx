@@ -1,16 +1,49 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Search, Eye, RefreshCw, Filter } from 'lucide-react';
 
-const EmployeeActivitiesSection = ({
-  activities,
-  searchStaffId,
-  onSearchChange,
-  onSearch,
-  isLoading,
-}) => {
+const EmployeeActivitiesSection = ({ activities }) => {
+  // State cho tìm kiếm theo tên nhân viên
+  const [searchStaffName, setSearchStaffName] = useState("");
+  // State cho trang hiện tại của phân trang
+  const [currentPage, setCurrentPage] = useState(1);
+  // Số lượng mục trên mỗi trang
+  const itemsPerPage = 10;
+  // Loading (nếu cần dùng khi làm refresh hoặc API call)
+  const [isLoading, setIsLoading] = useState(false);
+  
+  // Danh sách hoạt động sau khi lọc
+  const [filteredActivities, setFilteredActivities] = useState([]);
+
+  // Cập nhật filteredActivities khi activities hoặc searchStaffName thay đổi
+  useEffect(() => {
+    // Reset về trang 1 khi thay đổi từ khóa tìm kiếm
+    setCurrentPage(1);
+    const filtered = activities.filter(activity => {
+      return activity.staffName &&
+        activity.staffName.toLowerCase().includes(searchStaffName.toLowerCase());
+    });
+    setFilteredActivities(filtered);
+  }, [activities, searchStaffName]);
+
+  // Tính số trang dựa trên danh sách đã lọc
+  const totalPages = Math.ceil(filteredActivities.length / itemsPerPage);
+  // Lấy các mục cần hiển thị cho trang hiện tại
+  const displayedActivities = filteredActivities.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  // Hàm làm mới: reset tìm kiếm và trang
+  const handleRefresh = () => {
+    setSearchStaffName("");
+    setCurrentPage(1);
+    setFilteredActivities(activities);
+  };
+
+  // Hàm format thời gian hiển thị
   const formatDateTime = (dateTimeString) => {
     const date = new Date(dateTimeString);
     return {
@@ -19,6 +52,7 @@ const EmployeeActivitiesSection = ({
     };
   };
 
+  // Xác định màu sắc cho badge dựa vào mô tả hoạt động
   const getActivityTypeColor = (description) => {
     const desc = description.toLowerCase();
     if (desc.includes('đăng nhập')) return 'bg-blue-100 text-blue-800';
@@ -52,33 +86,33 @@ const EmployeeActivitiesSection = ({
                 <Filter className="me-2" size={16} />
                 Lọc
               </Button>
-              <Button variant="outline" size="sm" onClick={onSearch}>
+              <Button variant="outline" size="sm" onClick={handleRefresh}>
                 <RefreshCw className="me-2" size={16} />
                 Làm mới
               </Button>
             </div>
           </CardTitle>
 
-          {/* Search Section */}
-          <div className="d-flex gap-2 mt-3">
+          {/* Phần tìm kiếm */}
+          <div className="d-flex gap-2 mt-3 flex-wrap">
             <div className="input-group">
               <input
                 type="text"
                 className="form-control"
-                placeholder="Nhập ID nhân viên để tìm kiếm..."
-                value={searchStaffId}
-                onChange={(e) => onSearchChange(e.target.value)}
+                placeholder="Nhập tên nhân viên..."
+                value={searchStaffName}
+                onChange={(e) => setSearchStaffName(e.target.value)}
               />
               <Button
                 className="btn btn-outline-secondary"
-                onClick={onSearch}
+                onClick={() => {}}
                 disabled={isLoading}
               >
                 <Search size={16} className="me-2" />
                 {isLoading ? 'Đang tìm...' : 'Tìm kiếm'}
               </Button>
             </div>
-</div>
+          </div>
         </CardHeader>
 
         <CardContent>
@@ -94,7 +128,7 @@ const EmployeeActivitiesSection = ({
                 </tr>
               </thead>
               <tbody>
-                {activities.map((activity) => {
+                {displayedActivities.map((activity) => {
                   const { date, time } = formatDateTime(activity.createdDate);
                   const colorClass = getActivityTypeColor(activity.description);
                   const label = getActivityLabel(activity.description);
@@ -147,12 +181,37 @@ const EmployeeActivitiesSection = ({
               </tbody>
             </table>
 
-            {activities.length === 0 && (
+            {filteredActivities.length === 0 && (
               <div className="text-center py-4">
                 <p className="text-muted">Không có hoạt động nào được tìm thấy</p>
               </div>
             )}
           </div>
+
+          {/* Phân trang */}
+          {totalPages > 1 && (
+            <div className="d-flex justify-content-center align-items-center mt-3">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+              >
+                ◀️ Trước
+              </Button>
+              <span className="mx-2">
+                Trang {currentPage} / {totalPages}
+              </span>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                disabled={currentPage === totalPages}
+              >
+                Sau ▶️
+              </Button>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

@@ -14,10 +14,9 @@ const ORDER_STATUSES = [
   { value: 0, label: "Chờ xử lý" },
   { value: 1, label: "Đã xác nhận" },
   { value: 2, label: "Đang giao" },
-  { value: 3, label: "Đã giao" },
-  { value: 4, label: "Đã hủy" },
-  { value: 5, label: "Thất bại" },
-  { value: 6, label: "Quá hạn" },
+  { value: 3, label: "Hoàn thành" },
+
+  { value: 6, label: "Đã hủy" },
 ];
 
 const getStatusLabel = (value) =>
@@ -82,7 +81,7 @@ const ViewSalesOrderDialog = ({ isOpen, onClose, order }) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl w-[90%] p-6 rounded-2xl my-8">
+      <DialogContent style={{ width: "420px" }}>
         <DialogHeader>
           <DialogTitle>
             🧾 Chi Tiết Đơn Hàng #
@@ -160,39 +159,34 @@ const ViewSalesOrderDialog = ({ isOpen, onClose, order }) => {
 
           {/* Danh sách sản phẩm */}
           <section>
-            <h3 className="text-lg font-semibold text-muted-foreground mb-3">
-              📚 Danh Sách Sách
-            </h3>
-
-            {loadingDetails ? (
-              <p>Đang tải chi tiết đơn hàng...</p>
-            ) : errorDetails ? (
-              <p className="text-red-500">{errorDetails}</p>
-            ) : (
-              <div className="space-y-3">
-                {orderDetails.map((item, index) => (
-                  <div
-                    key={index}
-                    className="flex justify-between items-center border border-gray-200 rounded p-3 bg-gray-50"
-                  >
-                    <div>
-                      <p className="font-medium">{item.ProductName}</p>
-                      <p className="text-sm text-muted">
-                        Số lượng: {item.Quantity}
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-semibold text-primary">
-                        {formatCurrency(item.UnitPrice)}
-                      </p>
-                      <p className="text-sm text-muted">
-                        {formatCurrency(item.UnitPrice)} / cuốn
-                      </p>
-                    </div>
+            <div
+              className="space-y-3 pr-2  rounded-md shadow-sm"
+              style={{ maxHeight: "150px", overflowY: "auto" }}
+            >
+              {orderDetails.map((item, index) => (
+                <div
+                  key={index}
+                  className="flex justify-between items-center  rounded p-3 bg-gray-50"
+                >
+                  <div className="w-[150px]">
+                    <p className="font-medium truncate">
+                      {(item.ProductName?.length > 25
+                        ? item.ProductName.slice(0, 25) + "..."
+                        : item.ProductName) || "Tên sách"}
+                    </p>
+                    <p className="text-sm text-muted">Số lượng: {item.Quantity}</p>
                   </div>
-                ))}
-              </div>
-            )}
+                  <div className="text-right">
+                    <p className="font-semibold text-primary">
+                      {formatCurrency(item.UnitPrice)}
+                    </p>
+                    <p className="text-sm text-muted">
+                      {formatCurrency(item.UnitPrice)} / cuốn
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </section>
 
           <Separator />

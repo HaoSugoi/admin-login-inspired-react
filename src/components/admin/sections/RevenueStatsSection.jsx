@@ -1,324 +1,99 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
+import {
+  BarChart, Bar, XAxis, YAxis, CartesianGrid,
+  Tooltip, Legend, ResponsiveContainer
+} from "recharts";
+import { Button } from "@/components/ui/button";
+import apiClient from "../../../services/api";
 
-const RevenueStatsSection = ({ 
-  statistics, 
-  isLoading, 
-  error,
-  onDateChange
-}) => {
-  const [timePeriod, setTimePeriod] = useState('day');
-  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+const RevenueStatsSection = () => {
+  const [rangeType, setRangeType] = useState("daily"); // daily | monthly | yearly
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [chartData, setChartData] = useState([]);
 
   useEffect(() => {
-    if (onDateChange) {
-      onDateChange(timePeriod, selectedDate);
-    }
-  }, [timePeriod, selectedDate]);
+    const savedData = localStorage.getItem(`${rangeType}-rent-data`);
+    if (savedData) setChartData(JSON.parse(savedData));
+  }, [rangeType]);
 
-  // Format số tiền Việt Nam
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('vi-VN', {
-      style: 'currency',
-      currency: 'VND',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0
-    }).format(amount || 0);
+  const handleConfirm = async () => {
+    if (!startDate || !endDate) return alert("Vui lòng nhập đủ ngày bắt đầu và kết thúc");
+
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    if (start > end) return alert("Ngày bắt đầu phải trước hoặc bằng ngày kết thúc");
+
+    const requests = [];
+    const current = new Date(start);
+
+    if (rangeType === "daily") {
+      while (current <= end) {
+        const isoDate = new Date(current).toISOString(); // ISO string required
+        const label = `${current.getDate().toString().padStart(2, '0')}/${(current.getMonth() + 1).toString().padStart(2, '0')}`;
+
+        requests.push(
+          apiClient.post("/api/Report/rent/daily/set-date", JSON.stringify(isoDate), {
+            headers: { "Content-Type": "application/json" }
+          }).then(() =>
+            apiClient.get("/api/Report/rent/daily").then((res) => ({
+              label,
+              value: res.data?.TotalValueToday || 0
+            }))
+          )
+        );
+
+        current.setDate(current.getDate() + 1);
+      }
+    }
+
+    // NOTE: Nếu backend cũng thay đổi format tháng/năm tương tự ISO string, có thể update logic tương tự ở đây
+
+    const results = await Promise.all(requests);
+    setChartData(results);
+    localStorage.setItem(`${rangeType}-rent-data`, JSON.stringify(results));
   };
-
-  // Format số với separator
-  const formatNumber = (num) => {
-    return (num || 0).toLocaleString('vi-VN');
-  };
-
-  // Lấy dữ liệu biểu đồ từ statistics
-  const getChartData = () => {
-    if (!statistics) return [];
-
-    if (timePeriod === 'day') {
-      return [
-        {
-          period: 'Hôm nay',
-          sales: statistics.dailySale?.totalValueToday || 0,
-          rent: statistics.dailyRent?.totalValueToday || 0,
-          total: (statistics.dailySale?.totalValueToday || 0) + (statistics.dailyRent?.totalValueToday || 0)
-        }
-      ];
-    }
-
-    if (timePeriod === 'month') {
-      // Giả sử monthlySale.createdDates chứa dữ liệu các ngày trong tháng
-      const daysInMonth = statistics.monthlySale?.createdDates?.length || 30;
-      return Array.from({ length: daysInMonth }, (_, i) => ({
-        period: `Ngày ${i + 1}`,
-        sales: Math.floor(Math.random() * 1000000) + 500000, // Dữ liệu mẫu
-        rent: Math.floor(Math.random() * 800000) + 300000,   // Dữ liệu mẫu
-        total: 0 // Sẽ được tính bên dưới
-      })).map(item => ({
-        ...item,
-        total: item.sales + item.rent
-      }));
-    }
-
-    if (timePeriod === 'year') {
-      return Array.from({ length: 12 }, (_, i) => ({
-        period: `Tháng ${i + 1}`,
-        sales: statistics.yearlySale?.totalValueThisYear ? 
-               Math.round(statistics.yearlySale.totalValueThisYear / 12) : 0,
-        rent: statistics.yearlyRent?.totalValueThisYear ? 
-              Math.round(statistics.yearlyRent.totalValueThisYear / 12) : 0,
-        total: 0 // Sẽ được tính bên dưới
-      })).map(item => ({
-        ...item,
-        total: item.sales + item.rent
-      }));
-    }
-
-    return [];
-  };
-
-  const chartData = getChartData();
-  const maxValue = Math.max(...chartData.map(item => Math.max(item.sales, item.rent, item.total)), 10000);
-
-  // Hiển thị loading state
-  if (isLoading) {
-    return (
-      <div className="col-12 mb-4">
-        <div className="section-card">
-          <div className="placeholder-glow">
-            <span className="placeholder col-4 bg-secondary"></span>
-            <div className="chart-bars-loading d-flex" style={{ height: '200px' }}>
-              {Array.from({ length: 7 }).map((_, i) => (
-                <div key={i} className="placeholder col mx-1" style={{ height: `${Math.random() * 100}%` }}></div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Hiển thị error state
-  if (error) {
-    return (
-      <div className="col-12 mb-4">
-        <div className="alert alert-danger" role="alert">
-          <h6>❌ Lỗi tải dữ liệu biểu đồ</h6>
-          <p className="mb-0">Không thể tải dữ liệu từ server. Vui lòng thử lại sau.</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
-    <div className="col-12 mb-4">
-      <div className="section-card">
-        <div className="section-title d-flex justify-content-between align-items-center mb-3">
-          <h5 className="mb-0">Biểu Đồ Doanh Thu</h5>
-          <div className="d-flex gap-2">
-            {timePeriod === 'year' ? (
-              <select
-                className="form-select form-select-sm"
-                value={selectedDate.split('-')[0]}
-                onChange={(e) => setSelectedDate(`${e.target.value}-01-01`)}
-                disabled={isLoading}
-              >
-                {Array.from({ length: 5 }, (_, i) => {
-                  const year = new Date().getFullYear() - i;
-                  return <option key={year} value={year}>{year}</option>;
-                })}
-              </select>
-            ) : timePeriod === 'month' ? (
-              <input
-                type="month"
-                className="form-control form-control-sm"
-                value={selectedDate.substring(0, 7)}
-                onChange={(e) => setSelectedDate(`${e.target.value}-01`)}
-                disabled={isLoading}
-              />
-            ) : (
-              <input
-                type="date"
-                className="form-control form-control-sm"
-                value={selectedDate}
-                onChange={(e) => setSelectedDate(e.target.value)}
-                disabled={isLoading}
-              />
-            )}
-            
-            <select 
-              className="form-select form-select-sm"
-              value={timePeriod}
-              onChange={(e) => setTimePeriod(e.target.value)}
-              disabled={isLoading}
-            >
-              <option value="day">Theo Ngày</option>
-              <option value="month">Theo Tháng</option>
-              <option value="year">Theo Năm</option>
-            </select>
-          </div>
-        </div>
+    <div className="p-4 bg-white rounded shadow">
+      <h2 className="text-xl font-bold mb-4">📊 Thống Kê Doanh Thu (Thuê - Theo Ngày)</h2>
 
-        <div className="chart-container">
-          <div className="chart-bars">
-            {chartData.map((item, index) => (
-              <div key={index} className="bar-group">
-                <div className="bar-wrapper">
-                  <div 
-                    className="bar sales-bar"
-                    style={{
-                      height: `${(item.sales / maxValue) * 100}%`,
-                      backgroundColor: '#3b82f6'
-                    }}
-                    title={`Sales: ${formatCurrency(item.sales)}`}
-                  ></div>
-                  <div 
-                    className="bar rent-bar"
-                    style={{
-                      height: `${(item.rent / maxValue) * 100}%`,
-                      backgroundColor: '#eab308'
-                    }}
-                    title={`Rent: ${formatCurrency(item.rent)}`}
-                  ></div>
-                </div>
-                <div className="bar-label">{item.period}</div>
-              </div>
-            ))}
-          </div>
-          
-          <div className="chart-legend mt-3">
-            <div className="d-flex justify-content-center gap-3">
-              <div className="legend-item">
-                <span className="color-indicator bg-primary"></span>
-                <span>Sales</span>
-              </div>
-              <div className="legend-item">
-                <span className="color-indicator bg-warning"></span>
-                <span>Rent</span>
-              </div>
-              <div className="legend-item">
-                <span className="color-indicator bg-success"></span>
-                <span>Tổng</span>
-              </div>
-            </div>
-          </div>
-        </div>
+      <div className="flex gap-4 mb-4 items-center">
+        <select
+          value={rangeType}
+          onChange={(e) => setRangeType(e.target.value)}
+          className="p-2 border rounded"
+        >
+          <option value="daily">Theo Ngày</option>
+        </select>
 
-        <div className="chart-summary mt-4">
-          <div className="row">
-            <div className="col-md-6">
-              <div className="card shadow-sm">
-                <div className="card-header bg-primary text-white py-2">
-                  <h6 className="mb-0">📊 Doanh Thu Sale</h6>
-                </div>
-                <div className="card-body py-2">
-                  <div className="d-flex justify-content-between">
-                    <span>Tổng:</span>
-                    <strong>{formatCurrency(statistics.totalSaleAmount)}</strong>
-                  </div>
-                  <div className="d-flex justify-content-between">
-                    <span>Hôm nay:</span>
-                    <strong>{formatCurrency(statistics.dailySale.totalValueToday)}</strong>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <div className="col-md-6">
-              <div className="card shadow-sm">
-                <div className="card-header bg-warning text-dark py-2">
-                  <h6 className="mb-0">📚 Doanh Thu Rent</h6>
-                </div>
-                <div className="card-body py-2">
-                  <div className="d-flex justify-content-between">
-                    <span>Tổng:</span>
-                    <strong>{formatCurrency(statistics.totalRentAmount)}</strong>
-                  </div>
-                  <div className="d-flex justify-content-between">
-                    <span>Hôm nay:</span>
-                    <strong>{formatCurrency(statistics.dailyRent.totalValueToday)}</strong>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <input
+          type="date"
+          value={startDate}
+          onChange={(e) => setStartDate(e.target.value)}
+          className="p-2 border rounded"
+        />
+        <span>→</span>
+        <input
+          type="date"
+          value={endDate}
+          onChange={(e) => setEndDate(e.target.value)}
+          className="p-2 border rounded"
+        />
+
+        <Button onClick={handleConfirm}>Xác nhận</Button>
       </div>
 
-      <style>{`
-        .section-card {
-          background: white;
-          border-radius: 8px;
-          padding: 20px;
-          box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        
-        .chart-container {
-          padding: 15px;
-        }
-        
-        .chart-bars {
-          display: flex;
-          height: 200px;
-          align-items: flex-end;
-          gap: 10px;
-          padding-bottom: 20px;
-          border-bottom: 1px solid #eee;
-        }
-        
-        .bar-group {
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-        }
-        
-        .bar-wrapper {
-          width: 80%;
-          height: 100%;
-          display: flex;
-          flex-direction: column;
-          justify-content: flex-end;
-          gap: 2px;
-        }
-        
-        .bar {
-          width: 100%;
-          transition: height 0.3s ease;
-          border-radius: 3px 3px 0 0;
-        }
-        
-        .sales-bar {
-          background-color: #3b82f6;
-        }
-        
-        .rent-bar {
-          background-color: #eab308;
-        }
-        
-        .bar-label {
-          margin-top: 5px;
-          font-size: 12px;
-          text-align: center;
-        }
-        
-        .chart-legend .legend-item {
-          display: flex;
-          align-items: center;
-          gap: 5px;
-          font-size: 13px;
-        }
-        
-        .color-indicator {
-          display: inline-block;
-          width: 12px;
-          height: 12px;
-          border-radius: 3px;
-        }
-        
-        .chart-bars-loading {
-          align-items: flex-end;
-        }
-      `}</style>
+      <ResponsiveContainer width="100%" height={400}>
+        <BarChart data={chartData}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="label" />
+          <YAxis />
+          <Tooltip />
+          <Legend />
+          <Bar dataKey="value" fill="#00bfa5" name="Tổng tiền (VND)" />
+        </BarChart>
+      </ResponsiveContainer>
     </div>
   );
 };

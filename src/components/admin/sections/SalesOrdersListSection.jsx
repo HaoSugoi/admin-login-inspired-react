@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Eye, Edit, Trash2, Package } from 'lucide-react';
-import AddSalesOrderDialog from '../dialogs/AddSalesOrderDialog';
-import EditSalesOrderDialog from '../dialogs/EditSalesOrderDialog';
+
 import ViewSalesOrderDialog from '../dialogs/ViewSalesOrderDialog';
 import {
   DropdownMenu,
@@ -18,10 +17,8 @@ const ORDER_STATUSES = [
   { value: 0, label: 'Chờ xử lý' },
   { value: 1, label: 'Đã xác nhận' },
   { value: 2, label: 'Đang giao' },
-  { value: 3, label: 'Đã giao' },
-  { value: 4, label: 'Đã hủy' },
-  { value: 5, label: 'Thất bại' },
-  { value: 6, label: 'Quá hạn' },
+  { value: 3, label: 'Hoàn thành' },
+  { value: 6, label: 'Đã hủy' },
 ];
 
 const getStatusLabel = (value) =>
@@ -58,6 +55,9 @@ const SalesOrdersListSection = ({ orders, onAdd, onUpdate, onDelete, onUpdateSta
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [showViewDialog, setShowViewDialog] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize] = useState(12); // mỗi trang hiển thị 5 đơn hàng
+  const [filterStatus, setFilterStatus] = useState('all');
 
   const handleView = (order) => {
     setSelectedOrder(order);
@@ -84,18 +84,41 @@ const SalesOrdersListSection = ({ orders, onAdd, onUpdate, onDelete, onUpdateSta
       toast.error('❌ Không thể cập nhật trạng thái');
     }
   };
+  const filteredOrders = filterStatus === 'all'
+    ? orders
+    : orders.filter(order => order.status === parseInt(filterStatus));
 
+  const paginatedOrders = filteredOrders.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
+  );
+  const totalPages = Math.ceil(filteredOrders.length / pageSize);
   return (
     <>
       <div className="col-12">
         <Card>
           <CardHeader className="d-flex flex-row align-items-center justify-content-between">
             <CardTitle>Danh Sách Đơn Hàng Bán</CardTitle>
-            <Button onClick={() => setShowAddDialog(true)}>
-              <Package className="me-2" size={16} />
-              Tạo Đơn Hàng
-            </Button>
+
           </CardHeader>
+          <div className="mb-3 d-flex gap-3 align-items-center">
+            <label htmlFor="filterStatus" className="fw-bold">Lọc theo trạng thái:</label>
+            <select
+              id="filterStatus"
+              className="form-select w-auto"
+              value={filterStatus}
+              onChange={(e) => {
+                setFilterStatus(e.target.value);
+                setCurrentPage(1); // reset về trang đầu
+              }}
+            >
+              <option value="all">Tất cả</option>
+              {ORDER_STATUSES.map((s) => (
+                <option key={s.value} value={s.value}>{s.label}</option>
+              ))}
+            </select>
+          </div>
+
           <CardContent>
             <div className="table-responsive">
               <table className="table table-hover align-middle">
@@ -117,7 +140,8 @@ const SalesOrdersListSection = ({ orders, onAdd, onUpdate, onDelete, onUpdateSta
                       </td>
                     </tr>
                   ) : (
-                    orders.map((order) => (
+                    paginatedOrders.map((order) => (
+
                       <tr key={order.id}>
                         <td className="fw-bold">{order.orderNumber}</td>
                         <td>
@@ -136,8 +160,14 @@ const SalesOrdersListSection = ({ orders, onAdd, onUpdate, onDelete, onUpdateSta
                         </td>
                         <td>
                           <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <button className={`${getStatusColor(order.status)} px-3 py-1 rounded text-sm`}>
+                            <DropdownMenuTrigger asChild disabled={order.status === 3 || order.status === 6}>
+                              <button
+                                className={`
+          ${getStatusColor(order.status)}
+          px-3 py-1 rounded text-sm
+          ${order.status === 3 || order.status === 6 ? 'cursor-not-allowed opacity-70' : 'cursor-pointer'}
+        `}
+                              >
                                 {getStatusLabel(order.status)}
                               </button>
                             </DropdownMenuTrigger>
@@ -146,6 +176,9 @@ const SalesOrdersListSection = ({ orders, onAdd, onUpdate, onDelete, onUpdateSta
                               {ORDER_STATUSES.map((s) => (
                                 <DropdownMenuItem
                                   key={s.value}
+                                  disabled={
+                                    s.value <= order.status || order.status === 3 || order.status === 6
+                                  }
                                   onClick={() => handleChangeStatus(order.id, s.value)}
                                 >
                                   {s.label}
@@ -154,6 +187,7 @@ const SalesOrdersListSection = ({ orders, onAdd, onUpdate, onDelete, onUpdateSta
                             </DropdownMenuContent>
                           </DropdownMenu>
                         </td>
+
                         <td>
                           <div className="d-flex justify-content-end gap-2">
                             <Button
@@ -164,48 +198,61 @@ const SalesOrdersListSection = ({ orders, onAdd, onUpdate, onDelete, onUpdateSta
                             >
                               <Eye size={14} />
                             </Button>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => handleEdit(order)}
-                              title="Chỉnh sửa đơn"
-                            >
-                              <Edit size={14} />
-                            </Button>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => onDelete(order.id)}
-                              className="text-danger"
-                              title="Xóa đơn"
-                            >
-                              <Trash2 size={14} />
-                            </Button>
+
                           </div>
                         </td>
                       </tr>
                     ))
                   )}
                 </tbody>
+                {totalPages > 1 && (
+                  <tfoot>
+                    <tr>
+                      <td colSpan="9">
+                        <div className="d-flex justify-content-center gap-2 mt-3 flex-wrap">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                            disabled={currentPage === 1}
+                          >
+                            ◀️ Trước
+                          </Button>
+
+                          {Array.from({ length: totalPages }, (_, i) => (
+                            <Button
+                              key={i}
+                              variant={currentPage === i + 1 ? "default" : "outline"}
+                              size="sm"
+                              onClick={() => setCurrentPage(i + 1)}
+                            >
+                              {i + 1}
+                            </Button>
+                          ))}
+
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                            disabled={currentPage === totalPages}
+                          >
+                            Sau ▶️
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  </tfoot>
+                )}
+
+
               </table>
             </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* Dialogs */}
-      <AddSalesOrderDialog
-        isOpen={showAddDialog}
-        onClose={() => setShowAddDialog(false)}
-        onSave={onAdd}
-      />
 
-      <EditSalesOrderDialog
-        isOpen={showEditDialog}
-        onClose={() => setShowEditDialog(false)}
-        onSave={onUpdate}
-        order={selectedOrder}
-      />
+
 
       <ViewSalesOrderDialog
         isOpen={showViewDialog}

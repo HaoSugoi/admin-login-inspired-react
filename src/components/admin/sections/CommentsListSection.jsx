@@ -1,8 +1,10 @@
 import React, { useState } from "react";
-import { Trash2, MessageSquare } from "lucide-react";
+import { Trash2, MessageSquare, Search } from "lucide-react";
 
 const CommentsListSection = ({ comments, bookId, commentId, onDelete }) => {
-  const [selectedComment, setSelectedComment] = useState(null);
+  const [searchBookTitle, setSearchBookTitle] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const commentsPerPage = 10;
 
   const handleDeleteComment = (id) => {
     if (window.confirm("Bạn có chắc chắn muốn xóa bình luận này?")) {
@@ -10,12 +12,31 @@ const CommentsListSection = ({ comments, bookId, commentId, onDelete }) => {
     }
   };
 
-  // ⚠️ Lọc theo điều kiện tìm kiếm
+  // Lọc bình luận
   const filteredComments = comments.filter((comment) => {
-    const matchBookId = bookId ? comment.bookId?.toLowerCase().includes(bookId.toLowerCase()) : true;
-    const matchCommentId = commentId ? comment.id?.toLowerCase().includes(commentId.toLowerCase()) : true;
-    return matchBookId && matchCommentId;
+    const matchBookId = bookId
+      ? comment.bookId?.toLowerCase().includes(bookId.toLowerCase())
+      : true;
+    const matchCommentId = commentId
+      ? comment.id?.toLowerCase().includes(commentId.toLowerCase())
+      : true;
+    const matchBookTitle = searchBookTitle
+      ? comment.bookTitle?.toLowerCase().includes(searchBookTitle.toLowerCase())
+      : true;
+
+    return matchBookId && matchCommentId && matchBookTitle;
   });
+
+  // Tính số lượng trang
+  const totalPages = Math.ceil(filteredComments.length / commentsPerPage);
+
+  // Lấy dữ liệu theo trang
+  const startIdx = (currentPage - 1) * commentsPerPage;
+  const paginatedComments = filteredComments.slice(startIdx, startIdx + commentsPerPage);
+
+  const goToPage = (page) => {
+    if (page >= 1 && page <= totalPages) setCurrentPage(page);
+  };
 
   return (
     <div className="col-12 mb-4">
@@ -25,6 +46,22 @@ const CommentsListSection = ({ comments, bookId, commentId, onDelete }) => {
             <MessageSquare className="text-primary" size={20} />
             Danh Sách Bình Luận
           </span>
+        </div>
+
+        {/* 🔍 Tìm kiếm theo tên sách */}
+        <div className="mb-3 d-flex align-items-center gap-2">
+          <Search size={18} className="text-muted" />
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Tìm theo tên sách..."
+            value={searchBookTitle}
+            onChange={(e) => {
+              setSearchBookTitle(e.target.value);
+              setCurrentPage(1); // Reset về trang đầu khi tìm kiếm
+            }}
+            style={{ maxWidth: 300 }}
+          />
         </div>
 
         <div className="table-responsive">
@@ -40,8 +77,8 @@ const CommentsListSection = ({ comments, bookId, commentId, onDelete }) => {
               </tr>
             </thead>
             <tbody>
-              {filteredComments.length > 0 ? (
-                filteredComments.map((comment) => (
+              {paginatedComments.length > 0 ? (
+                paginatedComments.map((comment) => (
                   <tr key={comment.id}>
                     <td className="fw-bold text-primary">
                       #{comment.id?.substring(0, 6)}...
@@ -68,12 +105,6 @@ const CommentsListSection = ({ comments, bookId, commentId, onDelete }) => {
                     <td>
                       <div className="d-flex gap-1">
                         <button
-                          className="btn btn-sm btn-outline-primary"
-                          onClick={() => setSelectedComment(comment)}
-                        >
-                          Xem
-</button>
-                        <button
                           className="btn btn-sm btn-outline-danger"
                           onClick={() => handleDeleteComment(comment.id)}
                         >
@@ -93,64 +124,38 @@ const CommentsListSection = ({ comments, bookId, commentId, onDelete }) => {
             </tbody>
           </table>
         </div>
-      </div>
 
-      {/* Modal xem chi tiết */}
-      {selectedComment && (
-        <div
-          className="modal d-block"
-          tabIndex="-1"
-          role="dialog"
-          style={{ backgroundColor: "rgba(0,0,0,0.3)" }}
-        >
-          <div className="modal-dialog modal-dialog-centered" role="document">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">Chi tiết bình luận</h5>
-                <button
-                  type="button"
-                  className="btn-close"
-                  onClick={() => setSelectedComment(null)}
-                ></button>
-              </div>
-              <div className="modal-body">
-                <p>
-                  <strong>ID:</strong> {selectedComment.id}
-                </p>
-                <p>
-                  <strong>Sách:</strong> {selectedComment.bookId}
-                </p>
-                <p>
-                  <strong>Người dùng:</strong> {selectedComment.customerId}
-                </p>
-                <p>
-                  <strong>Nội dung:</strong> {selectedComment.content}
-                </p>
-                <p>
-                  <strong>Ngày tạo:</strong>{" "}
-                  {new Date(selectedComment.createdAt).toLocaleString("vi-VN")}
-                </p>
-                {selectedComment.reply && (
-                  <>
-                    <hr />
-                    <p>
-                      <strong>Phản hồi:</strong> {selectedComment.reply}
-                    </p>
-                  </>
-                )}
-              </div>
-              <div className="modal-footer">
-                <button
-                  className="btn btn-secondary"
-                  onClick={() => setSelectedComment(null)}
-                >
-                  Đóng
-                </button>
-              </div>
-            </div>
+        {/* 📄 Phân trang */}
+        {totalPages > 1 && (
+          <div className="mt-3 d-flex justify-content-center gap-2">
+            <button
+              className="btn btn-sm btn-outline-secondary"
+              onClick={() => goToPage(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              Trang trước
+            </button>
+
+            {Array.from({ length: totalPages }, (_, i) => (
+              <button
+                key={i}
+                className={`btn btn-sm ${currentPage === i + 1 ? "btn-primary" : "btn-outline-primary"}`}
+                onClick={() => goToPage(i + 1)}
+              >
+                {i + 1}
+              </button>
+            ))}
+
+            <button
+              className="btn btn-sm btn-outline-secondary"
+              onClick={() => goToPage(currentPage + 1)}
+              disabled={currentPage === totalPages}
+            >
+              Trang sau
+            </button>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };

@@ -6,21 +6,18 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { rentalService } from "@/services/rentalService";
 
-
 const RENTAL_STATUSES = {
-  0: 'Chờ xác nhân',
-  1: 'Đã xác nhận',
-  2: 'Đang giao',
-  3: 'Hoàn thành',
-  4: 'Đang thuê',
-  5: 'Quá hạn',
-  6: 'Đã hủy'
+  0: "Chờ xác nhận",
+  1: "Đã xác nhận",
+  2: "Đang giao",
+  3: "Hoàn thành",
+  4: "Đang thuê",
+  5: "Quá hạn",
+  6: "Đã hủy",
 };
-
 
 const formatCurrency = (amount) =>
   new Intl.NumberFormat("vi-VN", {
@@ -43,7 +40,7 @@ const ViewRentalOrderDialog = ({ isOpen, onClose, rental }) => {
       rentalService
         .getRentalDetailsById(rental.OrderId)
         .then((data) => {
-          console.log("Rental details:", data); // 👈 Thêm dòng này
+          console.log("Rental details:", data);
           setRentalDetails(data);
         })
         .catch(() => {
@@ -53,15 +50,18 @@ const ViewRentalOrderDialog = ({ isOpen, onClose, rental }) => {
     }
   }, [rental]);
 
-  const totalRentalFee = rentalDetails?.Items?.reduce(
+  if (!rental) return null;
+
+  const totalRentalFee = rentalDetails?.reduce(
     (sum, item) => sum + (item.RentalFee || 0),
     0
   );
-  if (!rental) return null;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-3xl">
+      <DialogContent style={{ width: "420px" }}>
+
+
         <DialogHeader>
           <DialogTitle>
             🧾 Chi Tiết Đơn Thuê #{rental.OrderId.slice(0, 8).toUpperCase()}
@@ -82,8 +82,8 @@ const ViewRentalOrderDialog = ({ isOpen, onClose, rental }) => {
                 <p className="font-medium">{rental.Phone || "---"}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-600">Email</p>
-                <p className="font-medium">{rental.Email || "---"}</p>
+                <p className="text-sm text-gray-600">Địa chỉ</p>
+                <p className="font-medium">{rental.Address || "---"}</p>
               </div>
               <div>
                 <p className="text-sm text-gray-600">Trạng thái</p>
@@ -91,8 +91,6 @@ const ViewRentalOrderDialog = ({ isOpen, onClose, rental }) => {
                   {RENTAL_STATUSES[rental.Status]}
                 </span>
               </div>
-
-
             </div>
           </section>
 
@@ -100,9 +98,7 @@ const ViewRentalOrderDialog = ({ isOpen, onClose, rental }) => {
 
           {/* Thông tin đơn thuê */}
           <section>
-            <h3 className="text-lg font-semibold mb-3">
-              📄 Thông Tin Đơn Thuê
-            </h3>
+            <h3 className="text-lg font-semibold mb-3">📄 Thông Tin Đơn Thuê</h3>
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <p className="text-sm text-gray-600">Ngày thuê</p>
@@ -131,16 +127,31 @@ const ViewRentalOrderDialog = ({ isOpen, onClose, rental }) => {
           <section>
             <h3 className="text-lg font-semibold mb-3">📚 Danh Sách Sách</h3>
             {rentalDetails?.length > 0 ? (
-              <div className="space-y-2">
+              <div
+                style={{ maxHeight: "150px", maxWidth: "400px", overflowY: "auto" }}
+                className="space-y-2 pr-2 border rounded-md shadow-sm"
+              >
                 {rentalDetails.map((item, idx) => (
-                  <div key={idx} className="flex justify-between items-center p-2 bg-gray-50 rounded">
+                  <div
+                    key={idx}
+                    className="flex justify-between items-center p-2 bg-gray-50 rounded"
+                  >
                     <div>
-                      <p className="font-medium">{item.BookTitle || 'Tên sách'}</p>
-                      <p className="text-sm text-gray-600">Mã sách: {item.Id || '--'}</p>
+                      <p className="font-medium">
+                        {(item.BookTitle?.length > 25
+                          ? item.BookTitle.slice(0, 25) + "..."
+                          : item.BookTitle) || "Tên sách"}
+                      </p>
+
+                      <p className="text-sm text-gray-600">
+                        Mã sách: {item.Id || "--"}
+                      </p>
                     </div>
                     <div className="text-right">
                       <p className="font-medium">{formatCurrency(item.BookPrice)}</p>
-                      <p className="text-sm text-gray-600">{formatCurrency(item.RentalFee)} /ngày</p>
+                      <p className="text-sm text-gray-600">
+                        {formatCurrency(item.RentalFee)} /ngày
+                      </p>
                     </div>
                   </div>
                 ))}
@@ -148,22 +159,19 @@ const ViewRentalOrderDialog = ({ isOpen, onClose, rental }) => {
             ) : (
               <p className="text-gray-500">Không có sách nào trong đơn thuê này.</p>
             )}
-
           </section>
+
 
           <Separator />
 
           {/* Tóm tắt thanh toán */}
           <section>
-            <h3 className="text-lg font-semibold mb-3">
-              💰 Tóm Tắt Thanh Toán
-            </h3>
+            <h3 className="text-lg font-semibold mb-3">💰 Tóm Tắt Thanh Toán</h3>
             <div className="text-sm space-y-2">
               <div className="flex justify-between">
                 <span>Tiền thuê:</span>
-                <span>{formatCurrency(rentalDetails?.[0]?.RentalFee)}</span>
+                <span>{formatCurrency(totalRentalFee)}</span>
               </div>
-
               <div className="flex justify-between">
                 <span>Tiền cọc:</span>
                 <span>{formatCurrency(rental.TotalDeposit)}</span>
@@ -184,9 +192,10 @@ const ViewRentalOrderDialog = ({ isOpen, onClose, rental }) => {
                 <span>Tổng cộng:</span>
                 <span className="text-primary">
                   {formatCurrency(
-                    (rentalDetails?.[0]?.RentalFee || 0) +
+                    (totalRentalFee || 0) +
                     (rental.TotalDeposit || 0) +
-                    (rental.ShippingFee || 0)
+                    (rental.ShippingFee || 0) -
+                    (rental.ActualRefundAmount || 0)
                   )}
                 </span>
               </div>

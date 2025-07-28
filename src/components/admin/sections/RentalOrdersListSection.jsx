@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -25,9 +25,22 @@ const RentalOrdersListSection = ({
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [showViewDialog, setShowViewDialog] = useState(false);
   const [selectedRental, setSelectedRental] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [filterStatus, setFilterStatus] = useState(null);
+  const filteredRentals = filterStatus === null
+    ? rentals
+    : rentals.filter((rental) => parseInt(rental.Status) === filterStatus);
+
+
+  const itemsPerPage = 12;
+  const totalPages = Math.ceil(filteredRentals.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentRentals = filteredRentals.slice(startIndex, startIndex + itemsPerPage);
+
+
 
   const RENTAL_STATUSES = {
-    0: 'Chờ xác nhân',
+    0: 'Chờ xử lý',
     1: 'Đã xác nhận',
     2: 'Đang giao',
     3: 'Hoàn thành',
@@ -110,18 +123,43 @@ const RentalOrdersListSection = ({
       toast.error("Cập nhật thất bại");
     }
   };
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filterStatus]);
 
   return (
     <>
       <div className="col-12">
         <Card>
-          <CardHeader className="d-flex flex-row align-items-center justify-content-between">
-            <CardTitle>📚 Danh Sách Đơn Thuê Sách</CardTitle>
-            <Button onClick={AutoOverdue}>
-              Xét Quá Hạn
-            </Button>
+          <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <CardTitle className="text-xl font-semibold">
+              📚 Danh Sách Đơn Thuê Sách
+            </CardTitle>
 
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+              <select
+                value={filterStatus ?? ''}
+                onChange={(e) =>
+                  setFilterStatus(e.target.value === '' ? null : parseInt(e.target.value))
+                }
+                className="border border-gray-300 rounded px-3 py-2 text-sm"
+              >
+                <option value="">Tất cả trạng thái</option>
+                <option value={0}>Chờ xử lý</option>
+                <option value={1}>Đã xác nhận</option>
+                <option value={2}>Đang giao</option>
+                <option value={3}>Hoàn thành</option>
+                <option value={4}>Đang thuê</option>
+                <option value={5}>Quá hạn</option>
+                <option value={6}>Đã hủy</option>
+              </select>
+
+              <Button onClick={AutoOverdue}>
+                Xét Quá Hạn
+              </Button>
+            </div>
           </CardHeader>
+
           <CardContent>
             <div className="table-responsive">
               <table className="table table-hover text-center">
@@ -131,6 +169,7 @@ const RentalOrdersListSection = ({
                     <th>Khách hàng</th>
                     <th>Ngày Thuê</th>
                     <th>Ngày Trả DK</th>
+                    <th>Ngày Trả TT</th>
                     <th>Tiền Cọc</th>
                     <th>Phương thức</th>
                     <th>Trạng Thái</th>
@@ -138,14 +177,14 @@ const RentalOrdersListSection = ({
                   </tr>
                 </thead>
                 <tbody>
-                  {rentals.length === 0 ? (
+                  {filteredRentals.length === 0 ? (
                     <tr>
                       <td colSpan="7" className="text-center text-muted py-4">
                         Không có đơn thuê nào.
                       </td>
                     </tr>
                   ) : (
-                    rentals.map((rental) => (
+                    currentRentals.map((rental) => (
                       <tr key={rental.OrderId}>
                         <td className="fw-bold">{rental.OrderId.slice(0, 8).toUpperCase()}</td>
                         <td>
@@ -156,6 +195,7 @@ const RentalOrdersListSection = ({
                         </td>
                         <td>{formatDate(rental.StartDate)}</td>
                         <td>{formatDate(rental.EndDate)}</td>
+                        <td>{formatDate(rental.ActualReturnDate)}</td>
                         <td className="fw-bold text-success">{formatCurrency(rental.TotalDeposit)}</td>
                         <td>{rental.Payment === "VNPAY" ? "Chuyển khoản" : "Tiền mặt"}</td>
 
@@ -185,18 +225,13 @@ const RentalOrdersListSection = ({
                             )}
                           </select>
                         </td>
-
-
-
-
-
                         <td>
                           <div className="d-flex gap-1 justify-content-center flex-wrap">
                             <Button variant="outline" size="sm" onClick={() => handleView(rental)}>
                               <Eye size={14} />
                             </Button>
 
-                        
+
                             <Button
                               variant="outline"
                               size="sm"
@@ -207,13 +242,52 @@ const RentalOrdersListSection = ({
                             </Button>
 
 
-                          
+
                           </div>
                         </td>
                       </tr>
                     ))
                   )}
                 </tbody>
+                {totalPages > 1 && (
+                  <tfoot>
+                    <tr>
+                      <td colSpan="9">
+                        <div className="d-flex justify-content-center gap-2 mt-3 flex-wrap">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                            disabled={currentPage === 1}
+                          >
+                            ◀️ Trước
+                          </Button>
+
+                          {Array.from({ length: totalPages }, (_, i) => (
+                            <Button
+                              key={i}
+                              variant={currentPage === i + 1 ? "default" : "outline"}
+                              size="sm"
+                              onClick={() => setCurrentPage(i + 1)}
+                            >
+                              {i + 1}
+                            </Button>
+                          ))}
+
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                            disabled={currentPage === totalPages}
+                          >
+                            Sau ▶️
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  </tfoot>
+                )}
+
               </table>
             </div>
           </CardContent>
