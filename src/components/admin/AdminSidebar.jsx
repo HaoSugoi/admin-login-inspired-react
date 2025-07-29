@@ -12,7 +12,7 @@ const AdminSidebar = ({ activeSection, setActiveSection, sidebarCollapsed, toggl
     { id: 'employees', icon: Users, label: 'Quản Lý Nhân Viên', path: '/admin/employees' },
     { id: 'books', icon: Book, label: 'Quản Lý Sách', path: '/admin/books' },
     { id: 'rent-books', icon: BookOpen, label: 'Quản Lý Sách Thuê', path: '/admin/rent-books' },
-    { id: 'reports', icon: BarChart3, label: 'Quản Lý Danh Mục', path: '/admin/reports' },
+    { id: 'reports', icon: BarChart3, label: 'Quản Lý Thể loại', path: '/admin/reports' },
     { id: 'authors', icon: Users2, label: 'Quản Lý Tác Giả', path: '/admin/authors' },
     { id: 'promotions', icon: Gift, label: 'Quản Lý Khuyến Mãi', path: '/admin/promotions' },
     { id: 'discount-codes', icon: Percent, label: 'Quản Lý Mã Giảm Giá', path: '/admin/discount-codes' },
