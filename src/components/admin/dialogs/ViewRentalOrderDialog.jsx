@@ -141,7 +141,6 @@ const ViewRentalOrderDialog = ({ isOpen, onClose, rental }) => {
                       </p>
                    
                       <p><span className="font-medium">💡 Ban đầu:</span> {item.Condition || "--"}</p>
-                     
                       <p
                             className="cursor-pointer text-blue-600"
                             onClick={() => alert(item.StatusDescription || "Không có mô tả")}
@@ -153,8 +152,6 @@ const ViewRentalOrderDialog = ({ isOpen, onClose, rental }) => {
                                 : item.StatusDescription
                               : "--"}
                           </p>
-
-                    
                     </div>
 
                     {/* Phải */}
