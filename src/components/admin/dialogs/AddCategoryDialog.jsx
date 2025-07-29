@@ -51,7 +51,7 @@ const AddCategoryDialog = ({ onAddCategory, isCreating }) => {
         disabled={isCreating}
       >
         <Plus className="w-4 h-4 mr-2" />
-        Thêm Danh Mục
+        Thêm Thể Loại
       </Button>
 
       <Dialog open={open} onOpenChange={(isOpen) => {
@@ -62,7 +62,7 @@ const AddCategoryDialog = ({ onAddCategory, isCreating }) => {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-lg font-semibold">
               <FolderPlus className="w-5 h-5 text-green-500" />
-              Thêm Danh Mục Mới
+              Thêm Thể Loại Mới
             </DialogTitle>
           </DialogHeader>
 
@@ -78,7 +78,7 @@ const AddCategoryDialog = ({ onAddCategory, isCreating }) => {
               <div>
                 <Label htmlFor="categoryName" className="flex items-center gap-2 text-sm font-medium">
                   <Tag className="w-4 h-4 text-blue-500" />
-                  Tên Danh Mục *
+                  Tên Thể Loại *
                 </Label>
                 <Input
                   id="categoryName"

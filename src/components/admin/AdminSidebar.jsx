@@ -12,16 +12,16 @@ const AdminSidebar = ({ activeSection, setActiveSection, sidebarCollapsed, toggl
     { id: 'employees', icon: Users, label: 'Quản Lý Nhân Viên', path: '/admin/employees' },
     { id: 'books', icon: Book, label: 'Quản Lý Sách', path: '/admin/books' },
     { id: 'rent-books', icon: BookOpen, label: 'Quản Lý Sách Thuê', path: '/admin/rent-books' },
-    { id: 'rental-orders', icon: ClipboardList, label: 'Quản Lý Đơn Thuê', path: '/admin/rental-orders' },
-    { id: 'sales-orders', icon: ShoppingCart, label: 'Quản Lý Bán Hàng', path: '/admin/sales-orders' },
-    { id: 'reports', icon: BarChart3, label: 'Quản Lý Danh Mục', path: '/admin/reports' },
+    { id: 'reports', icon: BarChart3, label: 'Quản Lý Thể loại', path: '/admin/reports' },
     { id: 'authors', icon: Users2, label: 'Quản Lý Tác Giả', path: '/admin/authors' },
-    { id: 'employee-activities', icon: Activity, label: 'Hoạt Động Nhân Viên', path: '/admin/employee-activities' },
-    { id: 'slides', icon: Images, label: 'Quản Lý Slide', path: '/admin/slides' },
     { id: 'promotions', icon: Gift, label: 'Quản Lý Khuyến Mãi', path: '/admin/promotions' },
     { id: 'discount-codes', icon: Percent, label: 'Quản Lý Mã Giảm Giá', path: '/admin/discount-codes' },
-    { id: 'stats', icon: BarChart3, label: 'Thống Kê', path: '/admin/stats' },
-    { id: 'comments', icon: BoxIcon, label: 'Bình luận', path: '/admin/comments' }
+    { id: 'comments', icon: BoxIcon, label: 'Quản Lý Bình luận', path: '/admin/comments' },
+    { id: 'rental-orders', icon: ClipboardList, label: 'Quản Lý Đơn Thuê', path: '/admin/rental-orders' },
+    { id: 'sales-orders', icon: ShoppingCart, label: 'Quản Lý Đơn Bán Hàng', path: '/admin/sales-orders' },
+    { id: 'employee-activities', icon: Activity, label: 'Hoạt Động Nhân Viên', path: '/admin/employee-activities' },
+    { id: 'slides', icon: Images, label: 'Quản Lý Slide', path: '/admin/slides' },
+    { id: 'stats', icon: BarChart3, label: 'Thống Kê', path: '/admin/stats' }
   ];
 
   const handleMenuClick = (item) => {

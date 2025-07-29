@@ -31,7 +31,7 @@ const CategoryManagementSection = () => {
       <div className="section-card">
         <div className="d-flex justify-content-between align-items-center mb-3">
           <div>
-            <h5>Quản Lý Danh Mục</h5>
+            <h5>Quản Lý Thể Loại</h5>
             <div className="d-flex gap-2 mt-2">
               <span className="badge bg-primary">
                 Tổng: {statistics.totalCategories}
@@ -48,7 +48,7 @@ const CategoryManagementSection = () => {
           <div className="d-flex gap-2">
             <input
               type="text"
-              placeholder="Tìm kiếm danh mục..."
+              placeholder="Tìm kiếm thể loại..."
               className="form-control"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -64,7 +64,7 @@ const CategoryManagementSection = () => {
           <table className="table table-hover">
             <thead className="table-light">
               <tr>
-                <th>Tên Danh Mục</th>
+                <th>Tên Thể Loại</th>
                 <th>Mô Tả</th>
                 <th>Số Sách</th>
                 <th className="text-end">Thao Tác</th>
