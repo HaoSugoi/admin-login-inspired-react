@@ -33,6 +33,7 @@ const SalesOrdersManagementContent = (props) => {
         totalAmount: o.TotalAmount,
         shippingFee: o.HasShippingFee ? o.ShippingFee : 0,
         status: o.Status,
+        PaymentMethod:o.PaymentMethod,
         discountAmount: o.DiscountAmount,
         books: [], // nếu có chi tiết đơn hàng thì map thêm
       }));

@@ -46,7 +46,8 @@ const RentalOrdersListSection = ({
     3: 'Hoàn thành',
     4: 'Đang thuê',
     5: 'Quá hạn',
-    6: 'Đã hủy'
+    6: 'Đã hủy',
+    7: 'Hoàn tiền'
   };
 
 
@@ -152,6 +153,7 @@ const RentalOrdersListSection = ({
                 <option value={4}>Đang thuê</option>
                 <option value={5}>Quá hạn</option>
                 <option value={6}>Đã hủy</option>
+                <option value={7}>Hoàn tiền</option>
               </select>
 
               <Button onClick={AutoOverdue}>
@@ -204,17 +206,22 @@ const RentalOrdersListSection = ({
                             value={rental.Status}
                             onChange={(e) => UpdateStatus(rental, parseInt(e.target.value))}
                             className="form-select py-1 px-2 rounded text-sm"
-                            disabled={rental.Status === 5} // 🔒 Vô hiệu hóa nếu quá hạn
+                            disabled={
+                              rental.Status === 5 || // Quá hạn thì khóa
+                              (rental.Status === 6 && rental.Payment !== "VNPAY") // Đã hủy và không phải VNPAY thì khóa
+                            }
                           >
                             {rental.Status === 3 ? (
                               <option value="3">{RENTAL_STATUSES[3]}</option>
                             ) : (
                               Object.entries(RENTAL_STATUSES).map(([key, label]) => {
                                 const keyInt = parseInt(key);
+
                                 const isDisabled =
-                                  keyInt === 3 || // Không cho chọn Hoàn thành
-                                  keyInt === 5 || // Không cho chọn Quá hạn
-                                  keyInt < rental.Status; // Không cho quay về trạng thái trước
+                                  keyInt === 3 || // Không cho chọn hoàn thành
+                                  keyInt === 5 || // Không cho chọn quá hạn
+                                  keyInt < rental.Status || // Không được quay lại trạng thái trước
+                                  (rental.Status === 6 && rental.Payment === "VNPAY" && keyInt !== 7); // Nếu đã hủy và là VNPAY, chỉ cho chọn 7
 
                                 return (
                                   <option key={key} value={key} disabled={isDisabled}>
@@ -225,6 +232,7 @@ const RentalOrdersListSection = ({
                             )}
                           </select>
                         </td>
+
                         <td>
                           <div className="d-flex gap-1 justify-content-center flex-wrap">
                             <Button variant="outline" size="sm" onClick={() => handleView(rental)}>

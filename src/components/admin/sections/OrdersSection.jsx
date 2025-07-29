@@ -9,6 +9,7 @@ const getStatusLabel = (status) => {
     2: 'Đang giao',
     3: 'Hoàn thành',
     6: 'Đã hủy',
+    7: 'Hoàn tiền',
   };
   return STATUS_LABELS[status] || 'Không rõ';
 };

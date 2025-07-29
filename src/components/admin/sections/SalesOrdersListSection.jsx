@@ -19,6 +19,7 @@ const ORDER_STATUSES = [
   { value: 2, label: 'Đang giao' },
   { value: 3, label: 'Hoàn thành' },
   { value: 6, label: 'Đã hủy' },
+  { value: 7, label: 'Hoàn tiền' },
 ];
 
 const getStatusLabel = (value) =>
@@ -127,6 +128,7 @@ const SalesOrdersListSection = ({ orders, onAdd, onUpdate, onDelete, onUpdateSta
                     <th>Mã Đơn</th>
                     <th>Khách Hàng</th>
                     <th>Ngày Đặt</th>
+                    <th>Phương thức</th>
                     <th>Tổng Tiền</th>
                     <th>Trạng Thái</th>
                     <th className="text-end">Thao Tác</th>
@@ -155,12 +157,17 @@ const SalesOrdersListSection = ({ orders, onAdd, onUpdate, onDelete, onUpdateSta
                           </div>
                         </td>
                         <td>{formatDate(order.orderDate)}</td>
+                        <td>{order.PaymentMethod === 'cash' ? 'Tiền mặt' : 'Chuyển khoản'}</td>
+
                         <td className="fw-bold text-success">
                           {formatCurrency(order.totalAmount)}
                         </td>
                         <td>
                           <DropdownMenu>
-                            <DropdownMenuTrigger asChild disabled={order.status === 3 || order.status === 6}>
+                            <DropdownMenuTrigger
+                              asChild
+                              disabled={order.status === 3 || (order.status === 6 && !ORDER_STATUSES.some(s => s.value === 7))}
+                            >
                               <button
                                 className={`
           ${getStatusColor(order.status)}
@@ -177,7 +184,10 @@ const SalesOrdersListSection = ({ orders, onAdd, onUpdate, onDelete, onUpdateSta
                                 <DropdownMenuItem
                                   key={s.value}
                                   disabled={
-                                    s.value <= order.status || order.status === 3 || order.status === 6
+                                    order.status === 3 ||
+                                    (order.status === 6
+                                      ? order.PaymentMethod === 'cash' || s.value !== 7
+                                      : s.value <= order.status)
                                   }
                                   onClick={() => handleChangeStatus(order.id, s.value)}
                                 >
@@ -185,6 +195,7 @@ const SalesOrdersListSection = ({ orders, onAdd, onUpdate, onDelete, onUpdateSta
                                 </DropdownMenuItem>
                               ))}
                             </DropdownMenuContent>
+
                           </DropdownMenu>
                         </td>
 
