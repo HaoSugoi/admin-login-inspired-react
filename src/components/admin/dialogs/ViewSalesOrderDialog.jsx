@@ -81,7 +81,8 @@ const ViewSalesOrderDialog = ({ isOpen, onClose, order }) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent style={{ width: "420px" }}>
+     <DialogContent style={{ width: "420px", maxHeight: "90vh", overflowY: "auto" }}>
+
         <DialogHeader>
           <DialogTitle>
             🧾 Chi Tiết Đơn Hàng #
@@ -104,10 +105,10 @@ const ViewSalesOrderDialog = ({ isOpen, onClose, order }) => {
                 <p className="text-muted">Số điện thoại</p>
                 <p className="font-medium">{order.customerPhone}</p>
               </div>
-              {/* <div>
-                <p className="text-muted">Email</p>
-                <p className="font-medium">{order.customerEmail || '-'}</p>
-              </div> */}
+              <div>
+                <p className="text-muted">Địa chỉ</p>
+                <p className="font-medium">{order.shippingAddress || '-'}</p>
+              </div>
               <div>
                 <p className="text-muted">Trạng thái</p>
                 <Badge

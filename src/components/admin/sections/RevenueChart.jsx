@@ -1,335 +1,152 @@
-import React, { useState, useEffect } from 'react';
-import { useReportApi } from '../../../hooks/useReportApi';
+import React, { useState } from "react";
+import {
+  BarChart, Bar, XAxis, YAxis, CartesianGrid,
+  Tooltip, Legend, ResponsiveContainer, ComposedChart , LineChart,
+  Line,
+} from "recharts";
+import { Button } from "@/components/ui/button";
+import apiClient from "../../../services/api";
 
-const RevenueChart = () => {
-  const [timePeriod, setTimePeriod] = useState('day');
-  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
-  const [hoveredBar, setHoveredBar] = useState(null);
-  
-  const {
-    dailySaleStats,
-    monthlySaleStats,
-    yearlySaleStats,
-    dailyRentStats,
-    monthlyRentStats,
-    yearlyRentStats,
-    setDailySaleDate,
-    setMonthlySaleDate,
-    setYearlySaleDate,
-    setDailyRentDate,
-    setMonthlyRentDate,
-    setYearlyRentDate,
-    isLoadingAny,
-    isSettingDate
-  } = useReportApi();
+const RevenueStatsSection = () => {
+  const [type, setType] = useState("sale"); // "sale" | "rent"
+  const [mode, setMode] = useState("daily"); // "daily" | "monthly" | "yearly"
+  const [dateInput, setDateInput] = useState("");
+  const [data, setData] = useState([]);
+  const [summary, setSummary] = useState("");
+  const [labelType, setLabelType] = useState("");
 
-  // Gọi API khi thay đổi period hoặc ngày
-  useEffect(() => {
-    const dateObj = new Date(selectedDate);
-    const year = dateObj.getFullYear();
-    const month = dateObj.getMonth() + 1; // Tháng bắt đầu từ 0
-    
-    switch (timePeriod) {
-      case 'day':
-        setDailySaleDate(selectedDate);
-        setDailyRentDate(selectedDate);
-        break;
-      case 'month':
-        setMonthlySaleDate({ year, month });
-        setMonthlyRentDate({ year, month });
-        break;
-      case 'year':
-        setYearlySaleDate(year);
-        setYearlyRentDate(year);
-        break;
-      default:
-        break;
-    }
-  }, [timePeriod, selectedDate]);
-
-  // Chuẩn bị dữ liệu cho biểu đồ
-  const prepareChartData = () => {
-    let data = [];
-    let salesData = [];
-    let rentData = [];
-
-    switch (timePeriod) {
-      case 'day':
-        // Xử lý dữ liệu theo giờ trong ngày
-        salesData = dailySaleStats?.data || Array(24).fill({ Orders: 0, TotalValue: 0 });
-        rentData = dailyRentStats?.data || Array(24).fill({ Orders: 0, TotalValue: 0 });
-        
-        data = Array.from({ length: 24 }, (_, i) => ({
-          period: `${i}:00`,
-          salesValue: salesData[i]?.TotalValue || 0,
-          rentValue: rentData[i]?.TotalValue || 0,
-          totalValue: (salesData[i]?.TotalValue || 0) + (rentData[i]?.TotalValue || 0)
-        }));
-        break;
-
-      case 'month':
-        // Xử lý dữ liệu theo ngày trong tháng
-        salesData = monthlySaleStats?.data || Array(31).fill({ Orders: 0, TotalValue: 0 });
-        rentData = monthlyRentStats?.data || Array(31).fill({ Orders: 0, TotalValue: 0 });
-        
-        const daysInMonth = new Date(
-          new Date(selectedDate).getFullYear(), 
-          new Date(selectedDate).getMonth() + 1, 
-          0
-        ).getDate();
-        
-        data = Array.from({ length: daysInMonth }, (_, i) => ({
-          period: `Ngày ${i + 1}`,
-          salesValue: salesData[i]?.TotalValue || 0,
-          rentValue: rentData[i]?.TotalValue || 0,
-          totalValue: (salesData[i]?.TotalValue || 0) + (rentData[i]?.TotalValue || 0)
-        }));
-        break;
-
-      case 'year':
-        // Xử lý dữ liệu theo tháng trong năm
-        salesData = yearlySaleStats?.data || Array(12).fill({ Orders: 0, TotalValue: 0 });
-        rentData = yearlyRentStats?.data || Array(12).fill({ Orders: 0, TotalValue: 0 });
-        
-        data = Array.from({ length: 12 }, (_, i) => ({
-          period: `T${i + 1}`,
-          salesValue: salesData[i]?.TotalValue || 0,
-          rentValue: rentData[i]?.TotalValue || 0,
-          totalValue: (salesData[i]?.TotalValue || 0) + (rentData[i]?.TotalValue || 0)
-        }));
-        break;
-
-      default:
-        break;
+  const handleConfirm = async () => {
+    if (!dateInput) {
+      alert("Vui lòng nhập ngày/tháng/năm");
+      return;
     }
 
-    return data;
-  };
+    try {
+      let basePath = `/Report/${type}`;
+      let endpointSet = "";
+      let endpointGet = "";
+      let payload = null;
+      const date = new Date(dateInput);
 
-  const chartData = prepareChartData();
-  const maxValue = Math.max(...chartData.map(item => item.totalValue), 1); // Đảm bảo ít nhất là 1
+      if (mode === "daily") {
+        endpointSet = `${basePath}/daily/set-date`;
+        endpointGet = `${basePath}/daily`;
+        payload = date.toISOString();
+      } else if (mode === "monthly") {
+        endpointSet = `${basePath}/monthly/set-date`;
+        endpointGet = `${basePath}/monthly`;
+        payload = {
+          Month: date.getMonth() + 1,
+          Year: date.getFullYear(),
+        };
+      } else if (mode === "yearly") {
+        endpointSet = `${basePath}/yearly/set-date`;
+        endpointGet = `${basePath}/yearly`;
+        payload = { Year: parseInt(dateInput) };
+      }
 
-  // Màu sắc cho biểu đồ
-  const colorPalette = [
-    '#3b82f6', '#60a5fa', '#93c5fd', // Xanh dương
-    '#eab308', '#f59e0b', '#fbbf24', // Vàng
-    '#22c55e', '#4ade80', '#86efac', // Xanh lá
-    '#ef4444', '#f87171', '#fca5a5'  // Đỏ
-  ];
+      await apiClient.post(endpointSet, payload);
+      const res = await apiClient.get(endpointGet);
 
-  const getBarColor = (index) => {
-    return colorPalette[index % colorPalette.length];
-  };
+      if (mode === "daily") {
+        const { Orders = [], TotalValueToday = 0, CreatedDate } = res.data || {};
+        const chart = Orders.map((order, idx) => ({
+          label: `Đơn ${idx + 1}`,
+          value: order.TotalValue,
+          time: new Date(order.CreatedDate).toLocaleTimeString("vi-VN"),
+        }));
+        setLabelType("Đơn hàng");
+        setSummary(`📅 Ngày: ${new Date(CreatedDate).toLocaleDateString("vi-VN")} – 💰 Tổng: ${TotalValueToday.toLocaleString()} VND`);
+        setData(chart);
+      }
 
-  const formatValue = (value) => {
-    return new Intl.NumberFormat('vi-VN', {
-      style: 'currency',
-      currency: 'VND'
-    }).format(value);
-  };
+      else if (mode === "monthly") {
+        const { DailyData = [], Month, Year, TotalInMonth = 0 } = res.data || {};
+        const chart = DailyData.map((day) => ({
+          label: `Ngày ${new Date(day.Date).getDate()}`,
+          value: day.TotalValue,
+        }));
+        setLabelType("Ngày");
+        setSummary(`📆 Tháng ${Month}/${Year} – 💰 Tổng: ${TotalInMonth.toLocaleString()} VND`);
+        setData(chart);
+      }
 
-  const getPeriodLabel = () => {
-    switch (timePeriod) {
-      case 'day': return `Ngày ${selectedDate}`;
-      case 'month': 
-        const date = new Date(selectedDate);
-        return `Tháng ${date.getMonth() + 1}/${date.getFullYear()}`;
-      case 'year': 
-        return `Năm ${new Date(selectedDate).getFullYear()}`;
-      default: return '';
+      else if (mode === "yearly") {
+        const { MonthlyData = [], Year, TotalInYear = 0 } = res.data || {};
+        const chart = MonthlyData
+          .filter((m) => m && typeof m.Month === "number")
+          .map((month) => ({
+            label: `Tháng ${month.Month}`,
+            value: month.TotalValue,
+          }));
+        setLabelType("Tháng");
+        setSummary(`📅 Năm ${Year} – 💰 Tổng: ${TotalInYear.toLocaleString()} VND`);
+        setData(chart);
+      }
+
+    } catch (err) {
+      console.error(err);
+      alert("Có lỗi khi lấy dữ liệu.");
     }
   };
 
-  const isLoading = isLoadingAny || isSettingDate;
+  const renderInput = () => {
+    if (mode === "daily") {
+      return <input type="date" value={dateInput} onChange={(e) => setDateInput(e.target.value)} className="border p-2 rounded" />;
+    }
+    if (mode === "monthly") {
+      return <input type="month" value={dateInput} onChange={(e) => setDateInput(e.target.value)} className="border p-2 rounded" />;
+    }
+    if (mode === "yearly") {
+      return <input type="number" value={dateInput} onChange={(e) => setDateInput(e.target.value)} min="2000" max="2100" placeholder="Nhập năm" className="border p-2 rounded w-32" />;
+    }
+    return null;
+  };
 
   return (
-    <div className="revenue-chart-container">
-      <div className="chart-controls">
-        <input
-          type="date"
-          value={selectedDate}
-          onChange={(e) => setSelectedDate(e.target.value)}
-          disabled={isLoading}
-        />
-        
-        <select
-          value={timePeriod}
-          onChange={(e) => setTimePeriod(e.target.value)}
-          disabled={isLoading}
-        >
-          <option value="day">Theo Giờ</option>
-          <option value="month">Theo Ngày</option>
-          <option value="year">Theo Tháng</option>
+    <div className="p-4 bg-white rounded shadow">
+      <h2 className="text-xl font-bold mb-4">📊 Thống kê doanh thu {type === "sale" ? "bán sách" : "thuê sách"}</h2>
+
+      <div className="flex flex-wrap gap-4 items-center mb-4">
+        <select className="border p-2 rounded" value={type} onChange={(e) => setType(e.target.value)}>
+          <option value="sale">Bán sách</option>
+          <option value="rent">Thuê sách</option>
         </select>
+
+        <select className="border p-2 rounded" value={mode} onChange={(e) => {
+          setMode(e.target.value);
+          setDateInput("");
+          setData([]);
+          setSummary("");
+        }}>
+          <option value="daily">Theo ngày</option>
+          <option value="monthly">Theo tháng</option>
+          <option value="yearly">Theo năm</option>
+        </select>
+
+        {renderInput()}
+        <Button onClick={handleConfirm}>Xác nhận</Button>
       </div>
 
-      <div className="chart-title">{getPeriodLabel()}</div>
-
-      {isLoading ? (
-        <div className="loading-indicator">
-          <div className="spinner"></div>
-          <p>Đang tải dữ liệu...</p>
-        </div>
-      ) : (
+      {data.length > 0 && (
         <>
-          <div className="chart-bars">
-            {chartData.map((item, index) => (
-              <div 
-                key={index} 
-                className="bar-container"
-                onMouseEnter={() => setHoveredBar(index)}
-                onMouseLeave={() => setHoveredBar(null)}
-              >
-                <div 
-                  className="bar-total"
-                  style={{
-                    height: `${(item.totalValue / maxValue) * 100}%`,
-                    backgroundColor: getBarColor(index)
-                  }}
-                >
-                  {hoveredBar === index && (
-                    <div className="tooltip">
-                      <div>Sales: {formatValue(item.salesValue)}</div>
-                      <div>Rent: {formatValue(item.rentValue)}</div>
-                      <div>Total: {formatValue(item.totalValue)}</div>
-                    </div>
-                  )}
-                </div>
-                <div className="bar-label">{item.period}</div>
-              </div>
-            ))}
-          </div>
+          <p className="mb-2 font-semibold">{summary}</p>
+          <ResponsiveContainer width="100%" height={400}>
+            <ComposedChart data={data}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="label" />
+              <YAxis />
+              <Tooltip formatter={(value) => `${value.toLocaleString()} VND`} />
+              <Legend />
+              <Bar dataKey="value" fill="#3b82f6" name={`Doanh thu theo ${labelType}`} />
+              <Line type="monotone" dataKey="value" stroke="#f59e0b" strokeWidth={2} dot={{ r: 3 }} name="Đường nối" />
+            </ComposedChart>
+          </ResponsiveContainer>
 
-          <div className="chart-legend">
-            <div className="legend-item">
-              <span className="color-sales"></span>
-              <span>Doanh thu bán hàng</span>
-            </div>
-            <div className="legend-item">
-              <span className="color-rent"></span>
-              <span>Doanh thu cho thuê</span>
-            </div>
-          </div>
         </>
       )}
-
-      <style jsx>{`
-        .revenue-chart-container {
-          padding: 20px;
-          background: white;
-          border-radius: 10px;
-          box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        
-        .chart-controls {
-          display: flex;
-          gap: 10px;
-          margin-bottom: 20px;
-        }
-        
-        .chart-title {
-          font-size: 18px;
-          font-weight: bold;
-          margin-bottom: 15px;
-          text-align: center;
-        }
-        
-        .chart-bars {
-          display: flex;
-          height: 300px;
-          align-items: flex-end;
-          gap: 8px;
-        }
-        
-        .bar-container {
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-        }
-        
-        .bar-total {
-          width: 100%;
-          position: relative;
-          border-radius: 4px 4px 0 0;
-          transition: height 0.3s ease;
-        }
-        
-        .bar-label {
-          margin-top: 5px;
-          font-size: 12px;
-          text-align: center;
-        }
-        
-        .tooltip {
-          position: absolute;
-          bottom: 100%;
-          left: 50%;
-          transform: translateX(-50%);
-          background: rgba(0,0,0,0.8);
-          color: white;
-          padding: 5px 10px;
-          border-radius: 4px;
-          font-size: 12px;
-          white-space: nowrap;
-          margin-bottom: 5px;
-        }
-        
-        .loading-indicator {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          height: 200px;
-          gap: 10px;
-        }
-        
-        .spinner {
-          border: 4px solid rgba(0,0,0,0.1);
-          border-radius: 50%;
-          border-top: 4px solid #3b82f6;
-          width: 40px;
-          height: 40px;
-          animation: spin 1s linear infinite;
-        }
-        
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-        
-        .chart-legend {
-          display: flex;
-          justify-content: center;
-          gap: 20px;
-          margin-top: 20px;
-        }
-        
-        .legend-item {
-          display: flex;
-          align-items: center;
-          gap: 5px;
-          font-size: 14px;
-        }
-        
-        .color-sales {
-          display: inline-block;
-          width: 15px;
-          height: 15px;
-          background-color: #3b82f6;
-          border-radius: 3px;
-        }
-        
-        .color-rent {
-          display: inline-block;
-          width: 15px;
-          height: 15px;
-          background-color: #eab308;
-          border-radius: 3px;
-        }
-      `}</style>
     </div>
   );
 };
 
-export default RevenueChart;
+export default RevenueStatsSection;
