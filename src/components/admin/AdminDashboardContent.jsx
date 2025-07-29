@@ -24,9 +24,7 @@ const AdminDashboardContent = (props) => {
         </div>
 
         {/* Hàng thứ ba: Quản lý Sách và Quản lý Sách Thuê */}
-        <div className="row">
-          <BooksSection books={props.books} />
-        </div>
+        
       </div>
     </div>
   );

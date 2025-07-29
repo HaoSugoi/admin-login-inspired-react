@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect  } from "react";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid,
   Tooltip, Legend, ResponsiveContainer, ComposedChart , LineChart,
@@ -14,6 +14,27 @@ const RevenueStatsSection = () => {
   const [data, setData] = useState([]);
   const [summary, setSummary] = useState("");
   const [labelType, setLabelType] = useState("");
+// Cập nhật dateInput mỗi khi mode thay đổi
+useEffect(() => {
+  const today = new Date();
+
+  if (mode === "daily") {
+    const yyyyMMdd = today.toISOString().split("T")[0];
+    setDateInput(yyyyMMdd);
+  } else if (mode === "monthly") {
+    const yyyyMM = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}`;
+    setDateInput(yyyyMM);
+  } else if (mode === "yearly") {
+    setDateInput(today.getFullYear().toString());
+  }
+}, [mode]);
+
+// Gọi API sau khi dateInput được set xong
+useEffect(() => {
+  if (dateInput) {
+    handleConfirm();
+  } 
+}, [dateInput]);
 
   const handleConfirm = async () => {
     if (!dateInput) {

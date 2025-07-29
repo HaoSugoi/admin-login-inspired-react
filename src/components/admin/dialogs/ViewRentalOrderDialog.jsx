@@ -124,65 +124,70 @@ const ViewRentalOrderDialog = ({ isOpen, onClose, rental }) => {
 
           {/* Danh sách sách */}
           <section>
-            <h3 className="text-lg font-semibold mb-3">📚 Danh Sách Sách</h3>
+            <h3 className="text-xl font-semibold mb-4 text-gray-800">📚 Danh Sách Sách</h3>
             {rentalDetails?.length > 0 ? (
-              <div
-                style={{ maxHeight: "150px", maxWidth: "400px", overflowY: "auto" }}
-                className="space-y-3 pr-2   shadow p-3 bg-white"
-              >
+              <div className="max-h-[240px] overflow-y-auto space-y-4 bg-white p-4 rounded-lg border border-gray-200 shadow-md">
                 {rentalDetails.map((item, idx) => (
                   <div
                     key={idx}
-                    className="flex justify-between items-start p-3 bg-gray-50 rounded-md border"
+                    className="flex justify-between items-start bg-gray-50 hover:bg-gray-100 p-4 rounded-lg border border-gray-200 transition duration-200"
                   >
-                    {/* Bên trái */}
-                    <div className="w-2/3 space-y-1">
-                      <p className="font-semibold text-gray-800">
-                        {(item.BookTitle?.length > 40
+                    {/* Trái */}
+                    <div className="w-2/3 space-y-1 text-sm text-gray-700">
+                      <p className="font-semibold text-gray-900 text-base">
+                        {item.BookTitle?.length > 40
                           ? item.BookTitle.slice(0, 40) + "..."
-                          : item.BookTitle) || "Tên sách"}
+                          : item.BookTitle || "Tên sách"}
                       </p>
-
-                      <p className="text-sm text-gray-600">
-                        <span className="font-medium">Mã sách:</span> {item.Id || "--"}
-                      </p>
-
-                      <p className="text-sm text-gray-600">
-                        <span className="font-medium">Tình trạng ban đầu:</span> {item.Condition || "--"}
-                      </p>
-
-                      {rental.Status === 3 ? (
-                        <>
-                          <p className="text-sm text-gray-600">
-                            <span className="font-medium">Tình trạng sau khi trả:</span> {item.ReturnCondition || "--"}
+                   
+                      <p><span className="font-medium">💡 Ban đầu:</span> {item.Condition || "--"}</p>
+                     
+                      <p
+                            className="cursor-pointer text-blue-600"
+                            onClick={() => alert(item.StatusDescription || "Không có mô tả")}
+                          >
+                            <span className="font-medium text-gray-700">📝 Mô tả:</span>{" "}
+                            {item.StatusDescription
+                              ? item.StatusDescription.length > 15
+                                ? item.StatusDescription.slice(0, 15) + "..."
+                                : item.StatusDescription
+                              : "--"}
                           </p>
-                          <p className="text-sm text-red-600">
-                            <span className="font-medium">Thiệt hại:</span>{" "}
-                            {item.Condition != null && item.ReturnCondition != null
-                              ? Number(item.Condition) - Number(item.ReturnCondition)
-                              : "Không xác định"}
+
+                    
+                    </div>
+
+                    {/* Phải */}
+                    <div className="w-1/3 text-right space-y-1 text-sm">
+                      <p className="text-blue-700 font-semibold text-base">
+                        {formatCurrency(item.BookPrice)}
+                      </p>
+                      {rental.Status === 3 && (
+                        <>
+                          <p><span className="font-medium">🔄 Sau trả:</span> {item.ReturnCondition || "--"}</p>
+                          <p
+                            className="cursor-pointer  text-blue-600"
+                            onClick={() => alert(item.ConditionDescription || "Không có mô tả")}
+                          >
+                            <span className="font-medium text-gray-700">📄 Mô tả trả:</span>{" "}
+                            {item.ConditionDescription
+                              ? item.ConditionDescription.length > 15
+                                ? item.ConditionDescription.slice(0, 15) + "..."
+                                : item.ConditionDescription
+                              : "--"}
                           </p>
 
                         </>
-                      ) : null}
-                    </div>
-
-                    {/* Bên phải */}
-                    <div className="w-1/3 text-right space-y-1">
-                      <p className="font-medium text-blue-700">
-                        {formatCurrency(item.BookPrice)}
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        {formatCurrency(item.RentalFee)} /ngày
-                      </p>
+                      )}
                     </div>
                   </div>
                 ))}
               </div>
             ) : (
-              <p className="text-gray-500">Không có sách nào trong đơn thuê này.</p>
+              <p className="text-gray-500 italic">Không có sách nào trong đơn thuê này.</p>
             )}
           </section>
+
 
 
 
@@ -211,16 +216,16 @@ const ViewRentalOrderDialog = ({ isOpen, onClose, rental }) => {
                     {formatCurrency(rental.ActualRefundAmount)}
                   </span>
                 </div>
-                
+
               )}
-               {rental.ActualRefundAmount != null && (
+              {rental.ActualRefundAmount != null && (
                 <div className="flex justify-between">
                   <span>Tiền khấu trừ:</span>
                   <span className="text-green-700">
-                    {formatCurrency(rental.TotalDeposit-rental.ActualRefundAmount)}
+                    {formatCurrency(rental.TotalDeposit - rental.ActualRefundAmount)}
                   </span>
                 </div>
-                
+
               )}
               <div className="flex justify-between font-bold text-base pt-2 border-t mt-2">
                 <span>Tổng cộng:</span>
