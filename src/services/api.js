@@ -51,7 +51,7 @@ apiClient.interceptors.response.use(
       if (refreshToken && accessToken) {
         try {
           // Gọi API refresh token
-          const response = await axios.post(`${API_BASE_URL}/Auth/refresh-token`, {
+          const response = await axios.post(`https://chosachonline-datn.onrender.com/api/Auth/refresh-token`, {
             accessToken: accessToken,
             refreshToken: refreshToken
           }, {
