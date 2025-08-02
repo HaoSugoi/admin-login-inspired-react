@@ -3,7 +3,7 @@ import axios from 'axios';
 import { tokenUtils, cookieUtils } from '../utils/cookieUtils';
 
 // Sử dụng proxy thay vì direct URL để tránh CORS
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
+const API_BASE_URL = "https://chosachonline-datn.onrender.com/api" ;
 
 // Tạo instance axios với cấu hình mặc định
 const apiClient = axios.create({
