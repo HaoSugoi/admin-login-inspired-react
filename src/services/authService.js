@@ -105,20 +105,20 @@ export const authService = {
   },
 
   // Làm mới token
-  refreshToken: async (accessToken, refreshToken) => {
-    try {
-      const response = await apiClient.post('https://chosachonline-datn.onrender.com/api/Auth/refresh-token', {
-        accessToken: accessToken,
-        refreshToken: refreshToken
-      });
+  // refreshToken: async (accessToken, refreshToken) => {
+  //   try {
+  //     const response = await apiClient.post('https://chosachonline-datn.onrender.com/api/Auth/refresh-token', {
+  //       accessToken: accessToken,
+  //       refreshToken: refreshToken
+  //     });
       
-      console.log('Refresh token response:', response.data);
-      return response.data;
-    } catch (error) {
-      console.error('Refresh token error:', error);
-      throw error.response?.data || { message: 'Làm mới token thất bại' };
-    }
-  },
+  //     console.log('Refresh token response:', response.data);
+  //     return response.data;
+  //   } catch (error) {
+  //     console.error('Refresh token error:', error);
+  //     throw error.response?.data || { message: 'Làm mới token thất bại' };
+  //   }
+  // },
 
   // Đăng xuất
   logout: async () => {
