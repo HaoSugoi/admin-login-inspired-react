@@ -143,7 +143,7 @@ await rentbooksService.updateRentbooks(rentBookId,  fd);
                   <button className="btn btn-warning" onClick={() => setEditing(true)}>✏️ Sửa</button>
                 </div>
                 <div className="col-md-5 d-flex justify-content-center align-items-center">
-                  <img src={detail.ImageUrl ? `https://localhost:7003${detail.ImageUrl}` : '/default-avatar.png'} alt="Ảnh sách" className="img-fluid rounded shadow" style={{ maxHeight: 300 }} />
+                  <img src={detail.ImageUrl ? `https://chosachonline-datn.onrender.com${detail.ImageUrl}` : '/default-avatar.png'} alt="Ảnh sách" className="img-fluid rounded shadow" style={{ maxHeight: 300 }} />
                 </div>
               </div>
             )}

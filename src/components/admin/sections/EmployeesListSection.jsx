@@ -61,7 +61,7 @@ const EmployeesListSection = ({ employees, onAdd, onUpdate, onDelete }) => {
                     <img
                       src={
                         employee.ImageUser
-                          ? `https://localhost:7003${employee.ImageUser}`
+                          ? `https://chosachonline-datn.onrender.com${employee.ImageUser}`
                           : "/default-avatar.png"
                       }
                       alt="Ảnh đại diện"
