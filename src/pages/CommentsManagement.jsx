@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useCommentsManagement } from '../hooks/useCommentsManagement';
 import commentServiceAdmin from '../services/commentService';
 import { salebooksService } from '../services/SaleBooksService';
-import { rentBookItemService } from '../services/rentBookItemService';
+import { rentBookItemService } from '../services/RentBookItemService';
 import AdminSidebar from '../components/admin/AdminSidebar';
 import CommentsManagementContent from '../components/admin/CommentsManagementContent';
 import '../styles/AdminIndex.css';

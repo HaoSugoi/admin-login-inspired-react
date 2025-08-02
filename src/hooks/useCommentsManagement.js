@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import commentServiceAdmin from "../services/commentService";
 import { salebooksService } from "../services/SaleBooksService";
-import { rentBookItemService } from "../services/rentBookItemService";
+import { rentBookItemService } from "../services/RentBookItemService";
 import { userService } from "../services/customerService";
 
 export const useCommentsManagement = () => {
