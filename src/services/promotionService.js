@@ -1,7 +1,7 @@
 import apiClient from './api';
 
 // Service cho quản lý khuyến mãi
-export const promotionService = {
+export const PromotionService = {
   // Lấy danh sách tất cả khuyến mãi
   getAllPromotions: async () => {
     try {

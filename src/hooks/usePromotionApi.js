@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { promotionService } from '../services/promotionService';
+import { promotionService } from '../services/PromotionService';
 
 export const usePromotionApi = () => {
   const queryClient = useQueryClient();
@@ -22,7 +22,7 @@ export const usePromotionApi = () => {
       queryClient.invalidateQueries({ queryKey: ['promotions'] });
     },
     onError: (error) => {
-      console.error('Create error:', error);
+      console.error('Create error:', error);  
     }
   });
 
