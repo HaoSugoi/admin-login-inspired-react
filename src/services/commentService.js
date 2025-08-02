@@ -3,7 +3,7 @@ import apiClient from './api';
 const commentServiceAdmin = {
   addComment: async (commentData) => {
   try {
-    const response = await apiClient.post("/Comment", commentData);
+    const response = await apiClient.post("https://chosachonline-datn.onrender.com/api/Comment", commentData);
     return response.data;
   } catch (error) {
     console.error("Lỗi khi thêm bình luận:", error);
@@ -14,7 +14,7 @@ const commentServiceAdmin = {
   // ✅ Gọi tất cả bình luận (không lọc cha hay con gì cả)
   getAllComments: async () => {
     try {
-      const res = await apiClient.get('/Comment/all');
+      const res = await apiClient.get('https://chosachonline-datn.onrender.com/api/Comment/all');
       const rawComments = res.data;
 
       // Chuẩn hóa dữ liệu
@@ -37,7 +37,7 @@ const commentServiceAdmin = {
   // ✅ Lấy bình luận theo BookId
   getCommentsByBookId: async (bookId) => {
     try {
-      const res = await apiClient.get(`/Comment/book/${bookId}`);
+      const res = await apiClient.get(`https://chosachonline-datn.onrender.com/api/Comment/book/${bookId}`);
       return res.data.map(comment => ({
         id: comment.CommentId,
         content: comment.Content,
@@ -55,7 +55,7 @@ const commentServiceAdmin = {
   // ✅ Lấy chi tiết comment theo commentId
   getCommentById: async (commentId) => {
     try {
-      const res = await apiClient.get(`/Comment/${commentId}`);
+      const res = await apiClient.get(`https://chosachonline-datn.onrender.com/api/Comment/${commentId}`);
       const comment = res.data;
       return {
         id: comment.CommentId,
@@ -74,7 +74,7 @@ const commentServiceAdmin = {
   // ✅ Xóa bình luận theo id
   deleteComment: async (id) => {
     try {
-      await apiClient.delete(`/Comment/${id}`);
+      await apiClient.delete(`https://chosachonline-datn.onrender.com/api/Comment/${id}`);
     } catch (error) {
       console.error("Lỗi khi xóa bình luận:", error);
       throw error;

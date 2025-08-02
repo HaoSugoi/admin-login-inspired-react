@@ -5,7 +5,7 @@ export const rentbooksService = {
   // Lấy danh sách tất cả khuyến mãi
   getAllRentbookss: async () => {
     try {
-      const response = await apiClient.get('/RentBooks');
+      const response = await apiClient.get('https://chosachonline-datn.onrender.com/api/RentBooks');
       return response.data;
     } catch (error) {
       console.error('Error fetching RentBooks:', error);
@@ -16,7 +16,7 @@ export const rentbooksService = {
   // Lấy khuyến mãi theo ID
   getRentbooksById: async (id) => {
     try {
-      const response = await apiClient.get(`/RentBooks/${id}`);
+      const response = await apiClient.get(`https://chosachonline-datn.onrender.com/api/RentBooks/${id}`);
       return response.data;
     } catch (error) {
       console.error('Error fetching RentBooks by id:', error);
@@ -27,7 +27,7 @@ export const rentbooksService = {
   // Tạo khuyến mãi mới
   createRentbooks: async (rentbooksData) => {
     try {
-      const response = await apiClient.post('/RentBooks', rentbooksData,  {
+      const response = await apiClient.post('https://chosachonline-datn.onrender.com/api/RentBooks', rentbooksData,  {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       return response.data;
@@ -43,7 +43,7 @@ export const rentbooksService = {
       if (data instanceof FormData) {
         console.log('📦 Gửi FormData: ', data);
   
-        const response = await apiClient.put(`/RentBooks/${id}`, data, {
+        const response = await apiClient.put(`https://chosachonline-datn.onrender.com/api/RentBooks/${id}`, data, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
   
@@ -51,7 +51,7 @@ export const rentbooksService = {
       }
   
       // Nếu là object JSON bình thường
-      const response = await apiClient.put(`/RentBooks/${id}`, data);
+      const response = await apiClient.put(`https://chosachonline-datn.onrender.com/api/RentBooks/${id}`, data);
       return response.data;
   
     } catch (error) {

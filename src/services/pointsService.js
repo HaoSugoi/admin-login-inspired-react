@@ -5,7 +5,7 @@ export const pointsService = {
   // Lấy danh sách tất cả giao dịch điểm
   getAllPointTransactions: async () => {
     try {
-      const response = await apiClient.get('/PointTransactions');
+      const response = await apiClient.get('https://chosachonline-datn.onrender.com/api/PointTransactions');
       return response.data;
     } catch (error) {
       console.error('Error fetching point transactions:', error);
@@ -16,7 +16,7 @@ export const pointsService = {
   // Lấy giao dịch điểm theo ID
   getPointTransactionById: async (id) => {
     try {
-      const response = await apiClient.get(`/PointTransactions/${id}`);
+      const response = await apiClient.get(`https://chosachonline-datn.onrender.com/api/PointTransactions/${id}`);
       return response.data;
     } catch (error) {
       console.error('Error fetching point transaction by id:', error);
@@ -27,7 +27,7 @@ export const pointsService = {
   // Tạo giao dịch điểm mới
   createPointTransaction: async (transactionData) => {
     try {
-      const response = await apiClient.post('/PointTransactions', transactionData);
+      const response = await apiClient.post('https://chosachonline-datn.onrender.com/api/PointTransactions', transactionData);
       return response.data;
     } catch (error) {
       console.error('Error creating point transaction:', error);
@@ -38,7 +38,7 @@ export const pointsService = {
   // Cập nhật giao dịch điểm
   updatePointTransaction: async (id, transactionData) => {
     try {
-      const response = await apiClient.put(`/PointTransactions/${id}`, transactionData);
+      const response = await apiClient.put(`https://chosachonline-datn.onrender.com/api/PointTransactions/${id}`, transactionData);
       return response.data;
     } catch (error) {
       console.error('Error updating point transaction:', error);
@@ -49,7 +49,7 @@ export const pointsService = {
   // Xóa giao dịch điểm
   deletePointTransaction: async (id) => {
     try {
-      const response = await apiClient.delete(`/PointTransactions/${id}`);
+      const response = await apiClient.delete(`https://chosachonline-datn.onrender.com/api/PointTransactions/${id}`);
       return response.data;
     } catch (error) {
       console.error('Error deleting point transaction:', error);
@@ -60,7 +60,7 @@ export const pointsService = {
   // Lấy điểm của khách hàng
   getCustomerPoints: async (customerId) => {
     try {
-      const response = await apiClient.get(`/Customers/${customerId}/points`);
+      const response = await apiClient.get(`https://chosachonline-datn.onrender.com/api/Customers/${customerId}/points`);
       return response.data;
     } catch (error) {
       console.error('Error fetching customer points:', error);
@@ -71,7 +71,7 @@ export const pointsService = {
   // Đổi điểm lấy quà
   redeemPoints: async (customerId, redeemData) => {
     try {
-      const response = await apiClient.post(`/Customers/${customerId}/redeem-points`, redeemData);
+      const response = await apiClient.post(`https://chosachonline-datn.onrender.com/api/Customers/${customerId}/redeem-points`, redeemData);
       return response.data;
     } catch (error) {
       console.error('Error redeeming points:', error);

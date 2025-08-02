@@ -3,32 +3,32 @@ import apiClient from './api'; // Đảm bảo `apiClient` là một instance t�
 export const rentalService = {
   // Lấy danh sách tất cả đơn thuê
   getAllRentals: async () => {
-    const res = await apiClient.get('/admin/rentorders');
+    const res = await apiClient.get('https://chosachonline-datn.onrender.com/api/admin/rentorders');
     return res.data;
   },
 
   // Lọc đơn thuê theo trạng thái
   getRentalsByStatus: async (status) => {
-    const res = await apiClient.get(`/admin/rentorders/status/${status}`);
+    const res = await apiClient.get(`https://chosachonline-datn.onrender.com/api/admin/rentorders/status/${status}`);
     return res.data;
   },
 
   // Lấy thông tin đơn thuê theo ID
   getRentalById: async (orderId) => {
-    const res = await apiClient.get(`/admin/rentorders/${orderId}`);
+    const res = await apiClient.get(`https://chosachonline-datn.onrender.com/api/admin/rentorders/${orderId}`);
     return res.data;
   },
 
   // Lấy chi tiết sách trong đơn thuê
   getRentalDetailsById: async (orderId) => {
-    const res = await apiClient.get(`/admin/rentorders/${orderId}/details`);
+    const res = await apiClient.get(`https://chosachonline-datn.onrender.com/api/admin/rentorders/${orderId}/details`);
     return res.data;
   },
 
   // Cập nhật trạng thái đơn thuê
   updateRentalStatus: async (orderId, newStatus) => {
     const res = await apiClient.put(
-      `/admin/rentorders/${orderId}/status`,
+      `https://chosachonline-datn.onrender.com/api/admin/rentorders/${orderId}/status`,
       { status: newStatus }, // Cần bọc `status` thành object nếu API yêu cầu
       { headers: { 'Content-Type': 'application/json' } }
     );
@@ -39,7 +39,7 @@ export const rentalService = {
 // rentalService.js
 EditRentalOrderDialog : async (orderId, payload) => {
   const res = await apiClient.put(
-    `/admin/rentorders/${orderId}/complete`,
+    `https://chosachonline-datn.onrender.com/api/admin/rentorders/${orderId}/complete`,
     payload,
     { headers: { 'Content-Type': 'application/json' } }
   );
@@ -49,7 +49,7 @@ EditRentalOrderDialog : async (orderId, payload) => {
 
   // Tự động đánh dấu đơn thuê quá hạn
   autoMarkOverdue: async () => {
-    const res = await apiClient.put('/admin/rentorders/auto-overdue');
+    const res = await apiClient.put('https://chosachonline-datn.onrender.com/api/admin/rentorders/auto-overdue');
     return res.data;
   },
 };

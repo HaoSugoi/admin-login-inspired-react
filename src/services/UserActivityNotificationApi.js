@@ -38,7 +38,7 @@ const UserActivityNotificationApi = {
         }
 
         try {
-            const res = await apiClient.get(`/ActivityNotification/staff/${staffId}`);
+            const res = await apiClient.get(`https://chosachonline-datn.onrender.com/api/ActivityNotification/staff/${staffId}`);
             console.log("📥 Dữ liệu hoạt động:", res.data);
             return res.data.map(formatNotification);
         } catch (error) {

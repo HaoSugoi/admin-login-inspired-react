@@ -4,7 +4,7 @@ import apiClient from './api';
 export const categoryService = {
   getAllCategories: async () => {
     try {
-      const response = await apiClient.get('/Category');
+      const response = await apiClient.get('https://chosachonline-datn.onrender.com/api/Category');
       // Ánh xạ dữ liệu từ API sang cấu trúc ứng dụng
       return response.data.map(category => ({
         id: category.CategoryId,
@@ -25,7 +25,7 @@ export const categoryService = {
         CategoryName: categoryData.name,
         Description: categoryData.description
       };
-      const response = await apiClient.post('/Category', payload);
+      const response = await apiClient.post('https://chosachonline-datn.onrender.com/api/Category', payload);
       
       // Xử lý dữ liệu trả về
       return {
@@ -46,7 +46,7 @@ export const categoryService = {
         CategoryName: categoryData.name,
         Description: categoryData.description
       };
-      const response = await apiClient.put(`/Category/${id}`, payload);
+      const response = await apiClient.put(`https://chosachonline-datn.onrender.com/api/Category/${id}`, payload);
       return {
         id: response.data.CategoryId,
         name: response.data.CategoryName,
@@ -61,7 +61,7 @@ export const categoryService = {
 
   deleteCategory: async (id) => {
     try {
-      await apiClient.delete(`/Category/${id}`);
+      await apiClient.delete(`https://chosachonline-datn.onrender.com/api/Category/${id}`);
       return id; // Trả về id của danh mục đã xóa
     } catch (error) {
       console.error('Error deleting category:', error);

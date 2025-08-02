@@ -5,7 +5,7 @@ export const promotionService = {
   // Lấy danh sách tất cả khuyến mãi
   getAllPromotions: async () => {
     try {
-      const response = await apiClient.get('/Promotion');
+      const response = await apiClient.get('https://chosachonline-datn.onrender.com/api/Promotion');
       return response.data;
     } catch (error) {
       console.error('Error fetching promotions:', error);
@@ -16,7 +16,7 @@ export const promotionService = {
   // Lấy khuyến mãi theo ID
   getPromotionById: async (id) => {
     try {
-      const response = await apiClient.get(`/Promotion/${id}`);
+      const response = await apiClient.get(`https://chosachonline-datn.onrender.com/api/Promotion/${id}`);
       return response.data;
     } catch (error) {
       console.error('Error fetching promotion by id:', error);
@@ -27,7 +27,7 @@ export const promotionService = {
   // Tạo khuyến mãi mới
   createPromotion: async (promotionData) => {
     try {
-      const response = await apiClient.post('/Promotion', promotionData);
+      const response = await apiClient.post('https://chosachonline-datn.onrender.com/api/Promotion', promotionData);
       return response.data;
     } catch (error) {
       console.error('Error creating promotion:', error);
@@ -39,7 +39,7 @@ export const promotionService = {
 // Update khuyến mãi
 updatePromotion: async (id, promotionData) => {
     try {
-      const response = await apiClient.put(`/Promotion/${id}`, promotionData);
+      const response = await apiClient.put(`https://chosachonline-datn.onrender.com/api/Promotion/${id}`, promotionData);
       return response.data;
     } catch (error) {
       console.error('Error updating promotion:', error);
@@ -51,7 +51,7 @@ updatePromotion: async (id, promotionData) => {
   // Xóa khuyến mãi
   deletePromotion: async (id) => {
     try {
-      const response = await apiClient.delete(`/Promotion/${id}`);
+      const response = await apiClient.delete(`https://chosachonline-datn.onrender.com/api/Promotion/${id}`);
       return response.data;
     } catch (error) {
       console.error('Error deleting promotion:', error);

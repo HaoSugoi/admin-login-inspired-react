@@ -5,7 +5,7 @@ export const discountcodeService = {
   // Lấy danh sách tất cả mã giảm giá
   getAllDiscountCodes: async () => {
     try {
-      const response = await apiClient.get('/DiscountCode');
+      const response = await apiClient.get('https://chosachonline-datn.onrender.com/api/DiscountCode');
       return response.data;
     } catch (error) {
       console.error('Error fetching discountcodes:', error);
@@ -16,7 +16,7 @@ export const discountcodeService = {
   // Lấy mã giảm giá theo ID
   getDiscountCodeById: async (id) => {
     try {
-      const response = await apiClient.get(`/DiscountCode/${id}`);
+      const response = await apiClient.get(`https://chosachonline-datn.onrender.com/api/DiscountCode/${id}`);
       return response.data;
     } catch (error) {
       console.error('Error fetching discountcode by id:', error);
@@ -27,7 +27,7 @@ export const discountcodeService = {
   // Tạo mã giảm giá mới
   createDiscountCode: async (discountcodeData) => {
     try {
-      const response = await apiClient.post('/DiscountCode', discountcodeData);
+      const response = await apiClient.post('https://chosachonline-datn.onrender.com/api/DiscountCode', discountcodeData);
       return response.data;
     } catch (error) {
       console.error('Error creating discountcode:', error);
@@ -42,7 +42,7 @@ updateDiscountCode: async (id, data) => {
     try {
       console.log('📦 Gửi request PUT với id:', id);
       console.log('📤 Dữ liệu:', data);
-      const response = await apiClient.put(`/DiscountCode/${id}`, data);
+      const response = await apiClient.put(`https://chosachonline-datn.onrender.com/api/DiscountCode/${id}`, data);
       return response.data;
     } catch (error) {
       console.error('Error updating discountcode:', error);
@@ -54,7 +54,7 @@ updateDiscountCode: async (id, data) => {
   // Xóa mã giảm giá
   deleteDiscountCode: async (id) => {
     try {
-      const response = await apiClient.delete(`/DiscountCode/${id}`);
+      const response = await apiClient.delete(`https://chosachonline-datn.onrender.com/api/DiscountCode/${id}`);
       return response.data;
     } catch (error) {
       console.error('Error deleting discountcode:', error);

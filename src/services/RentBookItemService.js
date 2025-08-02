@@ -6,7 +6,7 @@ export const rentBookItemService = {
   // Lấy danh sách tất cả RentBookItem
   getAll: async () => {
     try {
-      const response = await apiClient.get('/RentBookItem');
+      const response = await apiClient.get('https://chosachonline-datn.onrender.com/api/RentBookItem');
       return response.data;
     } catch (error) {
       console.error('❌ Error fetching RentBookItems:', error);
@@ -17,7 +17,7 @@ export const rentBookItemService = {
   // Lấy chi tiết RentBookItem theo id
   getById: async (id) => {
     try {
-      const response = await apiClient.get(`/RentBookItem/${id}`);
+      const response = await apiClient.get(`https://chosachonline-datn.onrender.com/api/RentBookItem/${id}`);
       return response.data;
     } catch (error) {
       console.error(`❌ Error fetching RentBookItem with id ${id}:`, error);
@@ -28,7 +28,7 @@ export const rentBookItemService = {
   // Tạo mới RentBookItem
   create: async (data) => {
     try {
-      const response = await apiClient.post('/RentBookItem', data);
+      const response = await apiClient.post('https://chosachonline-datn.onrender.com/api/RentBookItem', data);
       console.log('❌ Error creating RentBookItem:', data);
       console.log('❌ creating RentBookItem:', response.data);
       return response.data;
@@ -41,7 +41,7 @@ export const rentBookItemService = {
   // Cập nhật RentBookItem theo id
   update: async (id, data) => {
     try {
-      const response = await apiClient.put(`/RentBookItem/${id}`, data);
+      const response = await apiClient.put(`https://chosachonline-datn.onrender.com/api/RentBookItem/${id}`, data);
       return response.data;
     } catch (error) {
       console.error(`❌ Error updating RentBookItem with id ${id}:`, error);
@@ -52,7 +52,7 @@ export const rentBookItemService = {
   // Xóa RentBookItem theo id
   delete: async (id) => {
     try {
-      const response = await apiClient.delete(`/RentBookItem/${id}`);
+      const response = await apiClient.delete(`https://chosachonline-datn.onrender.com/api/RentBookItem/${id}`);
       return response.data;
     } catch (error) {
       console.error(`❌ Error deleting RentBookItem with id ${id}:`, error);

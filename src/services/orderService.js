@@ -4,7 +4,7 @@ export const orderService = {
   // Lấy danh sách tất cả đơn hàng
   getAllOrders: async () => {
     try {
-      const response = await apiClient.get('/admin/saleorders');
+      const response = await apiClient.get('https://chosachonline-datn.onrender.com/api/admin/saleorders');
       return response.data;
     } catch (error) {
       console.error('❌ Lỗi khi lấy danh sách đơn hàng:', error);
@@ -15,7 +15,7 @@ export const orderService = {
   // Lấy chi tiết đơn hàng theo ID
   getOrderDetailsById: async (orderId) => {
     try {
-      const response = await apiClient.get(`/admin/saleorders/${orderId}/details`);
+      const response = await apiClient.get(`https://chosachonline-datn.onrender.com/api/admin/saleorders/${orderId}/details`);
       return response.data;
     } catch (error) {
       console.error('❌ Lỗi khi lấy chi tiết đơn hàng:', error);
@@ -26,7 +26,7 @@ export const orderService = {
   // Lấy đơn hàng theo ID
   getOrderById: async (id) => {
     try {
-      const response = await apiClient.get(`/Orders/${id}`);
+      const response = await apiClient.get(`https://chosachonline-datn.onrender.com/api/Orders/${id}`);
       return response.data;
     } catch (error) {
       console.error('❌ Lỗi khi lấy đơn hàng theo ID:', error);
@@ -37,7 +37,7 @@ export const orderService = {
   // Tạo đơn hàng mới
   createOrder: async (orderData) => {
     try {
-      const response = await apiClient.post('/Orders', orderData);
+      const response = await apiClient.post('https://chosachonline-datn.onrender.com/api/Orders', orderData);
       return response.data;
     } catch (error) {
       console.error('❌ Lỗi khi tạo đơn hàng:', error);
@@ -48,7 +48,7 @@ export const orderService = {
   // Cập nhật đơn hàng
   updateOrder: async (id, orderData) => {
     try {
-      const response = await apiClient.put(`/Orders/${id}`, orderData);
+      const response = await apiClient.put(`https://chosachonline-datn.onrender.com/api/Orders/${id}`, orderData);
       return response.data;
     } catch (error) {
       console.error('❌ Lỗi khi cập nhật đơn hàng:', error);
@@ -59,7 +59,7 @@ export const orderService = {
   // Xóa đơn hàng
   deleteOrder: async (id) => {
     try {
-      const response = await apiClient.delete(`/Orders/${id}`);
+      const response = await apiClient.delete(`https://chosachonline-datn.onrender.com/api/Orders/${id}`);
       return response.data;
     } catch (error) {
       console.error('❌ Lỗi khi xóa đơn hàng:', error);
@@ -71,7 +71,7 @@ export const orderService = {
   updateOrderStatus: async (id, status) => {
     try {
       const response = await apiClient.put(
-        `/admin/saleorders/${id}/status`,
+        `https://chosachonline-datn.onrender.com/api/admin/saleorders/${id}/status`,
         status,
         {
           headers: {

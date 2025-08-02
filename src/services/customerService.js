@@ -3,7 +3,7 @@ import apiClient  from './api';
 export const userService = {
   // GET: Lấy danh sách tất cả người dùng (khách hàng)
   getUsers: async () => {
-    const res = await apiClient.get('/UserManager');
+    const res = await apiClient.get('https://chosachonline-datn.onrender.com/api/UserManager');
     return res.data.map(user => ({
       Id: user.Id,
       UserName: user.UserName,
@@ -19,7 +19,7 @@ export const userService = {
 
   // POST: Tạo người dùng mới
   createUser: async (data) => {
-    const res = await apiClient.post('/UserManager', data);
+    const res = await apiClient.post('https://chosachonline-datn.onrender.com/api/UserManager', data);
     return res.data;
   },
 
@@ -37,7 +37,7 @@ export const userService = {
   }
 console.log("cập nhât mmmmmmmmm",formData)
 console.log("cập nhât tttttttttttt",data)
-  const res = await apiClient.put(`/UserManager/${id}`, formData, {
+  const res = await apiClient.put(`https://chosachonline-datn.onrender.com/api/UserManager/${id}`, formData, {
     
     headers: {
       'Content-Type': 'multipart/form-data', // ✅ Bắt buộc để ASP.NET Core nhận được FormFile
@@ -50,7 +50,7 @@ console.log("cập nhât tttttttttttt",data)
 
   // DELETE: Xóa người dùng theo ID
   deleteUser: async (id) => {
-    const res = await apiClient.delete(`/UserManager/${id}`);
+    const res = await apiClient.delete(`https://chosachonline-datn.onrender.com/api/UserManager/${id}`);
     return res.data;
   }
 };

@@ -25,20 +25,20 @@ const formatNotification = (n) => ({
 const ActivityNotificationService = {
     // GET: Lấy tất cả thông báo (admin)
     getAllNotifications: async () => {
-        const res = await apiClient.get('/ActivityNotification');
+        const res = await apiClient.get('https://chosachonline-datn.onrender.com/api/ActivityNotification');
         return res.data.map(formatNotification);
     },
 
     // GET: Lấy thông báo theo StaffId
     getNotificationsByStaffId: async (staffId) => {
-        const res = await apiClient.get(`/ActivityNotification/staff/${staffId}`);
+        const res = await apiClient.get(`https://chosachonline-datn.onrender.com/api/ActivityNotification/staff/${staffId}`);
         return res.data.map(formatNotification);
     },
 
     // GET: Lấy thông báo của nhân viên hiện tại
     getMyNotifications: async () => {
         const staffId = getStaffIdFromToken();
-        const res = await apiClient.get(`/ActivityNotification/staff/${staffId}`);
+        const res = await apiClient.get(`https://chosachonline-datn.onrender.com/api/ActivityNotification/staff/${staffId}`);
         return res.data.map(formatNotification);
     }
 };

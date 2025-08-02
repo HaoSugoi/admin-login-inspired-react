@@ -107,7 +107,7 @@ export const authService = {
   // Làm mới token
   refreshToken: async (accessToken, refreshToken) => {
     try {
-      const response = await apiClient.post('/Auth/refresh-token', {
+      const response = await apiClient.post('https://chosachonline-datn.onrender.com/api/Auth/refresh-token', {
         accessToken: accessToken,
         refreshToken: refreshToken
       });
@@ -123,7 +123,7 @@ export const authService = {
   // Đăng xuất
   logout: async () => {
     try {
-      const response = await apiClient.post('/Auth/logout');
+      const response = await apiClient.post('https://chosachonline-datn.onrender.com/api/Auth/logout');
       return response.data;
     } catch (error) {
       console.error('Logout error:', error);
@@ -134,7 +134,7 @@ export const authService = {
   // Lấy thông tin user hiện tại
   getCurrentUser: async () => {
     try {
-      const response = await apiClient.get('/User/profile');
+      const response = await apiClient.get('https://chosachonline-datn.onrender.com/api/User/profile');
       return response.data;
     } catch (error) {
       console.error('Get current user error:', error);

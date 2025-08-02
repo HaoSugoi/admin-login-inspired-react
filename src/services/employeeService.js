@@ -4,7 +4,7 @@ import apiClient  from './api';
 export const userService = {
   // GET: Lấy danh sách tất cả người dùng (khách hàng)
   getUsers: async () => { 
-    const res = await apiClient.get('/Staff');
+    const res = await apiClient.get('https://chosachonline-datn.onrender.com/api/Staff');
     return res.data.map(users => ({
       Id: users.Id,
       UserName: users.UserName,
@@ -20,11 +20,11 @@ export const userService = {
 
   // POST: Tạo người dùng mới
   createUser: async (data) => {
-    const res = await apiClient.post('/Staff/users', data);
+    const res = await apiClient.post('https://chosachonline-datn.onrender.com/api/Staff/users', data);
     return res.data;
   },
   getAllUsers: async()  => {
-    const res = await apiClient.get('/Staff');
+    const res = await apiClient.get('https://chosachonline-datn.onrender.com/api/Staff');
     return res.data;
   },
 
@@ -45,7 +45,7 @@ updateUser: async (StaffId, data) => {
     formData.append("ImageFile", data.ImageFile);
   }
 
-  const res = await apiClient.put(`/Staff/${StaffId}`, formData, {
+  const res = await apiClient.put(`https://chosachonline-datn.onrender.com/api/Staff/${StaffId}`, formData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },
@@ -56,7 +56,7 @@ updateUser: async (StaffId, data) => {
 
   // DELETE: Xóa người dùng theo ID
   deleteUser: async (id) => {
-    const res = await apiClient.delete(`/Staff/${id}`);
+    const res = await apiClient.delete(`https://chosachonline-datn.onrender.com/api/Staff/${id}`);
     return res.data;
   }
 };
