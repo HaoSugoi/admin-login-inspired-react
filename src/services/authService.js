@@ -6,7 +6,7 @@ export const authService = {
   // Đăng nhập
   login: async (credentials) => {
     try {
-      const response = await axios.post(
+      const response = await apiClient.post(
         "https://chosachonline-datn.onrender.com/api/Auth/login",
         {
         email: credentials.email,
