@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Eye, EyeOff } from 'lucide-react';
+// import { Eye, EyeOff } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { toast } from 'sonner';
@@ -107,7 +107,7 @@ const LoginForm = () => {
                 padding: '0'
               }}
             >
-              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              {/* {showPassword ? <EyeOff size={20} /> : <Eye size={20} />} */}
             </button>
           </div>
         </div>

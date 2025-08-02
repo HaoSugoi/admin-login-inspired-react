@@ -3,8 +3,7 @@ import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { componentTagger } from "lovable-tagger";
 
-// URL backend Render thật
-const RENDER_API_URL = "https://chosachonline-datn.onrender.com";
+
 
 export default defineConfig(({ command, mode }) => {
   const isDev = command === "serve";
@@ -17,10 +16,10 @@ export default defineConfig(({ command, mode }) => {
     server: isDev
       ? {
           host: true,
-          port: 3000,
+          port: 8080,
           proxy: {
             "/api": {
-              target: RENDER_API_URL,
+              target: "https://chosachonline-datn.onrender.com",
               changeOrigin: true,
               secure: false,
               configure: (proxy, _options) => {
@@ -51,7 +50,7 @@ export default defineConfig(({ command, mode }) => {
     preview: {
       port: Number(process.env.PORT) || 4173,
       host: true,
-      allowedHosts: ["datn-rg9q.onrender.com"], // Tên miền React trên Render
+      allowedHosts: ["admin-login-inspired-react.onrender.com/"], // Tên miền React trên Render
     },
 
     // 👇 Build đầu ra cho Render
@@ -59,9 +58,7 @@ export default defineConfig(({ command, mode }) => {
       outDir: "dist",
     },
 
-    define: {
-      __API_BASE_URL__: JSON.stringify(isDev ? "/api" : RENDER_API_URL),
-    },
+    
 
     plugins: [
       react(),
