@@ -43,7 +43,7 @@ useEffect(() => {
     }
 
     try {
-      let basePath = `/Report/${type}`;
+      let basePath = `https://chosachonline-datn.onrender.com/api/Report/${type}`;
       let endpointSet = "";
       let endpointGet = "";
       let payload = null;
