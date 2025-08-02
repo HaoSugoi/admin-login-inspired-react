@@ -4,7 +4,7 @@ import apiClient from './api';
 export const authorService = {
   getAllAuthors: async () => {
     try {
-      const response = await apiClient.get('/Author');
+      const response = await apiClient.get('https://chosachonline-datn.onrender.com/api/Author');
       return response.data.map(author => ({
         AuthorId: author.AuthorId,
         Name: author.Name,
@@ -25,7 +25,7 @@ export const authorService = {
         Description: authorData.Description
       };
       console.log("Payload gửi đi:", JSON.stringify(payload));
-      const response = await apiClient.post('/Author', payload);
+      const response = await apiClient.post('https://chosachonline-datn.onrender.com/api/Author', payload);
       return {
         id: response.data.AuthorId,
         name: response.data.Name,
@@ -46,9 +46,9 @@ export const authorService = {
       Name: authorData.Name,
       Description: authorData.Description
     };
-    console.log('Making PUT request to:', `/Author/${id}`, 'with:', payload);
+    console.log('Making PUT request to:', `https://chosachonline-datn.onrender.com/api/Author/${id}`, 'with:', payload);
     
-    const response = await apiClient.put(`/Author/${id}`, payload);
+    const response = await apiClient.put(`https://chosachonline-datn.onrender.com/api/Author/${id}`, payload);
     console.log('Update successful:', response.data);
     
     return response.data;
@@ -64,7 +64,7 @@ export const authorService = {
 
   deleteAuthor: async (id) => {
     try {
-      await apiClient.delete(`/Author/${id}`);
+      await apiClient.delete(`https://chosachonline-datn.onrender.com/api/Author/${id}`);
       return id;
     } catch (error) {
       console.error('Error deleting author:', error);
