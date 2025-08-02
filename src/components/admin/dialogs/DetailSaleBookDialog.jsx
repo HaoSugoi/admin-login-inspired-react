@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { salebooksService } from '@/services/SaleBooksService';
-import { categoryService } from '@/services/categoryService';
-import { authorService } from '@/services/authorService';
-import { promotionService } from '@/services/promotionService';
+import { salebooksService } from '../../../services/SaleBooksService';
+import { categoryService } from '../../../services/categoryService';
+import { authorService } from '../../../services/authorService';
+import { promotionService } from '../../../services/PromotionService';
 
 const DetailSaleBookDialog = ({ book, onClose }) => {
   const [detail, setDetail] = useState(null);
