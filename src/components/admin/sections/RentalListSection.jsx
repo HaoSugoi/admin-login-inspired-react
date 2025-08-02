@@ -84,7 +84,7 @@ const RentalListSection = ({ rentals = [], onAdd, onUpdate, onDelete, onMarkRetu
                       <img
                         src={
                           item.ImageUrl
-                            ? `https://localhost:7003${item.ImageUrl}`
+                            ? `https://chosachonline-datn.onrender.com${item.ImageUrl}`
                             : "/default-avatar.png"
                         }
                         alt="Ảnh đại diện"

@@ -99,7 +99,7 @@ const SlidesSection = () => {
                     <div className="position-relative">
                       {slide.ImageUrl ? (
                         <img
-                          src={`https://localhost:7003${slide.ImageUrl}`}
+                          src={`/rent-item-details/21672bae-f5f2-4af6-a798-b30398445f35${slide.ImageUrl}`}
                           alt="Slide"
                           className="card-img-top"
                           style={{ height: '200px', objectFit: 'cover' }}
