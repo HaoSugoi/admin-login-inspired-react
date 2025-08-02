@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { authorService } from "@/services/authorService";
-import { categoryService } from "@/services/categoryService";
+import { authorService } from "../../../services/authorService";
+import { categoryService } from "../../../services/categoryService";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import {
