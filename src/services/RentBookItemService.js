@@ -62,7 +62,7 @@ export const rentBookItemService = {
   // Lấy RentBookItems theo RentBookId
 getByRentBookId: async (rentBookId) => {
     try {
-      const allItems = await apiClient.get('/RentBookItem');
+      const allItems = await apiClient.get('https://chosachonline-datn.onrender.com/api/RentBookItem');
       // Lọc theo RentBookId
       return allItems.data.filter(item => item.RentBookId === rentBookId);
     } catch (error) {
