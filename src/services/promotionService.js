@@ -5,7 +5,7 @@ export const promotionService = {
   // Lấy danh sách tất cả khuyến mãi
   getAllPromotions: async () => {
     try {
-      const response = await apiClient.get('/Promotion');
+      const response = await apiClient.get('https://chosachonline-datn.onrender.com/api/Promotion');
       return response.data;
     } catch (error) {
       console.error('Error fetching promotions:', error);
@@ -16,7 +16,7 @@ export const promotionService = {
   // Lấy khuyến mãi theo ID
   getPromotionById: async (id) => {
     try {
-      const response = await apiClient.get(`/Promotion/${id}`);
+      const response = await apiClient.get(`https://chosachonline-datn.onrender.com/api/Promotion/${id}`);
       return response.data;
     } catch (error) {
       console.error('Error fetching promotion by id:', error);
