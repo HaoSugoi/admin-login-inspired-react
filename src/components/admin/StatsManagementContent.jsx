@@ -161,14 +161,14 @@ const toLocalISOString = (dateStr, isEnd = false) => {
         </div>
 
         {/* Tổng quan thống kê */}
-        <div className="row">
+        {/* <div className="row">
           <OverallStatsSection
             statistics={statistics}
             isLoading={isLoading}
             error={error}
             rawStats={rawStats}
           />
-        </div>
+        </div> */}
 
         {/* Biểu đồ doanh thu */}
         <div className="row">
