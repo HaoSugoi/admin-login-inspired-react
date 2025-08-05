@@ -27,7 +27,7 @@ export const promotionService = {
   // Tạo khuyến mãi mới
   createPromotion: async (promotionData) => {
     try {
-      const response = await apiClient.post('https://chosachonline-datn.onrender.com/api/Promotion', promotionData);
+      const response = await apiClient.post('/Promotion', promotionData);
       return response.data;
     } catch (error) {
       console.error('Error creating promotion:', error);
