@@ -26,8 +26,15 @@ export const promotionService = {
 
   // Tạo khuyến mãi mới
   createPromotion: async (promotionData) => {
+    const payload = {
+      PromotionName: promotionData.PromotionName,
+      StartDate: new Date(promotionData.StartDate).toISOString(),     // 👈 ISO string
+      EndDate: new Date(promotionData.EndDate).toISOString(),         // 👈 ISO string    
+      DiscountPercentage: parseFloat(promotionData.DiscountPercentage)          // 👈 double
+    };
+
     try {
-      const response = await apiClient.post('https://chosachonline-datn.onrender.com/api/Promotion', promotionData);
+      const response = await apiClient.post('https://chosachonline-datn.onrender.com/api/Promotion', payload);
       return response.data;
     } catch (error) {
       console.error('Error creating promotion:', error);
@@ -36,17 +43,17 @@ export const promotionService = {
   },
 
 
-// Update khuyến mãi
-updatePromotion: async (id, promotionData) => {
+  // Update khuyến mãi
+  updatePromotion: async (id, promotionData) => {
     try {
       const response = await apiClient.put(`https://chosachonline-datn.onrender.com/api/Promotion/${id}`, promotionData);
       return response.data;
     } catch (error) {
       console.error('Error updating promotion:', error);
-      throw error;  
+      throw error;
     }
   },
-  
+
 
   // Xóa khuyến mãi
   deletePromotion: async (id) => {
