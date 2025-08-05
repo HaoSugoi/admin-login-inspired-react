@@ -51,7 +51,7 @@ const filteredCategories = categories.filter(
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     try {
       const fd = new FormData();
       fd.append('Title', formData.Title);
@@ -61,14 +61,17 @@ const filteredCategories = categories.filter(
       fd.append('Size', formData.PackagingSize);
       fd.append('Pages', String(parseInt(formData.PageCount || 0)));
       fd.append('Price', parseFloat(formData.Price));
-      fd.append('Quantity', String(parseInt(formData.Quantity || 0)));
       fd.append('IsHidden', formData.IsHidden ? 'true' : 'false');
-
+  
       formData.AuthorIds?.forEach((id) => fd.append('AuthorIds', id));
       formData.CategoryIds?.forEach((id) => fd.append('CategoryIds', id));
-
-      fd.append('ImageFile', imageFile);
-     
+  
+      if (imageFile) {
+        fd.append('ImageFile', imageFile);
+      }
+  
+      console.log('📦 Gửi FormData:', [...fd.entries()]); // Log để kiểm tra payload
+  
       await onAdd(fd);
       alert('✅ Thêm sách thuê thành công!');
       onClose();
@@ -77,6 +80,7 @@ const filteredCategories = categories.filter(
       alert('❌ Thêm thất bại.');
     }
   };
+  
 
   return (
     <div

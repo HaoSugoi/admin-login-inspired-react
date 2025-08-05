@@ -1,8 +1,8 @@
 import apiClient from './api';
 
-// Service cho quản lý khuyến mãi
+
 export const rentbooksService = {
-  // Lấy danh sách tất cả khuyến mãi
+ 
   getAllRentbookss: async () => {
     try {
       const response = await apiClient.get('https://chosachonline-datn.onrender.com/api/RentBooks');
@@ -13,7 +13,7 @@ export const rentbooksService = {
     }
   },
 
-  // Lấy khuyến mãi theo ID
+ 
   getRentbooksById: async (id) => {
     try {
       const response = await apiClient.get(`https://chosachonline-datn.onrender.com/api/RentBooks/${id}`);
@@ -24,7 +24,7 @@ export const rentbooksService = {
     }
   },
 
-  // Tạo khuyến mãi mới
+ 
   createRentbooks: async (rentbooksData) => {
     console.log('📦 Gửi FormDatassss: ', rentbooksData);
     try {
