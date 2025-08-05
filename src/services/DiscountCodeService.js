@@ -26,8 +26,18 @@ export const discountcodeService = {
 
   // Tạo mã giảm giá mới
   createDiscountCode: async (discountcodeData) => {
+    const payload = {
+      DiscountCodeName: discountcodeData.DiscountCodeName,
+      Description: discountcodeData.Description || "",
+      StartDate: new Date(discountcodeData.StartDate).toISOString(),     // 👈 ISO string
+      EndDate: new Date(discountcodeData.EndDate).toISOString(),         // 👈 ISO string
+      AvailableQuantity: parseInt(discountcodeData.AvailableQuantity),   // 👈 int
+      RequiredPoints: parseInt(discountcodeData.RequiredPoints),         // 👈 int
+      DiscountValue: parseFloat(discountcodeData.DiscountValue)          // 👈 double
+    };
+    
     try {
-      const response = await apiClient.post('https://chosachonline-datn.onrender.com/api/DiscountCode', discountcodeData);
+      const response = await apiClient.post('https://chosachonline-datn.onrender.com/api/DiscountCode', payload);
       return response.data;
     } catch (error) {
       console.error('Error creating discountcode:', error);
