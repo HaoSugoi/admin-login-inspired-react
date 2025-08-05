@@ -60,7 +60,7 @@ const toLocalISOString = (dateStr, isEnd = false) => {
       return;
     }
 
-    const endpoint = type === 'sale' ? '/Report/sale/export' : '/Report/rent/export';
+    const endpoint = type === 'sale' ? 'https://chosachonline-datn.onrender.com/api/Report/sale/export' : 'https://chosachonline-datn.onrender.com/api/Report/rent/export';
     const defaultFileName = type === 'sale' ? 'BaoCaoBan.xlsx' : 'BaoCaoThue.xlsx';
 
     try {
@@ -100,7 +100,7 @@ const toLocalISOString = (dateStr, isEnd = false) => {
 
       <div className="content-section">
         {/* Bộ lọc và xuất báo cáo */}
-        <div className="row">
+        <div className="row"> 
           <div className="col-12 mb-4">
             <div className="d-flex flex-column gap-3">
               <h4 className="text-success fw-bold">📊 Báo Cáo Thống Kê</h4>
