@@ -51,10 +51,9 @@ const toLocalISOString = (dateStr, isEnd = false) => {
     try {
       setExporting(true);
       const payload = {
-        FromDate: toUtcISOString(fromDate, false),
-        ToDate: toUtcISOString(toDate, true),
+        FromDate: toLocalISOString(fromDate, false),
+        ToDate: toLocalISOString(toDate, true),
       };
-      
 
       const response = await apiClient.post(endpoint, payload, { responseType: 'blob' });
       const blob = new Blob([response.data]);
