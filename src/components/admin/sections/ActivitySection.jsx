@@ -8,7 +8,7 @@ const ActivitySection = () => {
 
   const fetchActivities = async () => {
     try {
-      const res = await apiClient.get("/ActivityNotification");
+      const res = await apiClient.get("https://chosachonline-datn.onrender.com/api/ActivityNotification");
 
       const data = res.data.map((item) => ({
         id: item.NotificationId,
