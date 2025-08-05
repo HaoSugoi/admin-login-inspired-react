@@ -63,11 +63,11 @@ export const rentbooksService = {
   
   
   
-  // Xóa khuyến mãi
+
   deleteRentbooks: async (id) => {
     try {
 
-      const response = await apiClient.delete(`/RentBooks/${id}`);
+      const response = await apiClient.delete(`https://chosachonline-datn.onrender.com/api/RentBooks/${id}`);
       return response.data;
     } catch (error) {
       console.error('Error deleting rentbooks:', error);
@@ -79,7 +79,7 @@ export const rentbooksService = {
     try {
         console.log('📦 Gửi request PUT với id:', id);
         console.log('📤 Dữ liệu:', isHidden);
-      const response = await apiClient.put(`/RentBooks/set-visibility/${id}/${isHidden}`);
+      const response = await apiClient.put(`https://chosachonline-datn.onrender.com/api/RentBooks/set-visibility/${id}/${isHidden}`);
       return response.data;
     } catch (error) {
       console.error('Error setting visibility:', error);
