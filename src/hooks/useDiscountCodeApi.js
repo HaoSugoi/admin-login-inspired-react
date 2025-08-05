@@ -24,7 +24,7 @@ export const useDiscountCodeApi = () => {
       console.log('DiscountCode created successfully');
     },
     onError: (error) => {
-      console.error('Failed to create discountcode:', error);
+      alert('Failed to create discountcode:', error);
     }
   });
 

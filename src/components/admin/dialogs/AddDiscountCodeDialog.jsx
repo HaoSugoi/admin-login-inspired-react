@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Plus, Tag, Percent, Calendar, Gift, Users, FileText, AlertCircle, Save, X } from 'lucide-react';
-
+import { discountcodeService } from '../../../services/DiscountCodeService';
 const AddDiscountCodeDialog = ({ onAddDiscountCode }) => {
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({
@@ -36,19 +36,13 @@ const AddDiscountCodeDialog = ({ onAddDiscountCode }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-
-    if (!formData.DiscountCodeName || !formData.DiscountValue || !formData.StartDate || !formData.EndDate) {
-      setError('Vui lòng điền đầy đủ thông tin bắt buộc');
-      return;
-    }
 
     try {
-      await onAddDiscountCode(formData);
-      setOpen(false);
-      resetForm();
-    } catch (err) {
-      setError(err.message || 'Có lỗi xảy ra khi thêm mã giảm giá');
+      await discountcodeService.createDiscountCode(formData); // 👈 Gọi trực tiếp service
+      alert('Thêm mã giảm giá thành công!');
+      setOpen(false);// đóng dialog
+    } catch (error) {
+      alert('Thêm mã giảm giá thất bại: ' + error?.response?.data?.message || error.message);
     }
   };
 
