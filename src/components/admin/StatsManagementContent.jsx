@@ -23,26 +23,11 @@ const StatsManagementContent = ({
 const toLocalISOString = (dateStr, isEnd = false) => {
   const d = new Date(dateStr);
   if (isEnd) {
-    d.setHours(23, 59, 59, 999); // cuối ngày
+    d.setHours(23, 59, 59, 999);
   } else {
-    d.setHours(0, 0, 0, 0); // đầu ngày
+    d.setHours(0, 0, 0, 0);
   }
-
-  // Trả về chuỗi có định dạng "yyyy-MM-ddTHH:mm:ss"
-  const pad = (n) => (n < 10 ? '0' + n : n);
-  return (
-    d.getFullYear() +
-    '-' +
-    pad(d.getMonth() + 1) +
-    '-' +
-    pad(d.getDate()) +
-    'T' +
-    pad(d.getHours()) +
-    ':' +
-    pad(d.getMinutes()) +
-    ':' +
-    pad(d.getSeconds())
-  );
+  return d.toISOString(); 
 };
 
 
@@ -66,9 +51,10 @@ const toLocalISOString = (dateStr, isEnd = false) => {
     try {
       setExporting(true);
       const payload = {
-        FromDate: toLocalISOString(fromDate, false),
-        ToDate: toLocalISOString(toDate, true),
+        FromDate: toUtcISOString(fromDate, false),
+        ToDate: toUtcISOString(toDate, true),
       };
+      
 
       const response = await apiClient.post(endpoint, payload, { responseType: 'blob' });
       const blob = new Blob([response.data]);
