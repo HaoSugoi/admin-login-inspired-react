@@ -18,12 +18,7 @@ export const useRentBooksApi = () => {
 
   const createRentBooksMutation = useMutation({
     mutationFn: rentbooksService.createRentbooks,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['rentbooks'] });
-    },
-    onError: (error) => {
-      console.error('Create error:', error);
-    }
+    onSuccess: () =>queryClient.invalidateQueries({ queryKey: ['rentbooks'] })
   });
 
   const updateRentBooksMutation = useMutation({

@@ -53,10 +53,7 @@ const filteredCategories = categories.filter(
     e.preventDefault();
 
     try {
-
-
       const fd = new FormData();
-
       fd.append('Title', formData.Title);
       fd.append('Description', formData.Description);
       fd.append('Publisher', formData.Publisher);
