@@ -42,6 +42,7 @@ const AddPromotionDialog = ({ categories, onAdd }) => {
     try {
       await promotionService.createPromotion(formData); 
       alert('Thêm mã khuyến mãi thành công!');
+      window.location.reload();
       setOpen(false);
       resetForm();
     } catch (err) {

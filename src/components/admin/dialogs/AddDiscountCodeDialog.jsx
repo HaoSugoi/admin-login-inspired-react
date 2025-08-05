@@ -41,6 +41,7 @@ const AddDiscountCodeDialog = ({ onAddDiscountCode }) => {
       console.log('đây là data của mã giảm giá',formData);
       await discountcodeService.createDiscountCode(formData); // 👈 Gọi trực tiếp service
       alert('Thêm mã giảm giá thành công!');
+      window.location.reload();
       setOpen(false);// đóng dialog
     } catch (error) {
       alert('Thêm mã giảm giá thất bại: ' + error?.response?.data?.message || error.message);
