@@ -20,7 +20,7 @@ const BooksListSection = ({
 
   const [currentPage, setCurrentPage] = useState(1);
   const booksPerPage = 5;
-  
+
   const filteredBooks = books.filter((book) =>
     book.Title?.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -28,7 +28,7 @@ const BooksListSection = ({
   const indexOfLastBook = currentPage * booksPerPage;
   const indexOfFirstBook = indexOfLastBook - booksPerPage;
   const currentBooks = filteredBooks.slice(indexOfFirstBook, indexOfLastBook);
-  
+
   // Tính tổng số trang
   const totalPages = Math.ceil(filteredBooks.length / booksPerPage);
 
@@ -79,15 +79,15 @@ const BooksListSection = ({
               </tr>
             </thead>
             <tbody>
-            {currentBooks.length > 0 ? (
-  currentBooks.map((book) => (
+              {currentBooks.length > 0 ? (
+                currentBooks.map((book) => (
                   <tr key={book.SaleBookId}>
                     <td>
                       <img
                         src={
                           book.ImageUrl
                             ? `https://chosachonline-datn.onrender.com${book.ImageUrl}`
-                            : '/no-book.png'
+                            : '/images/no-book.png'
                         }
                         alt={book.Title}
                         style={{
@@ -97,11 +97,8 @@ const BooksListSection = ({
                           borderRadius: '4px',
                           border: '1px solid #ddd',
                         }}
-                        onError={(e) => {
-                          e.target.onerror = null;
-                          e.target.src = '/no-book.png';
-                        }}
                       />
+
                     </td>
                     <td><strong>{book.Title ?? 'Không rõ'}</strong></td>
                     <td><span className="text-primary">{(book.Price ?? 0)} đ</span></td>
@@ -165,34 +162,34 @@ const BooksListSection = ({
         </div>
       </div>
       <div className="d-flex justify-content-center mt-3">
-  <nav>
-    <ul className="pagination mb-0">
-      <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-        <button className="page-link" onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}>
-          Trang trước
-        </button>
-      </li>
-      {Array.from({ length: totalPages }, (_, i) => (
-        <li
-          key={i + 1}
-          className={`page-item ${currentPage === i + 1 ? 'active' : ''}`}
-        >
-          <button className="page-link" onClick={() => setCurrentPage(i + 1)}>
-            {i + 1}
-          </button>
-        </li>
-      ))}
-      <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
-        <button
-          className="page-link"
-          onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-        >
-          Trang sau
-        </button>
-      </li>
-    </ul>
-  </nav>
-</div>
+        <nav>
+          <ul className="pagination mb-0">
+            <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+              <button className="page-link" onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}>
+                Trang trước
+              </button>
+            </li>
+            {Array.from({ length: totalPages }, (_, i) => (
+              <li
+                key={i + 1}
+                className={`page-item ${currentPage === i + 1 ? 'active' : ''}`}
+              >
+                <button className="page-link" onClick={() => setCurrentPage(i + 1)}>
+                  {i + 1}
+                </button>
+              </li>
+            ))}
+            <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+              <button
+                className="page-link"
+                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+              >
+                Trang sau
+              </button>
+            </li>
+          </ul>
+        </nav>
+      </div>
 
       {/* Sửa sách */}
       {editingBook && (

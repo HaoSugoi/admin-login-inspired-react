@@ -53,23 +53,23 @@ const filteredCategories = categories.filter(
     e.preventDefault();
 
     try {
-      const payload = formData;
+      
 
 
       const fd = new FormData();
 
-      fd.append('Title', payload.Title);
-      fd.append('Description', payload.Description);
-      fd.append('Publisher', payload.Publisher);
-      fd.append('Translator', payload.Translator);
-      fd.append('Size', payload.PackagingSize);
-      fd.append('Pages', payload.PageCount);
-      fd.append('Price', payload.Price);
-      fd.append('Quantity', payload.Quantity);
-      fd.append('IsHidden', payload.IsHidden ? 'true' : 'false');
+      fd.append('Title', formData.Title);
+      fd.append('Description', formData.Description);
+      fd.append('Publisher', formData.Publisher);
+      fd.append('Translator', formData.Translator);
+      fd.append('Size', formData.PackagingSize);
+      fd.append('Pages', String(parseInt(formData.PageCount || 0)));
+      fd.append('Price', parseFloat(formData.Price));
+      fd.append('Quantity', String(parseInt(formData.Quantity || 0)));
+      fd.append('IsHidden', formData.IsHidden ? 'true' : 'false');
 
-      payload.AuthorIds?.forEach((id) => fd.append('AuthorIds', id));
-      payload.CategoryIds?.forEach((id) => fd.append('CategoryIds', id));
+      formData.AuthorIds?.forEach((id) => fd.append('AuthorIds', id));
+      formData.CategoryIds?.forEach((id) => fd.append('CategoryIds', id));
 
       fd.append('ImageFile', imageFile);
 

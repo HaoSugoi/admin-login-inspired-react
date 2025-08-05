@@ -27,7 +27,7 @@ export const rentbooksService = {
   // Tạo khuyến mãi mới
   createRentbooks: async (rentbooksData) => {
     try {
-      const response = await apiClient.post('https://chosachonline-datn.onrender.com/api/RentBooks', rentbooksData,  {
+      const response = await apiClient.post('/RentBooks', rentbooksData,  {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       return response.data;
@@ -43,7 +43,7 @@ export const rentbooksService = {
       if (data instanceof FormData) {
         console.log('📦 Gửi FormData: ', data);
   
-        const response = await apiClient.put(`https://chosachonline-datn.onrender.com/api/RentBooks/${id}`, data, {
+        const response = await apiClient.put(`/RentBooks/${id}`, data, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
   
