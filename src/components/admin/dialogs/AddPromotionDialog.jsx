@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Plus, Tag, Percent, Calendar, FileText, AlertCircle, Save, X } from 'lucide-react';
-
+import {promotionService} from '../../../services/promotionService'
 const AddPromotionDialog = ({ categories, onAdd }) => {
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({
@@ -40,7 +40,8 @@ const AddPromotionDialog = ({ categories, onAdd }) => {
     }
 
     try {
-      await onAdd(formData);
+      await promotionService.createPromotion(formData); 
+      alert('Thêm mã khuyến mãi thành công!');
       setOpen(false);
       resetForm();
     } catch (err) {
