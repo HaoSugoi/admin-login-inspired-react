@@ -37,7 +37,7 @@ export const discountcodeService = {
     };
     
     try {
-      const response = await apiClient.post('/api/DiscountCode', payload);
+      const response = await apiClient.post('https://chosachonline-datn.onrender.com/api/DiscountCode', payload);
       return response.data;
     } catch (error) {
       console.error('Error creating discountcode:', error);
