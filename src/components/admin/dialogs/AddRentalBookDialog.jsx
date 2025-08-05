@@ -53,7 +53,6 @@ const filteredCategories = categories.filter(
     e.preventDefault();
 
     try {
-      
 
 
       const fd = new FormData();
@@ -72,7 +71,7 @@ const filteredCategories = categories.filter(
       formData.CategoryIds?.forEach((id) => fd.append('CategoryIds', id));
 
       fd.append('ImageFile', imageFile);
-
+      createRentbooks
       await onAdd(fd);
       alert('✅ Thêm sách thuê thành công!');
       onClose();
