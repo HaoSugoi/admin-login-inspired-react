@@ -27,11 +27,11 @@ const AddRentalBookDialog = ({ onClose, onAdd }) => {
       formData.AuthorIds.includes(a.AuthorId) ||
       a.Name.toLowerCase().includes(searchTerm.toLowerCase())
   );
-const filteredCategories = categories.filter(
-  (c) =>
-    formData.CategoryIds.includes(c.id) || // giữ lại những cái đã chọn
-    c.name.toLowerCase().includes(categorySearch.toLowerCase()) // lọc theo tên
-);
+  const filteredCategories = categories.filter(
+    (c) =>
+      formData.CategoryIds.includes(c.id) || // giữ lại những cái đã chọn
+      c.name.toLowerCase().includes(categorySearch.toLowerCase()) // lọc theo tên
+  );
 
   useEffect(() => {
     const fetchData = async () => {
@@ -51,27 +51,28 @@ const filteredCategories = categories.filter(
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     try {
       const fd = new FormData();
-      fd.append('Title', formData.Title);
-      fd.append('Description', formData.Description);
-      fd.append('Publisher', formData.Publisher);
-      fd.append('Translator', formData.Translator);
-      fd.append('Size', formData.PackagingSize);
-      fd.append('Pages', String(parseInt(formData.PageCount || 0)));
-      fd.append('Price', parseFloat(formData.Price));
-      fd.append('IsHidden', formData.IsHidden ? 'true' : 'false');
-  
-      formData.AuthorIds?.forEach((id) => fd.append('AuthorIds', id));
-      formData.CategoryIds?.forEach((id) => fd.append('CategoryIds', id));
-  
+      fd.append('title', formData.Title);
+      fd.append('description', formData.Description);
+      fd.append('publisher', formData.Publisher);
+      fd.append('translator', formData.Translator);
+      fd.append('size', formData.PackagingSize);
+      fd.append('pages', String(formData.PageCount || 0));
+      fd.append('price', parseFloat(formData.Price));
+      fd.append('isHidden', formData.IsHidden ? 'true' : 'false');
+
+      formData.AuthorIds.forEach((id) => fd.append('authorIds', id));
+      formData.CategoryIds.forEach((id) => fd.append('categoryIds', id));
+
       if (imageFile) {
-        fd.append('ImageFile', imageFile);
+        fd.append('imageFile', imageFile);
       }
-  
+
+
       console.log('📦 Gửi FormData:', [...fd.entries()]); // Log để kiểm tra payload
-  
+
       await onAdd(fd);
       alert('✅ Thêm sách thuê thành công!');
       onClose();
@@ -80,7 +81,7 @@ const filteredCategories = categories.filter(
       alert('❌ Thêm thất bại.');
     }
   };
-  
+
 
   return (
     <div
