@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { authorService } from '@/services/authorService';
 import { categoryService } from '@/services/categoryService';
-
+import apiClient from '../../../services/api';
 const AddRentalBookDialog = ({ onClose, onAdd }) => {
   const [formData, setFormData] = useState({
     Title: '',
