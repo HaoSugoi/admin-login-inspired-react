@@ -73,7 +73,16 @@ const AddRentalBookDialog = ({ onClose, onAdd }) => {
 
       console.log('📦 Gửi FormData:', [...fd.entries()]); // Log để kiểm tra payload
 
-      await onAdd(fd);
+      await apiClient.post(
+        "https://chosachonline-datn.onrender.com/api/RentBooks",
+        fd,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      
       alert('✅ Thêm sách thuê thành công!');
       onClose();
     } catch (err) {
