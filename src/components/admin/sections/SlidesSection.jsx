@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Plus, Trash2, ExternalLink, Eye } from 'lucide-react';
-import { slideService } from '@/services/slideService';
+import { slideService } from '../../../services/slideService';
 
 const SlidesSection = () => {
   const [slides, setSlides] = useState([]);
