@@ -48,31 +48,34 @@ const AddRentalBookDialog = ({ onClose, onAdd }) => {
     };
     fetchData();
   }, []);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     try {
       const fd = new FormData();
-      fd.append('title', formData.Title);
-      fd.append('description', formData.Description);
-      fd.append('publisher', formData.Publisher);
-      fd.append('translator', formData.Translator);
-      fd.append('size', formData.PackagingSize);
-      fd.append('pages', String(formData.PageCount || 0));
-      fd.append('price', parseFloat(formData.Price));
+  
+      // Chuẩn hóa tên key: viết thường hoàn toàn
+      fd.append('title', formData.Title || '');
+      fd.append('description', formData.Description || '');
+      fd.append('publisher', formData.Publisher || '');
+      fd.append('translator', formData.Translator || '');
+      fd.append('size', formData.PackagingSize || '');
+  
+      // ✅ ép kiểu đúng
+      fd.append('pages', String(parseInt(formData.PageCount || 0)));
+      fd.append('price', String(parseFloat(formData.Price || 0)));
       fd.append('isHidden', formData.IsHidden ? 'true' : 'false');
-
+  
+      // ✅ danh sách authorIds/categoryIds – cần dùng append nhiều lần
       formData.AuthorIds.forEach((id) => fd.append('authorIds', id));
       formData.CategoryIds.forEach((id) => fd.append('categoryIds', id));
-
+  
       if (imageFile) {
-        fd.append('imageFile', imageFile);
+        fd.append('imageFile', imageFile); // Không cần đặt lại tên
       }
-
-
-      console.log('📦 Gửi FormData:', [...fd.entries()]); // Log để kiểm tra payload
-
+  
+      console.log('📦 Gửi FormData:', [...fd.entries()]);
+  
       await apiClient.post(
         "https://chosachonline-datn.onrender.com/api/RentBooks",
         fd,
@@ -82,7 +85,7 @@ const AddRentalBookDialog = ({ onClose, onAdd }) => {
           },
         }
       );
-      
+  
       alert('✅ Thêm sách thuê thành công!');
       onClose();
     } catch (err) {
@@ -90,7 +93,7 @@ const AddRentalBookDialog = ({ onClose, onAdd }) => {
       alert('❌ Thêm thất bại.');
     }
   };
-
+  
 
   return (
     <div
