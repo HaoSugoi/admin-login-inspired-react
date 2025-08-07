@@ -4,7 +4,7 @@ export const slideService = {
   // Lấy tất cả slide
   getAllSlides: async () => {
     try {
-      const response = await apiClient.get('https://chosachonline-datn.onrender.com/api/Slide');
+      const response = await apiClient.get('/Slide');
       return response.data;
     } catch (error) {
       console.error('Error fetching slides:', error);
@@ -15,7 +15,7 @@ export const slideService = {
   // Lấy slide theo ID
   getSlideById: async (id) => {
     try {
-      const response = await apiClient.get(`https://chosachonline-datn.onrender.com/api/Slide/${id}`);
+      const response = await apiClient.get(`/Slide/${id}`);
       return response.data;
     } catch (error) {
       console.error('Error fetching slide by id:', error);
@@ -30,7 +30,7 @@ export const slideService = {
       formData.append('ImageFile', slideData.imageFile);  // slideData.imageFile: File
       formData.append('LinkUrl', slideData.linkUrl);      // slideData.linkUrl: string
 
-      const response = await apiClient.post('https://chosachonline-datn.onrender.com/api/Slide', formData, {
+      const response = await apiClient.post('/Slide', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -51,7 +51,7 @@ export const slideService = {
       }
       formData.append('LinkUrl', slideData.linkUrl);
 
-      const response = await apiClient.put(`https://chosachonline-datn.onrender.com/api/Slide/${id}`, formData, {
+      const response = await apiClient.put(`/Slide/${id}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -66,7 +66,7 @@ export const slideService = {
   // Xóa slide
   deleteSlide: async (id) => {
     try {
-      const response = await apiClient.delete(`https://chosachonline-datn.onrender.com/api/Slide/${id}`);
+      const response = await apiClient.delete(`/Slide/${id}`);
       return response.data;
     } catch (error) {
       console.error('Error deleting slide:', error);
