@@ -8,8 +8,8 @@ const AddRentalBookDialog = ({ onClose, onAdd }) => {
     Description: '',
     Publisher: '',
     Translator: '',
-    PackagingSize: '',
-    PageCount: 0,
+   Size: '',
+    Pages: 0,
     Price: 0,
     Quantity: 0,
     IsHidden: false,
@@ -53,29 +53,29 @@ const AddRentalBookDialog = ({ onClose, onAdd }) => {
   
     try {
       const fd = new FormData();
-  
-      // Chuẩn hóa tên key: viết thường hoàn toàn
-      fd.append('title', formData.Title || '');
-      fd.append('description', formData.Description || '');
-      fd.append('publisher', formData.Publisher || '');
-      fd.append('translator', formData.Translator || '');
-      fd.append('size', formData.PackagingSize || '');
-  
-      // ✅ ép kiểu đúng
-      fd.append('pages', String(parseInt(formData.PageCount || 0)));
-      fd.append('price', String(parseFloat(formData.Price || 0)));
-      fd.append('isHidden', formData.IsHidden ? 'true' : 'false');
-  
-      // ✅ danh sách authorIds/categoryIds – cần dùng append nhiều lần
-      formData.AuthorIds.forEach((id) => fd.append('authorIds', id));
-      formData.CategoryIds.forEach((id) => fd.append('categoryIds', id));
-  
-      if (imageFile) {
-        fd.append('imageFile', imageFile); // Không cần đặt lại tên
+      fd.append('Title', formData.Title || '');
+      fd.append('Description', formData.Description || '');
+      fd.append('Publisher', formData.Publisher || '');
+      fd.append('Translator', formData.Translator || '');
+      fd.append('Size', formData.Size || '');
+      fd.append('Pages', String(formData.Pages || 0));
+      fd.append('Price', String(formData.Price || 0));
+      fd.append('IsHidden', formData.IsHidden ? 'true' : 'false');
+      
+      formData.AuthorIds.map(String).forEach(id => fd.append('AuthorIds', id));
+      formData.CategoryIds.map(String).forEach(id => fd.append('CategoryIds', id));
+      
+      if (imageFile instanceof File) {
+        fd.append('ImageFile', imageFile);
       }
+      
+      
   
-      console.log('📦 Gửi FormData:', [...fd.entries()]);
-  
+      console.log("📦 FormData gửi đi:");
+      for (const [key, value] of fd.entries()) {
+        console.log(`${key}:`, value);
+      }
+      
       await apiClient.post(
         "https://chosachonline-datn.onrender.com/api/RentBooks",
         fd,
@@ -152,9 +152,9 @@ const AddRentalBookDialog = ({ onClose, onAdd }) => {
                 <input
                   type="text"
                   className="form-control shadow-sm"
-                  value={formData.PackagingSize}
+                  value={formData.Size}
                   onChange={(e) =>
-                    setFormData({ ...formData, PackagingSize: e.target.value })
+                    setFormData({ ...formData, Size: e.target.value })
                   }
                 />
               </div>
@@ -165,9 +165,9 @@ const AddRentalBookDialog = ({ onClose, onAdd }) => {
                 <input
                   type="number"
                   className="form-control shadow-sm"
-                  value={formData.PageCount}
+                  value={formData.Pages}
                   onChange={(e) =>
-                    setFormData({ ...formData, PageCount: parseInt(e.target.value) })
+                    setFormData({ ...formData, Pages: parseInt(e.target.value) })
                   }
                 />
               </div>
