@@ -52,12 +52,12 @@ const DetailSaleBookDialog = ({ book, onClose }) => {
   };
 
   const getPromotionNames = () => {
-  if (!detail?.PromotionIds) return '';
-  return detail.PromotionIds
-    .map((id) => promotions.find((p) => p.PromotionId === id)?.PromotionName)
-    .filter(Boolean)
-    .join(', ');
-};
+    if (!detail?.PromotionIds) return '';
+    return detail.PromotionIds
+      .map((id) => promotions.find((p) => p.PromotionId === id)?.PromotionName)
+      .filter(Boolean)
+      .join(', ');
+  };
 
 
   if (!book?.SaleBookId) return null;
@@ -86,7 +86,7 @@ const DetailSaleBookDialog = ({ book, onClose }) => {
               <div className="row">
                 <div className="col-md-7">
                   <ul className="list-group list-group-flush mb-3 text-sm">
-<li className="list-group-item"><strong>📌 Tiêu đề:</strong> {detail.Title || 'Không rõ'}</li>
+                    <li className="list-group-item"><strong>📌 Tiêu đề:</strong> {detail.Title || 'Không rõ'}</li>
                     <li className="list-group-item"><strong>📝 Mô tả:</strong> {detail.Description || 'Không có'}</li>
                     <li className="list-group-item"><strong>🏢 Nhà xuất bản:</strong> {detail.Publisher || 'Không rõ'}</li>
                     <li className="list-group-item"><strong>🌐 Dịch giả:</strong> {detail.Translator || 'Không có'}</li>
@@ -103,15 +103,18 @@ const DetailSaleBookDialog = ({ book, onClose }) => {
                 </div>
                 <div className="col-md-5 d-flex justify-content-center align-items-center">
                   <img
-                    src={detail.ImageUrl ? `https://localhost:7003${detail.ImageUrl}` : '/no-book.png'}
+                    src={detail.ImageUrl ? `https://chosachonline-datn.onrender.com${detail.ImageUrl}` : '/no-book.png'}
                     alt="Ảnh sách"
                     className="img-fluid rounded shadow"
                     style={{ maxHeight: 260 }}
                     onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.src = '/no-book.png';
+                      if (!e.target.dataset.error) {
+                        e.target.src = '/no-book.png';
+                        e.target.dataset.error = 'true'; // tránh lặp
+                      }
                     }}
                   />
+
                 </div>
               </div>
             )}
