@@ -319,7 +319,7 @@ const AddBookDialog = ({ onAddBook, promotions = [] }) => {
               className="form-select"
               value={formData.IsHidden ? "0" : "1"}
               onChange={(e) =>
-                setFormData({ ...formData, IsHidden: e.target.value === "1" })
+                setFormData({ ...formData, IsHidden: e.target.value === "0" })
               }
             >
               <option value="0">Hiện</option>
