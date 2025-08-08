@@ -86,8 +86,6 @@ const BooksListSection = ({
                       <img
                         src={
                           book.ImageUrl
-                            ? `https://chosachonline-datn.onrender.com${book.ImageUrl}`
-                            : '/images/no-book.png'
                         }
                         alt={book.Title}
                         style={{

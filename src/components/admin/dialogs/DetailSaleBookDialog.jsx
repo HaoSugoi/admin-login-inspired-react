@@ -103,7 +103,7 @@ const DetailSaleBookDialog = ({ book, onClose }) => {
                 </div>
                 <div className="col-md-5 d-flex justify-content-center align-items-center">
                   <img
-                    src={detail.ImageUrl ? `https://chosachonline-datn.onrender.com${detail.ImageUrl}` : '/no-book.png'}
+                    src={detail.ImageUrl}
                     alt="Ảnh sách"
                     className="img-fluid rounded shadow"
                     style={{ maxHeight: 260 }}
