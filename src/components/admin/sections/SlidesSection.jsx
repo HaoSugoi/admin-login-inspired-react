@@ -99,7 +99,7 @@ const SlidesSection = () => {
                     <div className="position-relative">
                       {slide.ImageUrl ? (
                         <img
-                          src={slide.ImageUrl}
+                          src={`https://chosachonline-datn.onrender.com${slide.ImageUrl}`}
                           alt="Slide"
                           className="card-img-top"
                           style={{ height: '200px', objectFit: 'cover' }}
