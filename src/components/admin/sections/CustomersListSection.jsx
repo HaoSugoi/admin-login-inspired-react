@@ -76,8 +76,6 @@ const CustomersListSection = ({ customers = [], onAdd, onUpdate, onDelete }) => 
                       <img
                         src={
                           customer.ImageUser
-                            ? `https://chosachonline-datn.onrender.com${customer.ImageUser}`
-                            : "/default-avatar.png"
                         }
                         alt="Ảnh đại diện"
                         width={20}
