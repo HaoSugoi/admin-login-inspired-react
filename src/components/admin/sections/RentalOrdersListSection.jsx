@@ -51,20 +51,7 @@ const RentalOrdersListSection = ({
   };
 
 
-  const getStatusLabel = (value) => RENTAL_STATUSES[value] || 'Không xác định';
-
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 0: return 'bg-yellow-100 text-yellow-800';
-      case 1: return 'bg-blue-100 text-blue-800';
-      case 2: return 'bg-indigo-100 text-indigo-800';
-      case 3: return 'bg-green-100 text-green-800';
-      case 4: return 'bg-red-200 text-red-900';
-      case 5: return 'bg-gray-200 text-gray-800';
-      case 6: return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
-    }
-  };
+  
 
   const formatCurrency = (amount) =>
     new Intl.NumberFormat('vi-VN', {
@@ -99,7 +86,7 @@ const RentalOrdersListSection = ({
   };
   const UpdateStatus = async (rental, status) => {
     try {
-      const response = await apiClient.put(`/admin/rentorders/${rental.OrderId}/status`, status);
+      const response = await apiClient.put(`https://chosachonline-datn.onrender.com/api/admin/rentorders/${rental.OrderId}/status`, status);
 
       onReload(); // Gọi reload
       return response.data;
