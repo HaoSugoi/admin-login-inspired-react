@@ -45,10 +45,10 @@ export const useEmployeeActivitiesManagement = () => {
 
       // 👉 Chỉ cho Admin gọi /ActivityNotification (tổng)
       if (role?.toLowerCase() === "admin") {
-        url = "/ActivityNotification";
+        url = "https://chosachonline-datn.onrender.com/api/ActivityNotification";
       } else {
         if (!staffId) throw new Error("Không xác định được StaffId từ token");
-        url = `/ActivityNotification/staff/${staffId}`;
+        url = `https://chosachonline-datn.onrender.com/api/ActivityNotification/staff/${staffId}`;
       }
 
       const res = await apiClient.get(url);
